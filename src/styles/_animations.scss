@@ -1,0 +1,170 @@
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+// animate
+// source: https://github.com/animate-css/animate.css/blob/main/source/_base.css
+// /////////////////////////////////////////////////////////////////////////////
+.animated {
+  animation-duration: 800ms;
+  animation-fill-mode: both;
+
+  &-duration-400 {
+    animation-duration: 400ms;
+  }
+
+  &-duration-600 {
+    animation-duration: 600ms;
+  }
+
+  &-duration-1600 {
+    animation-duration: 1600ms;
+  }
+
+  &.delay-200ms {
+    animation-delay: 200ms;
+  }
+
+  &.delay-400ms {
+    animation-delay: 400ms;
+  }
+
+  &.delay-1s {
+    animation-delay: 1000ms;
+  }
+}
+
+@keyframes rotateLeft {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(-180deg);
+  }
+}
+
+.rotate-left {
+  animation-name: rotateLeft;
+}
+
+@keyframes rotateRight {
+  0% {
+    transform: rotate(-180deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+.rotate-right {
+  animation-name: rotateRight;
+}
+
+// fade in
+// source: https://github.com/animate-css/animate.css/blob/main/source/fading_entrances/fadeIn.css
+// /////////////////////////////////////////////////////////////////////////////
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.fadeIn {
+  animation-name: fadeIn;
+}
+
+// pulse
+// source: https://github.com/animate-css/animate.css/blob/main/source/attention_seekers/pulse.css
+// /////////////////////////////////////////////////////////////////////////////
+@keyframes pulse {
+  from {
+    transform: scale3d(1, 1, 1);
+  }
+
+  50% {
+    transform: scale3d(1.5, 1.5, 1.5);
+  }
+
+  to {
+    transform: scale3d(1, 1, 1);
+  }
+}
+
+.pulse {
+  animation-name: pulse;
+  animation-timing-function: ease-in-out;
+}
+
+// tada
+// source: https://github.com/animate-css/animate.css/blob/main/source/attention_seekers/tada.css
+// /////////////////////////////////////////////////////////////////////////////
+@keyframes tada {
+  from {
+    transform: scale3d(1, 1, 1);
+  }
+
+  10%,
+  20% {
+    transform: scale3d(0.9, 0.9, 0.9) rotate3d(0, 0, 1, -3deg);
+  }
+
+  30%,
+  50%,
+  70%,
+  90% {
+    transform: scale3d(1.5, 1.5, 1.5) rotate3d(0, 0, 1, 3deg);
+  }
+
+  40%,
+  60%,
+  80% {
+    transform: scale3d(1.5, 1.5, 1.5) rotate3d(0, 0, 1, -3deg);
+  }
+
+  to {
+    transform: scale3d(1, 1, 1);
+  }
+}
+
+.tada {
+  animation-name: tada;
+}
+
+// heartBeat
+// source: https://github.com/animate-css/animate.css/blob/main/source/attention_seekers/heartBeat.css
+// /////////////////////////////////////////////////////////////////////////////
+@keyframes heartBeat {
+  0% {
+    transform: scale(1);
+  }
+
+  14% {
+    transform: scale(1.5);
+  }
+
+  28% {
+    transform: scale(1);
+  }
+
+  42% {
+    transform: scale(1.5);
+  }
+
+  70% {
+    transform: scale(1);
+  }
+}
+
+.heartBeat {
+  animation-name: heartBeat;
+  animation-timing-function: ease-in-out;
+}

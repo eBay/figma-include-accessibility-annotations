@@ -1,0 +1,94 @@
+/*
+ * spacing helpers
+ */
+
+// padding top
+// /////////////////////////////////////////////////////////////////////////////
+$paddingsT: (
+  'pt0': 0,
+  'pt1': $spacing-xs,
+  'pt2': $spacing-sm
+);
+
+@each $padding, $value in $paddingsT {
+  .#{$padding} {
+    padding-top: #{$value};
+  }
+}
+
+// margin bottom
+// /////////////////////////////////////////////////////////////////////////////
+$marginsB: (
+  'mb1': $spacing-xs
+);
+
+@each $margin, $value in $marginsB {
+  .#{$margin} {
+    margin-bottom: #{$value};
+  }
+}
+
+// margin right
+// /////////////////////////////////////////////////////////////////////////////
+$marginsR: (
+  'mr1': $spacing-xs,
+  'mr2': $spacing-sm,
+  'mr3': $spacing-md
+);
+
+@each $margin, $value in $marginsR {
+  .#{$margin} {
+    margin-right: #{$value};
+  }
+}
+
+// margin left
+// /////////////////////////////////////////////////////////////////////////////
+$marginsL: (
+  'ml1': $spacing-xs
+);
+
+@each $margin, $value in $marginsL {
+  .#{$margin} {
+    margin-left: #{$value};
+  }
+}
+
+// margin top
+// /////////////////////////////////////////////////////////////////////////////
+$marginsT: (
+  'mt1': $spacing-xs
+);
+
+@each $margin, $value in $marginsT {
+  .#{$margin} {
+    margin-top: #{$value};
+  }
+}
+
+$spacers: (
+  'spacerhalf': 4,
+  'spacer1': $spacing-xs,
+  'spacer2': $spacing-sm,
+  'spacer3': $spacing-md,
+  'spacer4': $spacing-lg,
+  'spacer6': $spacing-xxl
+);
+
+// height spacer
+// /////////////////////////////////////////////////////////////////////////////
+@each $spacer, $value in $spacers {
+  .#{$spacer} {
+    height: #{$value};
+    width: 100%;
+  }
+}
+
+// width spacer
+// /////////////////////////////////////////////////////////////////////////////
+@each $spacer, $value in $spacers {
+  .#{$spacer}w {
+    height: 100%;
+    width: #{$value};
+  }
+}

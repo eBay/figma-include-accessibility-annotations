@@ -1,0 +1,42 @@
+// app layout
+// /////////////////////////////////////////////////////////////////////////////
+.app-top {
+  display: flex;
+  height: calc(100vh);
+  flex-direction: row;
+  width: 100vw;
+  transition: width 500ms ease-in-out;
+}
+
+// main panel (layout)
+// /////////////////////////////////////////////////////////////////////////////
+main {
+  height: calc(100% - $footer-height);
+  overflow-y: scroll;
+  padding: $spacing-sm;
+  transition: width 500ms ease-in-out;
+  width: 475px;
+
+  .collapsed & {
+    width: 652px;
+  }
+
+  .view-condensed & {
+    width: 468px;
+  }
+}
+
+// footer
+// /////////////////////////////////////////////////////////////////////////////
+footer {
+  align-items: center;
+  border-top: 1px solid var(--figma-color-border);
+  display: flex;
+  height: $footer-height;
+  justify-content: flex-end;
+  padding: 0 $spacing-sm;
+
+  &.has-dashboard {
+    justify-content: space-between;
+  }
+}

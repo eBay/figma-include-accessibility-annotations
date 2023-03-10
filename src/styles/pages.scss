@@ -1,0 +1,462 @@
+// Select Page Type
+// /////////////////////////////////////////////////////////////////////////////
+.select-page-block {
+  cursor: pointer;
+  text-align: center;
+
+  p {
+    margin-top: 4px;
+  }
+}
+
+.select-page-type {
+  align-items: center;
+  @include themed() {
+    background-color: t($bg-warning);
+    color: t($on-warning);
+
+    svg {
+      path {
+        fill: t($on-warning);
+      }
+    }
+  }
+  border-radius: 8px;
+  display: flex;
+  height: 60px;
+  justify-content: center;
+  width: 60px;
+}
+
+// Left Nav
+.left-nav-link {
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  display: flex;
+}
+
+// Page Change Panel
+// /////////////////////////////////////////////////////////////////////////////
+.page-change {
+  padding: $spacing-sm;
+
+  h2 {
+    font-weight: bold;
+  }
+}
+
+// Dashboard
+// /////////////////////////////////////////////////////////////////////////////
+.dashboard {
+  padding: $spacing-sm;
+
+  .dashboard-scrollable {
+    height: 356px;
+    overflow-y: scroll;
+    scroll-behavior: smooth;
+    scroll-snap-type: y mandatory;
+
+    // hide scrollbar
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+}
+
+.card {
+  border: 2px solid var(--figma-color-border);
+  border-radius: 6px;
+  display: inline-flex;
+  flex-direction: column;
+  margin: 0 16px 16px 0;
+  padding: $spacing-sm;
+  width: 212px;
+
+  .view-condensed & {
+    width: 234px;
+
+    &:nth-child(2n) {
+      margin-right: 0;
+    }
+  }
+
+  .view-full & {
+    &:nth-child(3n) {
+      margin-right: 0;
+    }
+  }
+
+  &.selected {
+    @include themed() {
+      border-color: t($bg-brand);
+    }
+  }
+}
+
+.card-title {
+  font-size: 11px;
+  font-weight: bold;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.flow-type {
+  align-items: center;
+  align-self: flex-start;
+  display: flex;
+}
+
+.flow-type-text {
+  font-size: 11px;
+  font-weight: 600;
+  margin-left: 8px;
+  text-transform: capitalize;
+}
+
+.dashboard-footer {
+  background-color: var(--figma-color-bg);
+  border-top: 1px solid var(--figma-color-border);
+  bottom: 0;
+  height: 62px;
+  left: 0;
+  padding: $spacing-sm;
+  position: absolute;
+  width: 100%;
+}
+
+// Feedback
+// /////////////////////////////////////////////////////////////////////////////
+.feedback {
+  padding: $spacing-sm;
+
+  p {
+    font-size: 14px;
+  }
+
+  h2 {
+    font-weight: bold;
+  }
+
+  textarea {
+    background-color: var(--figma-color-bg);
+    color: var(--figma-color-text);
+    border-color: var(--figma-color-border);
+    font-family: sans-serif;
+    height: 240px;
+    min-width: 668px;
+    max-height: 356px;
+    max-width: 668px;
+    outline: none;
+    padding: $spacing-xs;
+    width: 100%;
+
+    &:focus {
+      @include themed() {
+        box-shadow: 0 0 2px 1px t($bg-brand);
+      }
+    }
+  }
+
+  .feedback-footer {
+    background-color: var(--figma-color-bg);
+    border-top: 1px solid var(--figma-color-border);
+    bottom: 0;
+    display: flex;
+    flex-direction: row;
+    height: 62px;
+    left: 0;
+    padding: $spacing-sm;
+    position: absolute;
+    width: 100%;
+  }
+}
+
+// Landmarks
+// /////////////////////////////////////////////////////////////////////////////
+.row-landmark {
+  height: 32px;
+}
+
+.landmark-type {
+  text-transform: capitalize;
+}
+
+// Button selection containers (gestures, landmarks, headings, focus groups)
+// /////////////////////////////////////////////////////////////////////////////
+$selection-button-width: 72px;
+
+.button-group {
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.container-selection-button {
+  align-items: center;
+  display: inline-flex;
+  flex-direction: column;
+  margin-right: 14px;
+  scroll-snap-align: center;
+  text-align: center;
+  width: $selection-button-width; // scrollbar visible or not, still displaying fine
+}
+
+.selection-button {
+  border: 1px solid transparent;
+  width: $selection-button-width;
+  height: $selection-button-width;
+  align-items: center;
+  background-color: #e5e5e5;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+
+  &:active {
+    @include themed() {
+      background-color: #8f8f8f;
+      border-color: t($bg-brand);
+    }
+  }
+
+  &.no-events {
+    cursor: default;
+    pointer-events: none;
+  }
+
+  .faded {
+    opacity: 0.4;
+  }
+
+  .limit-reached {
+    background-color: var(--figma-color-bg-disabled);
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
+    bottom: 0;
+    color: var(--figma-color-text);
+    font-size: 12px;
+    position: absolute;
+    text-align: center;
+    transition: all 200ms ease;
+    width: $selection-button-width;
+  }
+}
+
+.selection-button-label {
+  font-size: 11px;
+  margin: 4px 0 12px;
+  user-select: none;
+}
+
+// Headings
+// /////////////////////////////////////////////////////////////////////////////
+.heading-title {
+  font-size: 12px;
+  overflow: hidden;
+  padding-left: $spacing-xs;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 260px;
+}
+
+// Reading Order
+// /////////////////////////////////////////////////////////////////////////////
+.reading-order-text {
+  flex: 1;
+  margin-top: 8px;
+  max-width: 194px;
+}
+
+// Alt Text
+// /////////////////////////////////////////////////////////////////////////////
+.alt-text-row {
+  align-items: center;
+  column-gap: $spacing-xs;
+  display: flex;
+  margin-bottom: $spacing-xs;
+}
+
+.container-image-preview {
+  position: relative;
+
+  .scroll-to {
+    background-color: var(--figma-color-bg-inverse);
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    bottom: 0;
+    color: var(--figma-color-text-oninverse);
+    font-size: 10px;
+    left: 0;
+    opacity: 0;
+    padding-bottom: 2px;
+    position: absolute;
+    text-align: center;
+    transition: all 200ms ease;
+    width: 100%;
+  }
+
+  &:hover .scroll-to {
+    opacity: 1;
+  }
+}
+
+.image-preview {
+  background-color: var(--figma-color-bg-disabled);
+  border-radius: 6px;
+  height: 48px;
+  min-width: 48px;
+  object-fit: contain;
+  width: 48px;
+}
+
+// Color Contrast
+// /////////////////////////////////////////////////////////////////////////////
+.contrast-row {
+  align-items: center;
+  border-radius: 2px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+  &:hover .contrast-goto {
+    display: block;
+  }
+}
+
+.contrast-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 348px;
+}
+
+.contrast-goto {
+  display: none;
+}
+
+.contrast-preview {
+  border: 1px solid var(--figma-color-border);
+  overflow: hidden;
+  user-select: none;
+}
+
+.contrast-preview-content {
+  display: flex;
+  position: relative;
+
+  & img {
+    height: auto;
+    width: 100%;
+  }
+}
+
+.text-node-hotspot {
+  cursor: pointer;
+  display: flex;
+  position: absolute;
+
+  &:hover {
+    outline: 1px solid transparent;
+
+    & span {
+      display: block;
+    }
+  }
+
+  &:focus-visible {
+    outline: 1px solid transparent;
+
+    @include themed() {
+      &.status-fail {
+        outline-color: t($bg-danger);
+      }
+
+      &.status-mixed,
+      &.status-unknown {
+        outline-color: t($bg-warning);
+      }
+    }
+
+    &.status-pass {
+      outline-color: var(--figma-color-bg-success);
+    }
+
+    & span {
+      display: block;
+    }
+  }
+
+  & span {
+    border-radius: 4px;
+    color: #ffffff;
+    display: none;
+    font-family: sans-serif;
+    font-size: 10px;
+    font-weight: bold;
+    line-height: 16px;
+    padding: 0 4px;
+    pointer-events: none;
+    position: absolute;
+    white-space: nowrap;
+    z-index: 10;
+  }
+
+  &.status-fail span {
+    display: flex;
+    align-items: center;
+
+    svg {
+      margin-right: 4px;
+    }
+
+    @include themed() {
+      background-color: t($bg-danger);
+      color: t($on-danger);
+    }
+  }
+
+  &.status-mixed span,
+  &.status-unknown span {
+    @include themed() {
+      background-color: t($bg-warning);
+      color: t($on-warning);
+    }
+  }
+
+  &.status-pass span {
+    background-color: var(--figma-color-bg-success);
+    color: var(--figma-color-text-onsuccess);
+  }
+}
+
+.text-node-hotspot-bg {
+  height: 100%;
+  opacity: 0.6;
+  position: absolute;
+  width: 100%;
+  z-index: 5;
+
+  .status-fail & {
+    @include themed() {
+      background-color: t($bg-danger);
+    }
+  }
+
+  .status-mixed &,
+  .status-unknown & {
+    @include themed() {
+      background-color: t($bg-warning);
+    }
+  }
+
+  .status-pass & {
+    background-color: var(--figma-color-bg-success);
+  }
+}

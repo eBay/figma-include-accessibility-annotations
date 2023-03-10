@@ -1,0 +1,64 @@
+/*
+ * colors
+ */
+
+// Using a mix of Figma CSS Variables and custom colors.
+// Figma iFrame provides class that informs CSS of dark mode: https://www.figma.com/plugin-docs/css-variables/#list-of-all-available-color-tokens
+$blue-theme-light: #3665f3;
+$blue-theme-dark: #659eff;
+$red-theme-light: #e0103a;
+$red-theme-dark: #ff6383;
+$warning-theme-dark: #592e13;
+$onbrand-dark: #191919;
+$onwarning-dark: #ffffff;
+
+$bg-brand: 'bg-brand';
+$bg-danger: 'bg-danger';
+$bg-warning: 'bg-warning';
+$on-brand: 'on-brand';
+$on-danger: 'on-danger';
+$on-warning: 'on-warning';
+
+// Using theme defs and a fancy SCSS mixin to get the correct colors for dark vs light mode
+// Inspo: https://medium.com/@katiemctigue/how-to-create-a-dark-mode-in-sass-609f131a3995
+$themes: (
+  light: (
+    bg-brand: $blue-theme-light,
+    bg-danger: $red-theme-light,
+    bg-warning: var(--figma-color-bg-warning-tertiary),
+    on-brand: var(--figma-color-text-onbrand),
+    on-danger: var(--figma-color-text-ondanger),
+    on-warning: var(--figma-color-text-onwarning)
+  ),
+  dark: (
+    bg-brand: $blue-theme-dark,
+    bg-danger: $red-theme-dark,
+    bg-warning: $warning-theme-dark,
+    on-brand: $onbrand-dark,
+    on-danger: $onbrand-dark,
+    on-warning: $onwarning-dark
+  )
+);
+
+@mixin themed() {
+  @each $theme, $map in $themes {
+    .figma-#{$theme} & {
+      $theme-map: () !global;
+      @each $key, $submap in $map {
+        $value: map-get(map-get($themes, $theme), '#{$key}');
+        $theme-map: map-merge(
+          $theme-map,
+          (
+            $key: $value
+          )
+        ) !global;
+      }
+      @content;
+      $theme-map: null !global;
+    }
+  }
+}
+
+@function t($key) {
+  @return map-get($theme-map, $key);
+}

@@ -1,0 +1,378 @@
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--figma-color-bg);
+  color: var(--figma-color-text);
+  font-family: Inter, sans-serif;
+  font-size: 12px;
+  line-height: 1.4;
+  margin: 0;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: var(--figma-color-text);
+}
+
+// tabIndex highlighting
+// /////////////////////////////////////////////////////////////////////////////
+a:focus-visible,
+button:focus-visible,
+[tabIndex='0']:focus-visible,
+main:focus-visible {
+  @include themed() {
+    box-shadow: 0 0 2px 2px t($bg-brand);
+  }
+
+  outline: none;
+
+  // next 2 lines keep the focus element in left nav at the top (no bleed behind)
+  position: relative;
+  z-index: 100;
+
+  // shadow inset for <main>, <nav>, and dropdown
+  &#main,
+  &.card,
+  &.dropdown,
+  &.dropdown-option,
+  nav & {
+    @include themed() {
+      box-shadow: inset 0 0 2px 2px t($bg-brand);
+    }
+  }
+
+  &.toggle-nav,
+  &.text-node-hotspot {
+    position: absolute;
+  }
+}
+
+h1 {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+h2 {
+  font-size: 13px;
+  font-weight: bold;
+}
+
+strong,
+.strong {
+  font-weight: bold;
+}
+
+.h-100 {
+  height: 100%;
+}
+
+.w-100 {
+  width: 100%;
+}
+
+.absolute-bottom {
+  bottom: 0;
+  position: absolute;
+}
+
+.absolute-bottom-left {
+  bottom: 16px;
+  position: absolute;
+  left: 16px;
+}
+
+.absolute-bottom-right {
+  bottom: 16px;
+  position: absolute;
+  right: 16px;
+}
+
+.absolute-top {
+  position: absolute;
+  top: 0;
+}
+
+.relative {
+  position: relative;
+}
+
+.muted {
+  color: var(--figma-color-text-disabled);
+}
+
+.font-10 {
+  font-size: 10px;
+}
+
+.font-12 {
+  font-size: 12px;
+}
+
+.max-width-400 {
+  max-width: 400px;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.link {
+  @include themed() {
+    color: t($bg-brand);
+  }
+  cursor: pointer;
+}
+
+.no-underline {
+  text-decoration: none;
+}
+
+.border-radius-2 {
+  border-radius: 2px;
+}
+
+.border-radius-xs {
+  border-radius: $spacing-xs;
+}
+
+.display-block {
+  display: block;
+}
+
+.rotate-90 {
+  transform: rotate(90deg);
+}
+
+.rotate-180 {
+  transform: rotate(180deg);
+}
+
+.rotate-270 {
+  transform: rotate(270deg);
+}
+
+.divider {
+  background-color: var(--figma-color-border);
+  height: 1px;
+  width: 100%;
+}
+
+.coming-soon {
+  align-items: center;
+  background-color: var(--figma-color-bg-disabled);
+  border-radius: 6px;
+  display: flex;
+  height: 48px;
+  justify-content: center;
+  width: 100%;
+}
+
+// flex
+// /////////////////////////////////////////////////////////////////////////////
+.flex-row {
+  display: flex;
+  flex-direction: row;
+}
+
+.flex-row-center {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+}
+
+.flex-row-space-between {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.flex-center {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.align-start {
+  align-items: flex-start;
+}
+
+.align-self-start {
+  align-self: flex-start;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.justify-end {
+  justify-content: flex-end;
+}
+
+// buttons
+// /////////////////////////////////////////////////////////////////////////////
+.btn {
+  background-color: var(--figma-color-bg);
+  border-radius: 6px;
+  border: 1px solid var(--figma-color-text);
+  color: var(--figma-color-text);
+  cursor: pointer;
+  height: 30px;
+  font-size: 13px;
+  min-width: 50px;
+  padding: 0 12px;
+
+  &:disabled {
+    border: 1px solid var(--figma-color-border-disabled);
+    color: var(--figma-color-text-disabled);
+    cursor: default;
+    pointer-events: none;
+  }
+
+  &.primary {
+    @include themed() {
+      background-color: t($bg-brand);
+      border-color: t($bg-brand);
+      color: t($on-brand);
+    }
+
+    &:disabled {
+      background-color: var(--figma-color-bg-disabled);
+      border-color: var(--figma-color-border-disabled);
+      cursor: default;
+      pointer-events: none;
+    }
+  }
+
+  &.danger {
+    @include themed() {
+      background-color: t($bg-danger);
+      border-color: t($bg-danger);
+      color: t($on-danger);
+    }
+  }
+}
+
+.btn-remove {
+  align-items: center;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  height: 32px;
+  justify-content: center;
+  padding: 0 10px;
+
+  .remove-dash {
+    background-color: var(--figma-color-text);
+    height: 1px;
+    width: 12px;
+  }
+
+  &:hover {
+    @include themed() {
+      background-color: t($bg-danger);
+    }
+
+    .remove-dash {
+      background-color: var(--figma-color-text-oninverse);
+
+      .figma-dark & {
+        background-color: var(--figma-color-text);
+      }
+    }
+  }
+}
+
+// input
+// /////////////////////////////////////////////////////////////////////////////
+.input {
+  background-color: var(--figma-color-bg);
+  border: 2px solid transparent;
+  border-radius: 4px;
+  box-shadow: none;
+  color: var(--figma-color-text);
+  font-size: 14px;
+  height: 28px;
+  outline: none;
+  padding-left: $spacing-xs;
+  width: 190px;
+
+  &:disabled {
+    background-color: transparent;
+  }
+
+  &:focus {
+    @include themed() {
+      border-color: t($bg-brand);
+    }
+  }
+
+  &::placeholder {
+    color: var(--figma-color-bg-disabled);
+    opacity: 1;
+  }
+
+  &.warning {
+    @include themed() {
+      border-color: t($bg-danger);
+    }
+  }
+
+  &-na {
+    width: 190px;
+  }
+}
+
+// svg handle for dark mode
+// /////////////////////////////////////////////////////////////////////////////
+.svg-theme {
+  path {
+    fill: var(--figma-color-text);
+  }
+
+  &_inverse path {
+    fill: var(--figma-color-text-oninverse);
+  }
+}
+
+.svg-theme-stroke {
+  path {
+    stroke: var(--figma-color-text);
+  }
+
+  &_inverse path {
+    stroke: var(--figma-color-text-oninverse);
+  }
+
+  &_link path {
+    @include themed() {
+      stroke: t($bg-brand);
+    }
+  }
+}
+
+.svg-theme-primary {
+  path {
+    @include themed() {
+      stroke: t($bg-brand);
+    }
+  }
+}
+
+.svg-theme-success {
+  path {
+    fill: var(--figma-color-text-success);
+  }
+}
+
+.circle-success {
+  border: 1px solid var(--figma-color-border-success-strong);
+  border-radius: 16px;
+  color: var(--figma-color-text-success);
+}
