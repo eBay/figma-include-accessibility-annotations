@@ -1,0 +1,83 @@
+{
+  "page": {
+    "bounds": { "height": 2267, "width": 1534, "x": -3989, "y": -2874 },
+    "id": "2:98",
+    "mainPageId": "0:1",
+    "name": "Color - Using Color"
+  },
+  "pages": [
+    {
+      "id": "244:190",
+      "name": "Color - Using Color",
+      "page": {
+        "bounds": { "height": 100, "width": 100, "x": 1, "y": 1 },
+        "id": "2:98",
+        "mainPageId": "0:1",
+        "name": "Color - Using Color"
+      },
+      "pageId": "2:98",
+      "stepsCompleted": [
+        "Responsive reflow",
+        "Text zoom",
+        "Touch target",
+        "Contrast"
+      ],
+      "stepsData": {
+        "Landmarks": { "id": "251:298" },
+        "Headings": { "id": "254:198" },
+        "Contrast": { "id": "244:195" },
+        "Responsive reflow": { "id": "244:192" },
+        "Text zoom": { "id": "244:193" },
+        "Touch target": { "id": "244:194" }
+      }
+    }
+  ],
+  "landmarks": {
+    "251:306": {
+      "id": "251:306",
+      "name": "Landmark: banner | 251:306",
+      "type": "banner"
+    }
+  },
+  "headings": {
+    "253:106": {
+      "id": "254:406",
+      "bounds": {
+        "x": -100,
+        "y": -3000,
+        "width": 230,
+        "height": 48
+      },
+      "title": "How We Use Color",
+      "type": "h2",
+      "value": 2
+    }
+  },
+  "imagesData": [
+    {
+      "id": "254:406",
+      "altText": "two android phones",
+      "bounds": {
+        "x": 800,
+        "y": -100,
+        "width": 340,
+        "height": 340
+      },
+      "name": "original name here",
+      "type": "informative"
+    }
+  ],
+  "imagesScanned": [
+    {
+      "id": "254:434",
+      "base64": "data",
+      "bounds": {
+        "x": 800,
+        "y": -100,
+        "width": 340,
+        "height": 340
+      },
+      "name": "original name here"
+    }
+  ]
+}

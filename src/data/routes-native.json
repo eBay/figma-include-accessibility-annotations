@@ -1,0 +1,66 @@
+{
+  "Headings": {
+    "id": "Headings",
+    "label": "Headings",
+    "designerCheck": "Headings",
+    "path": "",
+    "shouldHide": true,
+    "percent": 12
+  },
+  "Focus grouping": {
+    "id": "Focus grouping",
+    "label": "Focus grouping",
+    "designerCheck": "Focus grouping",
+    "path": "focus-grouping",
+    "shouldHide": true,
+    "percent": 12
+  },
+  "Reading order": {
+    "id": "Reading order",
+    "label": "Reading order",
+    "designerCheck": "Reading order",
+    "path": "reading-order",
+    "shouldHide": true,
+    "percent": 10
+  },
+  "Alt text": {
+    "id": "Alt text",
+    "label": "Alternative text",
+    "designerCheck": "Alternative text",
+    "path": "alt-text",
+    "shouldHide": true,
+    "percent": 20
+  },
+  "Touch target": {
+    "id": "Touch target",
+    "label": "Touch target",
+    "designerCheck": "Sufficient touch target sizes",
+    "path": "touch-target",
+    "shouldHide": false,
+    "percent": 8
+  },
+  "Contrast": {
+    "id": "Contrast",
+    "label": "Contrast",
+    "designerCheck": "Sufficient text color contrast",
+    "path": "contrast",
+    "shouldHide": false,
+    "percent": 8
+  },
+  "Text zoom": {
+    "id": "Text zoom",
+    "label": "Text resizing",
+    "designerCheck": "Text resizing documented",
+    "path": "text-zoom",
+    "shouldHide": false,
+    "percent": 15
+  },
+  "Complex gestures": {
+    "id": "Complex gestures",
+    "label": "Complex gestures",
+    "designerCheck": "Complex gestures documented",
+    "path": "complex-gestures",
+    "shouldHide": true,
+    "percent": 15
+  }
+}

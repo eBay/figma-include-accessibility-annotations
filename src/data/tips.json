@@ -1,0 +1,57 @@
+{
+  "native": {
+    "Headings": {
+      "text": "Headings help provide a hierarchy for the screen's content, and allow people using a screen reader to quickly jump between sections. Numbered headings (H1,H2 etc)  are not supported by iOS or Android."
+    },
+    "Focus grouping": {
+      "text": "Grouping elements like the contents of a tile or cell can make for a better experience when using assistive technology.<br /><br />If multiple actions are in the group more instruction will be needed on how this will behave."
+    },
+    "Reading order": {
+      "text": "Draw a path to reflect the desired order of consuming content. Typically, it follows the visual layout of the content – left-to-right, top-to-bottom (for LTR languages)."
+    },
+    "Alt text": {
+      "text": "Alternative text is announced by screen readers and describes the purpose, function, or content of an image.<br/><br/>Images that convey meaning are <em>informative</em> and require alt text. Images that do not convey meaning, or are non-functional and beside text that conveys their meaning are considered <em>decorative.</em>"
+    },
+    "Contrast": {
+      "text": "Text must have at least a 4.5:1 contrast ratio with its background. Interactive and meaningful graphical elements must have a minimum 3:1 contrast ratio."
+    },
+    "Touch target": {
+      "text": "Click or touch areas should  be a minimum of 48px x 48px unless the target is in a sentence or block of text."
+    },
+    "Text zoom": {
+      "text": "Mobile devices allow users to customize text sizes. Ensure the layout will adapt to respect these user preferences."
+    },
+    "Complex gestures": {
+      "text": "When actions can be performed with a <em>gesture</em> ensure there is an alternate and visible way to perform this using one finger and taps."
+    }
+  },
+  "web": {
+    "Landmarks": {
+      "text": "Landmarks identify main regions of a screen and help people who use assistive technology to make a mental model of a screen's content. Overdoing landmarks can create a lot of noise."
+    },
+    "Headings": {
+      "text": "Headings help provide a hierarchy for the screen’s content, and allow people using a screen reader to quickly jump between sections. Use only one H1 per page, avoid skipping heading levels, and make them succinct."
+    },
+    "Reading order": {
+      "text": "Draw a path to reflect the desired order of consuming content. Typically, it follows the visual layout of the content—left-to-right, top-to-bottom (for LTR languages)."
+    },
+    "Alt text": {
+      "text": "Alternative text is announced by screen readers and describes the purpose, function, or content of an image.<br/><br/>Images that convey meaning are <em>informative</em> and require alt text. Images that do not convey meaning, or are non-functional and beside text that conveys their meaning are considered <em>decorative.</em>"
+    },
+    "Contrast": {
+      "text": "Text must have at least a 4.5:1 contrast ratio with its background. Interactive and meaningful graphical elements must have a minimum 3:1 contrast ratio."
+    },
+    "Touch target": {
+      "text": "Click or touch areas should  be a minimum of 48px x 48px unless the target is in a sentence or block of text."
+    },
+    "Text zoom": {
+      "text": "Users must be able to resize text without loss of information. Enlarge the text in your design and consider how the content and layout is impacted."
+    },
+    "Responsive reflow": {
+      "text": "Web content needs to reflow, without horizontal scrolling, at a screen width of 320px"
+    },
+    "Interactive elements": {
+      "text": "Naming interactive elements determines what the screen reader is going to read out. Accessibility for each interactive element from the storybook is already coded in the control."
+    }
+  }
+}

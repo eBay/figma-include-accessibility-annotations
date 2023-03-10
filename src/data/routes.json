@@ -1,0 +1,66 @@
+{
+  "Landmarks": {
+    "id": "Landmarks",
+    "label": "Landmarks",
+    "designerCheck": "Landmarks",
+    "path": "",
+    "shouldHide": true,
+    "percent": 12
+  },
+  "Headings": {
+    "id": "Headings",
+    "label": "Headings",
+    "designerCheck": "Headings",
+    "path": "headings",
+    "shouldHide": true,
+    "percent": 12
+  },
+  "Reading order": {
+    "id": "Reading order",
+    "label": "Reading order",
+    "designerCheck": "Reading order",
+    "path": "reading-order",
+    "shouldHide": true,
+    "percent": 10
+  },
+  "Alt text": {
+    "id": "Alt text",
+    "label": "Alternative text",
+    "designerCheck": "Alternative text",
+    "path": "alt-text",
+    "shouldHide": true,
+    "percent": 20
+  },
+  "Contrast": {
+    "id": "Contrast",
+    "label": "Contrast",
+    "designerCheck": "Sufficient text color contrast",
+    "path": "contrast",
+    "shouldHide": false,
+    "percent": 8
+  },
+  "Touch target": {
+    "id": "Touch target",
+    "label": "Touch target",
+    "designerCheck": "Sufficient click target sizes",
+    "path": "touch-target",
+    "shouldHide": false,
+    "percent": 8
+  },
+  "Text zoom": {
+    "id": "Text zoom",
+    "label": "Text resizing",
+    "designerCheck": "Text resizing documented",
+    "path": "text-zoom",
+    "shouldHide": false,
+    "percent": 15
+  },
+  "Responsive reflow": {
+    "id": "Responsive reflow",
+    "label": "Responsive reflow",
+    "designerCheck": "Responsive reflow documented",
+    "path": "responsive-reflow",
+    "shouldHide": false,
+    "percent": 15
+  }
+}

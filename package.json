@@ -1,0 +1,71 @@
+{
+  "name": "figma-include-accessibility-annotations",
+  "version": "8",
+  "description": "Include is a tool built to make annotating for accessibility (a11y) easier",
+  "main": "code.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "webpack --mode=development --watch",
+    "dev": "webpack --mode=development --watch",
+    "serve": "webpack serve",
+    "bundle": "webpack --mode=production && node zip.js",
+    "lint": "eslint ./src",
+    "docs": "node_modules/.bin/jsdoc --readme DOCS.md -c jsdoc.json"
+  },
+  "author": "eBay Design Technology",
+  "devDependencies": {
+    "@babel/core": "^7.15.8",
+    "@babel/plugin-proposal-class-properties": "^7.14.5",
+    "@babel/plugin-syntax-dynamic-import": "^7.8.3",
+    "@babel/plugin-transform-react-constant-elements": "^7.14.5",
+    "@babel/plugin-transform-react-inline-elements": "^7.14.5",
+    "@babel/plugin-transform-runtime": "^7.15.8",
+    "@babel/preset-env": "^7.15.8",
+    "@babel/preset-react": "^7.14.5",
+    "@babel/runtime": "^7.15.4",
+    "@figma/plugin-typings": "^1.31.0",
+    "@types/node": "^16.7.1",
+    "adm-zip": "^0.5.9",
+    "babel-eslint": "^10.1.0",
+    "babel-loader": "^8.2.2",
+    "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
+    "chalk": "^4.1.2",
+    "css-loader": "^6.2.0",
+    "docdash": "^1.2.0",
+    "eslint": "^7.8.1",
+    "eslint-config-airbnb": "^18.2.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-import-helpers": "^1.1.0",
+    "eslint-plugin-jsx-a11y": "^6.5.1",
+    "eslint-plugin-prettier": "^3.1.4",
+    "eslint-plugin-react": "^7.20.6",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "html-webpack-inline-source-plugin": "0.0.10",
+    "html-webpack-plugin": "^5.3.2",
+    "jsdoc": "~3.6.3",
+    "prettier": "^2.1.1",
+    "sass": "^1.49.8",
+    "sass-loader": "^12.6.0",
+    "style-loader": "^3.2.1",
+    "url-loader": "^4.1.1",
+    "webpack": "^5.69.1",
+    "webpack-cli": "^4.8.0",
+    "webpack-dev-server": "^4.3.1"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "prop-types": "^15.8.1",
+    "react": "^18.2.0",
+    "react-dev-utils": "^12.0.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.4.3"
+  },
+  "engines": {
+    "node": ">=16.13.0"
+  },
+  "prettier": {
+    "singleQuote": true,
+    "trailingComma": "none"
+  }
+}
