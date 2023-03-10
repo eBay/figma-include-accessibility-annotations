@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { createRoot } from 'react-dom/client';
-import { HashRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { MemoryRouter, Routes, Route, useLocation } from 'react-router-dom';
 
 // styles
 import './styles/base.scss';
@@ -186,10 +186,10 @@ const root = createRoot(container);
 
 root.render(
   <AppState>
-    <HashRouter>
+    <MemoryRouter>
       <ErrorBoundary>
         <App />
       </ErrorBoundary>
-    </HashRouter>
+    </MemoryRouter>
   </AppState>
 );
