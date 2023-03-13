@@ -101,6 +101,12 @@ const Headings = () => {
       value: headingTypes[headingType].id
     };
 
+    sendToFigma('add-heading', {
+      page,
+      pageType,
+      heading: newHeading
+    });
+
     // update main state
     sortAndStoreHeadingsObj({ ...headings, [newHeading.id]: newHeading });
     updateState('headingTemp', null);
@@ -115,6 +121,14 @@ const Headings = () => {
   };
 
   const onRemoveHeading = (id) => {
+    const heading = headings[id];
+
+    sendToFigma('remove-heading', {
+      page,
+      pageType,
+      heading
+    });
+
     // remove from main state
     const newHeadingsObj = { ...headings };
     delete newHeadingsObj[id];

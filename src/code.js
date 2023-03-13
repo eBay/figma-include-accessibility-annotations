@@ -143,6 +143,14 @@ figma.ui.onmessage = async (msg) => {
     step.headings.confirm(msg);
   }
 
+  if (type === 'add-heading') {
+    step.headings.addHeading(msg);
+  }
+
+  if (type === 'remove-heading') {
+    step.headings.removeHeading(msg);
+  }
+
   // add reading order arrow
   if (type === 'add-reading-order-arrow') {
     step.readingOrder.addArrow(msg);
