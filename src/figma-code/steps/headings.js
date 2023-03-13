@@ -87,7 +87,7 @@ export const noHeadings = (msg) => {
 };
 
 export const listener = (msg) => {
-  const { page, pageType, shouldListen = false, defaultHeadingType = 2 } = msg;
+  const { shouldListen = false, defaultHeadingType = 2 } = msg;
 
   // de-select all before start of listening
   figma.currentPage.selection = [];
@@ -109,23 +109,6 @@ export const listener = (msg) => {
     }
   }
 
-  const { mainPageId, name } = page;
-
-  // top layer namings
-  const saniName = utils.sanitizeName(name);
-  const pageTypeCap = utils.capitalize(pageType);
-  const mainLayerName = `${saniName} ${config.a11ySuffix} | ${pageTypeCap}`;
-
-  // get main A11y frame if it exists
-  const mainFrameId = utils.checkIfChildNameExists(mainPageId, mainLayerName);
-
-  // if found, toggle visible
-  if (mainFrameId !== null) {
-    // if start of listening, hide main A11y frame so user can select headings
-    const mainFrame = figma.getNodeById(mainFrameId);
-    mainFrame.visible = !shouldListen;
-  }
-
   // listen flag: see figma.on('selectionchange')
   const newListenForHeadings = shouldListen;
   const newDefaultHeadingType = defaultHeadingType;
@@ -133,11 +116,178 @@ export const listener = (msg) => {
   return { newListenForHeadings, newDefaultHeadingType };
 };
 
+const getHeadingBlockName = ({ pageType, headingType, headingTitle, id }) => {
+  return `Heading${
+    pageType === 'web' ? `: ${headingType.trim()}` : ''
+  } | ${headingTitle.trim()} | ${id.trim()}`;
+};
+
+const createHeadingFrameInFigma = ({
+  pageType,
+  pageX,
+  pageY,
+  headingBounds,
+  headingsFrame,
+  headingTitle,
+  headingType,
+  id
+}) => {
+  const contextX = headingBounds.x - pageX;
+  const contextY = headingBounds.y - pageY;
+
+  const { blue, white } = colors;
+
+  // create heading outline
+  const headingOutline = figmaLayer.createRectangle({
+    name: 'Heading outline',
+    x: contextX - 8,
+    y: contextY - 16,
+    height: headingBounds.height + 32,
+    width: headingBounds.width + 16,
+    strokeColor: blue,
+    opacity: 0,
+    radiusMixed: [{ topLeftRadius: 0 }]
+  });
+
+  // start of group array
+  const toGroupArray = [headingOutline];
+
+  // create annotation label
+  const label = figmaLayer.createRectangle({
+    name: 'Label Background',
+    height: 29,
+    width: pageType === 'web' ? 40 : 29,
+    x: contextX - 8,
+    y: contextY - 42,
+    fillColor: blue,
+    stroke: 0,
+    opacity: 1,
+    radius: 8,
+    radiusMixed: [{ bottomLeftRadius: 0 }, { bottomRightRadius: 0 }]
+  });
+  toGroupArray.push(label);
+
+  // create annotation name for label
+  const numberNode = figma.createText();
+  numberNode.fontSize = 18;
+
+  if (pageType === 'web') {
+    const headingDisplay = utils.capitalize(headingType);
+    numberNode.name = `Heading Type: ${headingType}`;
+    numberNode.characters = headingDisplay;
+  } else {
+    // Mobile headings are not numbered
+    numberNode.name = 'Heading';
+    numberNode.characters = 'H';
+  }
+
+  numberNode.fills = [{ type: 'SOLID', color: white }];
+  numberNode.fontName = { family: 'Roboto', style: 'Bold' };
+  numberNode.x = contextX;
+  numberNode.y = contextY - 38;
+  toGroupArray.push(numberNode);
+
+  const headingsBlock = figma.group(toGroupArray, headingsFrame);
+  const headingsBlockName = getHeadingBlockName({
+    pageType,
+    id,
+    headingType,
+    headingTitle
+  });
+  headingsBlock.name = headingsBlockName;
+  headingsBlock.resizeWithoutConstraints(
+    headingBounds.width,
+    headingBounds.height
+  );
+  headingsBlock.expanded = false;
+};
+
+export const addHeading = (msg) => {
+  const { heading, page, pageType } = msg;
+  const { bounds } = page;
+  const { height: pageH, width: pageW } = bounds;
+
+  // get main A11y frame if it exists (or create it)
+  const mainFrame = getOrCreateMainA11yFrame({ page, pageType });
+
+  const headingsExists = utils.checkIfChildNameExists(
+    mainFrame.id,
+    headingsLayerName
+  );
+
+  let headingsFrame;
+
+  // does Headings frame exists already?
+  if (!headingsExists) {
+    // create the Headings frame if not
+    headingsFrame = figmaLayer.createTransparentFrame({
+      name: headingsLayerName,
+      height: pageH,
+      width: pageW
+    });
+    // update with id (for future scanning)
+    headingsFrame.name = `${headingsLayerName} | ${headingsFrame.id}`;
+    mainFrame.appendChild(headingsFrame);
+  } else {
+    // Grab if it does
+    headingsFrame = figma.getNodeById(headingsExists);
+  }
+
+  const {
+    id,
+    bounds: headingBounds,
+    title: headingTitle,
+    type: headingType
+  } = heading;
+
+  createHeadingFrameInFigma({
+    pageType,
+    pageX: 0,
+    pageY: 0,
+    headingBounds,
+    headingsFrame,
+    headingTitle,
+    headingType,
+    id
+  });
+};
+
+export const removeHeading = (msg) => {
+  const { heading, page, pageType } = msg;
+
+  const { id, title: headingTitle, type: headingType } = heading;
+
+  // get main A11y frame
+  const mainFrame = getOrCreateMainA11yFrame({ page, pageType });
+
+  // make sure that headings frame exists (it should)
+  const headingsFrameId = utils.checkIfChildNameExists(
+    mainFrame.id,
+    headingsLayerName
+  );
+
+  if (headingsFrameId) {
+    const headingsFrame = figma.getNodeById(headingsFrameId);
+    const headingsBlockName = getHeadingBlockName({
+      headingTitle,
+      headingType,
+      pageType,
+      id
+    });
+
+    // Find the specific headings block and remove
+    const headingBlock = headingsFrame.children.find(
+      (child) => child.name === headingsBlockName
+    );
+
+    if (headingBlock) {
+      headingBlock.remove();
+    }
+  }
+};
+
 export const confirm = (msg) => {
   const { headings, page, pageType } = msg;
-
-  // colors
-  const { blue, white } = colors;
 
   const { bounds, mainPageId, name } = page;
   const { x: pageX, y: pageY, height: pageH, width: pageW } = bounds;
@@ -180,69 +330,16 @@ export const confirm = (msg) => {
       type: headingType
     } = heading;
 
-    const contextX = headingBounds.x - pageX;
-    const contextY = headingBounds.y - pageY;
-
-    // create heading outline
-    const headingOutline = figmaLayer.createRectangle({
-      name: 'Heading outline',
-      x: contextX - 8,
-      y: contextY - 16,
-      height: headingBounds.height + 32,
-      width: headingBounds.width + 16,
-      strokeColor: blue,
-      opacity: 0,
-      radiusMixed: [{ topLeftRadius: 0 }]
+    createHeadingFrameInFigma({
+      pageType,
+      pageX,
+      pageY,
+      headingBounds,
+      headingTitle,
+      headingType,
+      headingsFrame,
+      id
     });
-
-    // start of group array
-    const toGroupArray = [headingOutline];
-
-    // create annotation label
-    const label = figmaLayer.createRectangle({
-      name: 'Label Background',
-      height: 29,
-      width: pageType === 'web' ? 40 : 29,
-      x: contextX - 8,
-      y: contextY - 42,
-      fillColor: blue,
-      stroke: 0,
-      opacity: 1,
-      radius: 8,
-      radiusMixed: [{ bottomLeftRadius: 0 }, { bottomRightRadius: 0 }]
-    });
-    toGroupArray.push(label);
-
-    // create annotation name for label
-    const numberNode = figma.createText();
-    numberNode.fontSize = 18;
-
-    if (pageType === 'web') {
-      const headingDisplay = utils.capitalize(headingType);
-      numberNode.name = `Heading Type: ${headingType}`;
-      numberNode.characters = headingDisplay;
-    } else {
-      // Mobile headings are not numbered
-      numberNode.name = 'Heading';
-      numberNode.characters = 'H';
-    }
-
-    numberNode.fills = [{ type: 'SOLID', color: white }];
-    numberNode.fontName = { family: 'Roboto', style: 'Bold' };
-    numberNode.x = contextX;
-    numberNode.y = contextY - 38;
-    toGroupArray.push(numberNode);
-
-    const headingsBlock = figma.group(toGroupArray, headingsFrame);
-    const headingsBlockName = `Heading${
-      pageType === 'web' ? `: ${headingType}` : ''
-    } | ${headingTitle} | ${id}`;
-    headingsBlock.name = headingsBlockName;
-    headingsBlock.resizeWithoutConstraints(
-      headingBounds.width,
-      headingBounds.height
-    );
-    headingsBlock.expanded = false;
   }
 
   // add within main Accessibility layer
@@ -281,4 +378,4 @@ export const confirm = (msg) => {
   });
 };
 
-export default { noHeadings, listener, confirm };
+export default { addHeading, noHeadings, listener, confirm, removeHeading };
