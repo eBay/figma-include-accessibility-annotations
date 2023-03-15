@@ -25,6 +25,7 @@ const isA11yLayer = (children, childNode, name) => {
   // page was renamed, don't proceed
   if (ifExists.length === 0) {
     // should the a11y layer be deleted?
+    // eslint-disable-next-line no-console
     console.error(`frame "${name}" no longer exists on this page`);
     return null;
   }
@@ -49,6 +50,7 @@ const isA11yLayer = (children, childNode, name) => {
     // no layers?
     if (hasLayer.length === 0) {
       if (frameChild?.id !== existingAnnotationsFrame?.id) {
+        // eslint-disable-next-line no-console
         console.error(`no steps found in "${stepName}"`);
       }
 

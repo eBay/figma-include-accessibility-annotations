@@ -24,15 +24,16 @@ export const scan = async (msg) => {
   contrast.walk(
     duplicate,
     (node, { opacity }) => {
+      let newOpacity = opacity;
       if ('opacity' in node && node.opacity) {
-        opacity *= node.opacity;
+        newOpacity *= node.opacity;
       }
 
       if (node.type === 'TEXT' && !!node.visible) {
         // node = node as TextNode;
         textNodes.push({
           textNode: node,
-          effectiveOpacity: opacity * node.opacity
+          effectiveOpacity: newOpacity * node.opacity
         });
       }
 
@@ -40,7 +41,7 @@ export const scan = async (msg) => {
         return 'skipchildren';
       }
 
-      return { opacity };
+      return { opacity: newOpacity };
     },
     { opacity: 1 }
   );

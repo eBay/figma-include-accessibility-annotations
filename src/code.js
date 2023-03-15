@@ -38,6 +38,7 @@ let listenForHeadings = false;
 let defaultHeadingType = 2;
 
 // clear console every time plugin opens
+// eslint-disable-next-line no-console
 console.clear();
 
 /* *****************************************************************************
@@ -46,6 +47,7 @@ console.clear();
  * https://www.figma.com/plugin-docs/api/figma/#once
  **************************************************************************** */
 figma.once('run', async () => {
+  // eslint-disable-next-line no-console
   console.log('plugin has started');
 
   // preload fonts
@@ -382,6 +384,7 @@ figma.on('currentpagechange', () => {
  * https://www.figma.com/plugin-docs/api/properties/figma-on/#close
  **************************************************************************** */
 figma.on('close', () => {
+  // eslint-disable-next-line no-console
   console.log('plugin has closed');
 
   // make all accessibility layers visible
