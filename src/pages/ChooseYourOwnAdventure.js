@@ -1,17 +1,21 @@
 import * as React from 'react';
 
 // icons
-import { SvgMobile, SvgWeb } from '../icons';
+import { SvgArrowRight, SvgMobile, SvgWeb } from '../icons';
 
 // app state
 import Context from '../context';
 
 const ChooseYourOwnAdventure = () => {
   // main app state
-  const { updateState } = React.useContext(Context);
+  const { updateState, version } = React.useContext(Context);
 
   const onClick = (selectedType) => {
     updateState('pageType', selectedType);
+  };
+
+  const backToDashboard = () => {
+    updateState('showDashboard', true);
   };
 
   return (
@@ -49,6 +53,24 @@ const ChooseYourOwnAdventure = () => {
           <p>native</p>
         </div>
       </div>
+
+      <div className="absolute-bottom-left">
+        <div
+          className="flex-row-center border-radius-2 link cursor-pointer"
+          onClick={backToDashboard}
+          onKeyPress={backToDashboard}
+          role="button"
+          tabIndex="0"
+        >
+          <div className="svg-theme-stroke_link rotate-180">
+            <SvgArrowRight />
+          </div>
+          <div className="spacer1w" />
+          Back
+        </div>
+      </div>
+
+      <div className="absolute-bottom-right muted">{`v.${version}`}</div>
     </div>
   );
 };
