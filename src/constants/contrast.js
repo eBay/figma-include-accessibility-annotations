@@ -44,14 +44,15 @@ const formatContrastRatio = (contrastRatio) => {
  */
 const mixColors = (c1, c2, amount) => {
   // from tinycolor
-  // https://github.com/bgrins/TinyColor/blob/master/tinycolor.js#L701
-  amount = amount === 0 ? 0 : amount || 50;
+  // https://github.com/bgrins/TinyColor/blob/master/tinycolor.js#L686
+  // amount = amount === 0 ? 0 : amount || 50;
+  const newAmount = amount === 0 ? 0 : amount || 50;
 
   return {
-    r: (c2.r - c1.r) * amount + c1.r,
-    g: (c2.g - c1.g) * amount + c1.g,
-    b: (c2.b - c1.b) * amount + c1.b,
-    a: (c2.a - c1.a) * amount + c1.a
+    r: (c2.r - c1.r) * newAmount + c1.r,
+    g: (c2.g - c1.g) * newAmount + c1.g,
+    b: (c2.b - c1.b) * newAmount + c1.b,
+    a: (c2.a - c1.a) * newAmount + c1.a
   };
 };
 
@@ -98,19 +99,22 @@ const srgbLuminance = ({ r, g, b }) => {
   if (r <= 0.03928) {
     R = r / 12.92;
   } else {
-    R = Math.pow((r + 0.055) / 1.055, 2.4);
+    // R = Math.pow((r + 0.055) / 1.055, 2.4);
+    R = ((r + 0.055) / 1.055) ** 2.4;
   }
 
   if (g <= 0.03928) {
     G = g / 12.92;
   } else {
-    G = Math.pow((g + 0.055) / 1.055, 2.4);
+    // G = Math.pow((g + 0.055) / 1.055, 2.4);
+    G = ((g + 0.055) / 1.055) ** 2.4;
   }
 
   if (b <= 0.03928) {
     B = b / 12.92;
   } else {
-    B = Math.pow((b + 0.055) / 1.055, 2.4);
+    // B = Math.pow((b + 0.055) / 1.055, 2.4);
+    B = ((b + 0.055) / 1.055) ** 2.4;
   }
 
   return 0.2126 * R + 0.7152 * G + 0.0722 * B;

@@ -33,15 +33,18 @@ class AppState extends React.Component {
 
     // default state
     this.state = {
+      // global ui
       alertMsg: null,
       condensedUI: false,
       isLoading: true,
       leftNavVisible: true,
+
+      // page changes
       hasDashboard: false,
       showDashboard: false,
       showPageChange: false,
 
-      // accessibility data
+      // global accessibility data
       pages: [],
       page: null,
       pageSelected: null,
@@ -303,21 +306,23 @@ class AppState extends React.Component {
   render() {
     const { children } = this.props;
 
-    // app state
+    // global ui
     const { alertMsg, condensedUI, isLoading, leftNavVisible } = this.state;
+
+    // page changes
     const { hasDashboard, showDashboard, showPageChange } = this.state;
+
+    // global accessibility data
+    const { pages, page, pageSelected, pageType } = this.state;
     const { steps, stepsNative, stepsCompleted, stepsData } = this.state;
 
-    // state for Select Frame page
-    const { pages, page, pageSelected, pageType } = this.state;
-
-    // state for Landmarks page
+    // landmarks
     const { landmarks } = this.state;
 
-    // state for Headings page
+    // headings
     const { headings, headingTemp } = this.state;
 
-    // state for Alt text page
+    // alt text
     const { noImages, imagesData, imagesScanned } = this.state;
 
     // contrast
@@ -335,22 +340,18 @@ class AppState extends React.Component {
     return (
       <Context.Provider
         value={{
+          // global ui
           alertMsg,
           condensedUI,
           isLoading,
           leftNavVisible,
+
+          // page changes
           hasDashboard,
           showDashboard,
           showPageChange,
-          noImages,
-          imagesData,
-          imagesScanned,
-          landmarks,
-          headings,
-          headingTemp,
-          contrastResults,
-          groups,
-          gestures,
+
+          // global accessibility data
           pages,
           page,
           pageSelected,
@@ -359,15 +360,42 @@ class AppState extends React.Component {
           stepsNative,
           stepsCompleted,
           stepsData,
+
+          // landmarks
+          landmarks,
+
+          // headings
+          headings,
+          headingTemp,
+
+          // alt text
+          noImages,
+          imagesData,
+          imagesScanned,
+
+          // contrast
+          contrastResults,
+
+          // focus grouping
+          groups,
+
+          // complex gestures
+          gestures,
+
+          // global helpers
           imageScan: this.imageScan,
           removeNodes,
           sendToFigma,
           updateState: this.updateState,
           zoomTo,
-          isProd: process.env.ISPROD,
-          version: process.env.VERSION,
+
+          // user data
           currentUser,
-          sessionId
+          sessionId,
+
+          // environment and project
+          isProd: process.env.ISPROD,
+          version: process.env.VERSION
         }}
       >
         {children}
