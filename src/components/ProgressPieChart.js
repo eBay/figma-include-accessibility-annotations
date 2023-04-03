@@ -20,6 +20,7 @@ const ProgressPieChart = ({ progress }) => {
           </div>
         )}
       </div>
+
       <div className="progress">{`${progress}%`}</div>
     </div>
   );

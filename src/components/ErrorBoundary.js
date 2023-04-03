@@ -1,13 +1,15 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
-
-import Context from '../context';
 import { analytics } from '../constants';
+
+// app state
+import Context from '../context';
 
 // Catch any React component issues and log to GA
 class ErrorBoundary extends React.Component {
   componentDidCatch(error) {
     const { isProd, sessionId, currentUser } = this.context;
+
     analytics.logEvent({
       name: 'error_boundary_error',
       pageTitle: error,
@@ -19,6 +21,7 @@ class ErrorBoundary extends React.Component {
 
   render() {
     const { children } = this.props;
+
     return children;
   }
 }
