@@ -53,7 +53,7 @@
     "designerCheck": "Text resizing documented",
     "path": "text-zoom",
     "shouldHide": false,
-    "percent": 15
+    "percent": 10
   },
   "Responsive reflow": {
     "id": "Responsive reflow",
@@ -61,6 +61,14 @@
     "designerCheck": "Responsive reflow documented",
     "path": "responsive-reflow",
     "shouldHide": false,
-    "percent": 15
+    "percent": 10
+  },
+  "Color blindness": {
+    "id": "Color blindness",
+    "label": "Color blindness",
+    "designerCheck": "Color blindness checked",
+    "path": "color-blindness",
+    "shouldHide": false,
+    "percent": 10
   }
 }

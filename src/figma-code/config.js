@@ -17,12 +17,14 @@ export default {
     'Text zoom Layer',
     'Responsive reflow Layer',
     'Focus grouping Layer',
-    'Complex gestures Layer'
+    'Complex gestures Layer',
+    'Color blindness Layer'
   ],
   a11yCheckboxLayers: [
     'Contrast Layer',
     'Touch target Layer',
     'Text zoom Layer',
-    'Responsive reflow Layer'
+    'Responsive reflow Layer',
+    'Color blindness Layer'
   ]
 };

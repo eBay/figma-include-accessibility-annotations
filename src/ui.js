@@ -21,6 +21,7 @@ import TextZoom from './pages/TextZoom';
 import ResponsiveReflow from './pages/ResponsiveReflow';
 import FocusGrouping from './pages/FocusGrouping';
 import ComplexGestures from './pages/ComplexGestures';
+import ColorBlindness from './pages/ColorBlindness';
 
 // components
 import { NavLeft } from './components';
@@ -39,7 +40,7 @@ import ErrorBoundary from './components/ErrorBoundary';
 const App = () => {
   const cnxt = React.useContext(Context);
   const { alertMsg, condensedUI, isLoading, leftNavVisible } = cnxt;
-  const { page, pageSelected, pageType } = cnxt;
+  const { colorBlindnessView, page, pageSelected, pageType } = cnxt;
   const { steps, stepsNative, stepsCompleted, stepsData } = cnxt;
   const { showDashboard, showPageChange, sendToFigma } = cnxt;
 
@@ -137,14 +138,15 @@ const App = () => {
   }
 
   const leftNavClass = leftNavVisible ? 'opened' : 'collapsed';
+  const cbViewerClass = colorBlindnessView ? ' cb-viewer' : '';
   const condensedClass = condensedUI ? 'view-condensed' : 'view-full';
 
   return (
     <div className={`app-container ${condensedClass}`}>
-      <div className={`app-top ${leftNavClass}`}>
+      <div className={`app-top ${leftNavClass}${cbViewerClass}`}>
         <NavLeft progress={progressPercent} />
 
-        <div>
+        <div className="flex-1">
           <Routes>
             {pageType === 'web' && (
               <React.Fragment>
@@ -159,6 +161,7 @@ const App = () => {
                   path="responsive-reflow"
                   element={<ResponsiveReflow />}
                 />
+                <Route path="color-blindness" element={<ColorBlindness />} />
               </React.Fragment>
             )}
 
@@ -172,6 +175,7 @@ const App = () => {
                 <Route path="contrast" element={<Contrast />} />
                 <Route path="text-zoom" element={<TextZoom />} />
                 <Route path="complex-gestures" element={<ComplexGestures />} />
+                <Route path="color-blindness" element={<ColorBlindness />} />
               </React.Fragment>
             )}
           </Routes>

@@ -1,0 +1,208 @@
+import * as React from 'react';
+
+// components
+import {
+  AnnotationStepPage,
+  Dropdown,
+  HeadingStep,
+  LoadingSpinner
+} from '../components';
+import ColorBlindnessFilter from '../components/ColorBlindnessFilter';
+
+// helpers
+import { contrast } from '../constants';
+
+// app state
+import Context from '../context';
+
+const cbTypes = [
+  { id: '0', value: 'None' },
+  { id: '1', value: 'Protanopia' },
+  { id: '2', value: 'Protanomaly' },
+  { id: '3', value: 'Deuteranopia' },
+  { id: '4', value: 'Deuteranomaly' },
+  { id: '5', value: 'Tritanopia' },
+  { id: '6', value: 'Tritanomaly' },
+  { id: '7', value: 'Achromatopsia' },
+  { id: '8', value: 'Achromatomaly' }
+];
+
+const ColorBlindness = () => {
+  // main app state
+  const cnxt = React.useContext(Context);
+  const { colorBlindnessView, page, pageType } = cnxt;
+  const { sendToFigma, stepsCompleted, updateState } = cnxt;
+
+  // ui state
+  const routeName = 'Color blindness';
+  const isCompleted = stepsCompleted.includes(routeName);
+
+  // local state
+  const [loading, setLoading] = React.useState(false);
+  const [designUri, setURI] = React.useState(null);
+  const [cbType, setCBType] = React.useState('None');
+  const [openedDropdown, setOpenedDropdown] = React.useState(null);
+
+  const onSelect = async (selected) => {
+    setCBType(selected);
+  };
+
+  const showColorBlindnessViewer = () => {
+    // show loading state
+    setLoading(true);
+
+    // loading image was killing the thread, causing loading state to not show, so delaying
+    // https://www.figma.com/plugin-docs/frozen-plugins/
+    setTimeout(() => {
+      // let figma side know to start the viewer
+      sendToFigma('start-color-blindness-view', {
+        page
+      });
+    }, 100);
+  };
+
+  const confirmColorBlindnessChecked = () => {
+    // let figma side know the state of this step
+    sendToFigma('add-checkmark-layer', {
+      layerName: 'Color blindness Layer',
+      create: true,
+      page,
+      pageType
+    });
+  };
+
+  const onClose = () => {
+    updateState('colorBlindnessView', false);
+  };
+
+  const onMessageListen = async (event) => {
+    const { data, type } = event.data.pluginMessage;
+
+    // only listen for this response type on this step
+    if (type === 'color-blindness-design-image') {
+      setLoading(false);
+
+      const { result } = data;
+      const { imageWithTextLayers } = result;
+
+      const imageUri = contrast.urlForImageBytes(imageWithTextLayers);
+      setURI(imageUri);
+
+      updateState('colorBlindnessView', true);
+    }
+  };
+
+  React.useEffect(() => {
+    // mount
+    window.addEventListener('message', onMessageListen);
+
+    return () => {
+      // unmount
+      window.removeEventListener('message', onMessageListen);
+    };
+  }, []);
+
+  const getPrimaryAction = () => {
+    if (isCompleted === false) {
+      return {
+        buttonText: 'Color blindness viewer',
+        completesStep: false,
+        onClick: showColorBlindnessViewer
+      };
+    }
+
+    return {
+      buttonText: 'Color blindness checked',
+      completesStep: true,
+      onClick: confirmColorBlindnessChecked
+    };
+  };
+
+  const getSecondaryAction = () => {
+    if (isCompleted) {
+      return {
+        buttonText: 'View again',
+        skipsStep: false,
+        onClick: showColorBlindnessViewer
+      };
+    }
+
+    return null;
+  };
+
+  if (loading) {
+    return (
+      <div className="h-100 w-100 flex-center">
+        <LoadingSpinner size={36} />
+        <div className="muted font-12 pt1">Grabbing design file</div>
+      </div>
+    );
+  }
+
+  if (colorBlindnessView) {
+    const cbTypeClass =
+      cbType === null ? '' : cbType.toLowerCase().replace(/\s/g, '-');
+    const isOpened = openedDropdown !== null;
+
+    return (
+      <main id="main" tabIndex="-1">
+        <div className="cb-controls">
+          <div className="flex-row-center">
+            <p>Select Color blindness type:</p>
+
+            <div className="spacer-xs-w" />
+
+            <Dropdown
+              data={cbTypes}
+              index={cbType}
+              isOpened={isOpened}
+              onOpen={setOpenedDropdown}
+              onSelect={onSelect}
+              type={cbType}
+            />
+          </div>
+
+          <button className="btn" onClick={onClose} type="button">
+            Exit viewer
+          </button>
+        </div>
+
+        <div className="cb-preview-content">
+          <ColorBlindnessFilter />
+
+          <img
+            src={designUri}
+            className={cbTypeClass}
+            alt="current design file"
+          />
+        </div>
+      </main>
+    );
+  }
+
+  return (
+    <AnnotationStepPage
+      title="Color blindness checks"
+      bannerTipProps={{ pageType, routeName }}
+      routeName={routeName}
+      footerProps={{
+        primaryAction: getPrimaryAction(),
+        secondaryAction: getSecondaryAction()
+      }}
+    >
+      <React.Fragment>
+        <HeadingStep
+          number={1}
+          text="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+        />
+
+        <HeadingStep
+          number={2}
+          text="Donec lacinia velit mi, ut pulvinar tellus tristique a. Maecenas faucibus tincidunt semper. Cras sit amet velit sed quam congue interdum."
+        />
+      </React.Fragment>
+    </AnnotationStepPage>
+  );
+};
+
+export default ColorBlindness;

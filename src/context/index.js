@@ -43,6 +43,9 @@ export default React.createContext({
   // complex gestures
   gestures: {},
 
+  // color blindness
+  colorBlindnessView: false,
+
   // user data
   currentUser: null,
   sessionId: 0

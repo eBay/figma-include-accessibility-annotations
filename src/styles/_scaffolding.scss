@@ -24,6 +24,11 @@ main {
   .view-condensed & {
     width: 468px;
   }
+
+  .cb-viewer & {
+    height: 100%;
+    width: 100%;
+  }
 }
 
 // footer

@@ -460,3 +460,73 @@ $selection-button-width: 72px;
     background-color: var(--figma-color-bg-success);
   }
 }
+
+// Color Blindness
+// /////////////////////////////////////////////////////////////////////////////
+.cb-controls {
+  background-color: var(--figma-color-bg);
+  border-bottom: 1px solid var(--figma-color-border);
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 16px 0;
+  position: sticky;
+  top: -16px;
+  width: 100%;
+  z-index: 100;
+
+  p {
+    font-weight: bold;
+    margin-top: 2px;
+  }
+}
+
+.cb-preview-content {
+  display: flex;
+  position: relative;
+
+  & img {
+    height: auto;
+    width: 100%;
+  }
+}
+
+.protanopia {
+  -webkit-filter: url("#protanopia");
+  filter: url("#protanopia");
+}
+
+.protanomaly {
+  -webkit-filter: url("#protanomaly");
+  filter: url("#protanomaly");
+}
+
+.deuteranopia {
+  -webkit-filter: url("#deuteranopia");
+  filter: url("#deuteranopia");
+}
+
+.deuteranomaly {
+  -webkit-filter: url("#deuteranomaly");
+  filter: url("#deuteranomaly");
+}
+
+.tritanopia {
+  -webkit-filter: url("#tritanopia");
+  filter: url("#tritanopia");
+}
+
+.tritanomaly {
+  -webkit-filter: url("#tritanomaly");
+  filter: url("#tritanomaly");
+}
+
+.achromatopsia {
+  -webkit-filter: url("#achromatopsia");
+  filter: url("#achromatopsia");
+}
+
+.achromatomaly {
+  -webkit-filter: url("#achromatomaly");
+  filter: url("#achromatomaly");
+}

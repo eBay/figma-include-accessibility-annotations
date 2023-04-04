@@ -19,7 +19,7 @@ const NavLeft = ({ progress }) => {
   // main app state
   const cnxt = React.useContext(Context);
   const { leftNavVisible, pageType, stepsCompleted, sendToFigma } = cnxt;
-  const { updateState } = cnxt;
+  const { updateState, colorBlindnessView } = cnxt;
 
   // flow type
   const isWeb = pageType === 'web';
@@ -58,6 +58,10 @@ const NavLeft = ({ progress }) => {
     } else if (progress > 10) {
       encouragement = 'Just started';
     }
+  }
+
+  if (colorBlindnessView) {
+    return null;
   }
 
   return (

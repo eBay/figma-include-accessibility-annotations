@@ -75,6 +75,9 @@ class AppState extends React.Component {
       // complex gestures
       gestures: {},
 
+      // color blindness
+      colorBlindnessView: false,
+
       // user data
       currentUser: null,
       sessionId: 0
@@ -334,6 +337,9 @@ class AppState extends React.Component {
     // complex gestures
     const { gestures } = this.state;
 
+    // color blindness
+    const { colorBlindnessView } = this.state;
+
     // user data
     const { currentUser, sessionId } = this.state;
 
@@ -381,6 +387,9 @@ class AppState extends React.Component {
 
           // complex gestures
           gestures,
+
+          // color blindness
+          colorBlindnessView,
 
           // global helpers
           imageScan: this.imageScan,
