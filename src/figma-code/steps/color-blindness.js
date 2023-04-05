@@ -13,6 +13,8 @@ export const getDesignFile = async (msg) => {
     }
   };
 
+  const { width } = duplicate;
+
   const imageWithTextLayers = await duplicate.exportAsync(EXPORT_SETTINGS);
 
   // clean up behind ourselves
@@ -25,7 +27,8 @@ export const getDesignFile = async (msg) => {
   figma.ui.postMessage({
     type: 'color-blindness-design-image',
     data: {
-      result
+      result,
+      width
     }
   });
 };

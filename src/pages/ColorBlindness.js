@@ -30,7 +30,7 @@ const cbTypes = [
 const ColorBlindness = () => {
   // main app state
   const cnxt = React.useContext(Context);
-  const { colorBlindnessView, page, pageType } = cnxt;
+  const { colorBlindnessView, leftNavVisible, page, pageType } = cnxt;
   const { sendToFigma, stepsCompleted, updateState } = cnxt;
 
   // ui state
@@ -42,6 +42,7 @@ const ColorBlindness = () => {
   const [designUri, setURI] = React.useState(null);
   const [cbType, setCBType] = React.useState('None');
   const [openedDropdown, setOpenedDropdown] = React.useState(null);
+  const [isMobile, setIsMobile] = React.useState(false);
 
   const onSelect = async (selected) => {
     setCBType(selected);
@@ -73,6 +74,14 @@ const ColorBlindness = () => {
 
   const onClose = () => {
     updateState('colorBlindnessView', false);
+
+    // resize plugin (go back to their pref)
+    const pluginWidth = leftNavVisible === false ? 516 : 700;
+    sendToFigma('resize-plugin', {
+      condensed: leftNavVisible === false,
+      height: 518,
+      width: pluginWidth
+    });
   };
 
   const onMessageListen = async (event) => {
@@ -82,12 +91,43 @@ const ColorBlindness = () => {
     if (type === 'color-blindness-design-image') {
       setLoading(false);
 
-      const { result } = data;
+      const { result, width } = data;
       const { imageWithTextLayers } = result;
 
+      // display image
       const imageUri = contrast.urlForImageBytes(imageWithTextLayers);
       setURI(imageUri);
 
+      // adjust plugin size depending on design
+      const newIsMobile = width < 800;
+      setIsMobile(newIsMobile);
+
+      // get figma app dimensions
+      const { outerHeight, outerWidth } = window;
+
+      const isCondensed = leftNavVisible === false;
+
+      // if mobile file
+      if (newIsMobile) {
+        const pluginHeight = outerHeight - 240;
+
+        sendToFigma('resize-plugin', {
+          condensed: isCondensed,
+          height: pluginHeight,
+          width: 432
+        });
+      } else {
+        const pluginHeight = outerHeight - 240;
+        const pluginWidth = outerWidth - 440;
+
+        sendToFigma('resize-plugin', {
+          condensed: isCondensed,
+          height: pluginHeight,
+          width: pluginWidth
+        });
+      }
+
+      // show color blindness viewer
       updateState('colorBlindnessView', true);
     }
   };
@@ -143,6 +183,7 @@ const ColorBlindness = () => {
     const cbTypeClass =
       cbType === null ? '' : cbType.toLowerCase().replace(/\s/g, '-');
     const isOpened = openedDropdown !== null;
+    const mobileClass = isMobile ? ' is-mobile' : '';
 
     return (
       <main id="main" tabIndex="-1">
@@ -167,7 +208,7 @@ const ColorBlindness = () => {
           </button>
         </div>
 
-        <div className="cb-preview-content">
+        <div className={`cb-preview-content${mobileClass}`}>
           <ColorBlindnessFilter />
 
           <img
