@@ -13,11 +13,11 @@ export default {
       icon: <SvgSemantics.SvgCheckbox />,
       label: 'checkbox'
   },
-  datepicker: {
+  'date picker': {
       icon: <SvgSemantics.SvgDatepicker />,
       label: 'date picker'
   },
-  expanderaccordion: {
+  'expander accordion': {
       icon: <SvgSemantics.SvgExpanderaccordion />,
       label: 'expander accordion'
   },
@@ -29,19 +29,19 @@ export default {
       icon: <SvgSemantics.SvgList />,
       label: 'list'
   },
-  modaldialog: {
+  'modal dialog': {
       icon: <SvgSemantics.SvgModaldialog />,
       label: 'modal dialog'
   },
-  progressindicator: {
+  'progress indicator': {
       icon: <SvgSemantics.SvgProgressindicator />,
       label: 'progress indicator'
   },
-  radio: {
+  'radio button': {
       icon: <SvgSemantics.SvgRadio />,
       label: 'radio button'
   },
-  rangeslider: {
+  'range slider': {
       icon: <SvgSemantics.SvgRangeslider />,
       label: 'range slider'
   },
@@ -49,15 +49,15 @@ export default {
       icon: <SvgSemantics.SvgSearchbox />,
       label: 'searchbox'
   },
-  selectdropdown: {
+  'select dropdown': {
       icon: <SvgSemantics.SvgSelectdropdown />,
       label: 'select dropdown'
   },
-  separator: {
+  'separator / horiz. rule': {
       icon: <SvgSemantics.SvgSeparator />,
       label: 'separator / horizontal rule'
   },
-  tabgroup: {
+  'tab group': {
       icon: <SvgSemantics.SvgTabgroup />,
       label: 'tab group'
   },
@@ -65,15 +65,15 @@ export default {
       icon: <SvgSemantics.SvgTable />,
       label: 'table'
   },
-  textarea: {
+  'textarea / multi-line': {
       icon: <SvgSemantics.SvgTextarea />,
       label: 'textarea / multi-line'
   },
-  textbox: {
+  'text input': {
       icon: <SvgSemantics.SvgTextbox />,
       label: 'text input box'
   },
-  toggleswitch: {
+  'toggle switch': {
       icon: <SvgSemantics.SvgToggleswitch />,
       label: 'toggle switch'
   }
