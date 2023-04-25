@@ -10,7 +10,7 @@ import {
 } from '../components';
 
 // icons
-import { SvgWarning } from '../icons';
+import { SvgInfo } from '../icons';
 
 // app state
 import Context from '../context';
@@ -87,7 +87,7 @@ const Semantics = () => {
     onAddSemantic(value);
   };
 
-  const showWarning =
+  const showInfo =
     needsLabel.length > 0 &&
     Object.keys(labelsTemp).length !== needsLabel.length;
 
@@ -184,7 +184,7 @@ const Semantics = () => {
     if (semanticsAreSet || noSemantics) {
       return {
         completesStep: true,
-        isDisabled: showWarning,
+        // isDisabled: showInfo,
         onClick: onDoneWithSemantics
       };
     }
@@ -203,13 +203,13 @@ const Semantics = () => {
       }}
     >
       <React.Fragment>
-        {showWarning && (
+        {showInfo && (
           <React.Fragment>
             <Alert
-              icon={<SvgWarning />}
+              icon={<SvgInfo />}
               style={{ padding: 0 }}
-              text="Multiple semantics on a page need labeling for distinction."
-              type="warning"
+              text="Optional: label duplicate semantics for distinction."
+              type="info"
             />
             <div className="spacer1" />
           </React.Fragment>
@@ -224,9 +224,9 @@ const Semantics = () => {
               const hasTempLabel = labelsTemp[id]?.value || label;
 
               // is flagged for not having label
-              const warnClass =
+              const infoClass =
                 needsLabel.includes(id) && hasTempLabel === null
-                  ? ' warning'
+                  ? ' info'
                   : '';
 
               return (
@@ -240,7 +240,7 @@ const Semantics = () => {
                         <div className="muted">Label</div>
                         <div className="spacer1w" />
                         <input
-                          className={`input${warnClass}`}
+                          className={`input${infoClass}`}
                           type="text"
                           onBlur={() => onBlur(id, type)}
                           onChange={(e) => onChange(e, id)}

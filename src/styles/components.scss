@@ -6,6 +6,10 @@
   display: flex;
   padding: $spacing-sm;
 
+  &.info {
+    color: var(--figma-color-bg-brand);
+  }
+
   &.warning {
     color: var(--figma-color-bg-danger);
   }

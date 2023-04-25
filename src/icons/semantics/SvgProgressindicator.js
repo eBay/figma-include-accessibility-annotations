@@ -10,7 +10,7 @@ const SvgProgressindicator = ({ size }) => (
     preserveAspectRatio="xMidYMid meet"
     focusable="false"
   >
-    <g transform="translate(0.000000,512.000000) scale(0.050000,-0.050000)">
+    <g transform="translate(0,512) scale(0.05,-0.05)">
       <path d="M1387 8679 c-172 -34 -335 -160 -424 -328 l-53 -101 0 -800 0 -800
 56 -114 c69 -140 202 -262 341 -310 160 -56 6226 -56 6386 0 139 48 272 170
 341 310 l56 114 6 762 c7 960 -22 1060 -353 1223 l-113 55 -3080 3 c-1694 2
