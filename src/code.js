@@ -13,7 +13,7 @@ import {
  **************************************************************************** */
 
 // https://www.figma.com/plugin-docs/api/properties/figma-showui/
-figma.showUI(__html__, { height: 518, width: 700, themeColors: true });
+figma.showUI(__html__, { height: 600, width: 700, themeColors: true });
 
 // de-select all layers on plugin open
 // turned this off per Anna's request
@@ -151,6 +151,26 @@ figma.ui.onmessage = async (msg) => {
 
   if (type === 'remove-heading') {
     step.headings.removeHeading(msg);
+  }
+
+  // no semantics checked
+  if (type === 'no-semantic') {
+    step.semantics.noSemantics(msg);
+  }
+    
+  // add semantic to frame
+    if (type === 'add-semantic') {
+      step.semantics.add(msg);
+    }
+  
+    // semantics completed (annotation placement)
+    if (type === 'completed-semantic') {
+      step.semantics.completed(msg);
+    }
+  
+    // semantic update with label
+    if (type === 'update-semantic-label') {
+      step.semantics.updateWithLabel(msg);
   }
 
   // add reading order arrow

@@ -61,6 +61,9 @@ class AppState extends React.Component {
       headings: {},
       headingTemp: null,
 
+      // semantics
+      semantics: {},
+
       // alt text
       noImages: false,
       imagesData: [],
@@ -122,7 +125,7 @@ class AppState extends React.Component {
         if (prefCondensedUI === true) {
           sendToFigma('resize-plugin', {
             condensed: true,
-            height: 518,
+            height: 600,
             width: 516
           });
         }
@@ -278,6 +281,22 @@ class AppState extends React.Component {
         this.setState({ headingTemp: selected[0] });
         break;
 
+      // semantic confirmed (semantics)
+      case 'semantic-confirmed':
+        const { semantics } = this.state;
+        const { semanticId, semanticType, semanticName } = data;
+        const newSemanticEntry = {
+          id: semanticId,
+          label: null,
+          name: semanticName,
+          type: semanticType
+        };
+        const newSemanticsObj = { ...semantics, [semanticId]: newSemanticEntry };
+        this.setState({
+          semantics: newSemanticsObj
+        });
+        break;
+
       // no need for this yet, but a msg hook is here
       case 'selection-change':
         break;
@@ -321,6 +340,9 @@ class AppState extends React.Component {
 
     // headings
     const { headings, headingTemp } = this.state;
+
+    // semantics
+    const { semantics } = this.state;
 
     // alt text
     const { noImages, imagesData, imagesScanned } = this.state;
@@ -367,6 +389,9 @@ class AppState extends React.Component {
           // headings
           headings,
           headingTemp,
+
+          // semantics
+          semantics,
 
           // alt text
           noImages,

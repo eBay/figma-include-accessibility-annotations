@@ -10,6 +10,7 @@ export default {
   a11yMainLayers: [
     'Landmarks Layer',
     'Headings Layer',
+    'Semantics Layer',
     'Reading order Layer',
     'Alt text Layer',
     'Contrast Layer',

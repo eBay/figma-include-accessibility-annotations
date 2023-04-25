@@ -13,6 +13,7 @@ import ChooseYourOwnAdventure from './pages/ChooseYourOwnAdventure';
 import SelectFrameToStart from './pages/SelectFrameToStart';
 import Landmarks from './pages/Landmarks';
 import Headings from './pages/Headings';
+import Semantics from './pages/Semantics';
 import ReadingOrder from './pages/ReadingOrder';
 import AltText from './pages/AltText';
 import Contrast from './pages/Contrast';
@@ -150,6 +151,7 @@ const App = () => {
               <React.Fragment>
                 <Route path="/" element={<Landmarks />} />
                 <Route path="headings" element={<Headings />} />
+                <Route path="semantics" element={<Semantics />} />
                 <Route path="reading-order" element={<ReadingOrder />} />
                 <Route path="alt-text" element={<AltText />} />
                 <Route path="contrast" element={<Contrast />} />
@@ -165,6 +167,7 @@ const App = () => {
             {pageType === 'native' && (
               <React.Fragment>
                 <Route path="/" element={<Headings />} />
+                <Route path="semantics" element={<Semantics />} />
                 <Route path="focus-grouping" element={<FocusGrouping />} />
                 <Route path="reading-order" element={<ReadingOrder />} />
                 <Route path="alt-text" element={<AltText />} />

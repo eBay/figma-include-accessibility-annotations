@@ -96,43 +96,79 @@ const isA11yLayer = (children, childNode, name) => {
       };
       a11yCompletedLayers.push(stepName);
     } else if (stepName === 'Headings') {
-      // get heading nodes and format
-      const headings = {};
+        // get heading nodes and format
+        const headings = {};
+  
+        for (let l = 0; l < frameChild.children.length; l += 1) {
+          const headingObj = frameChild.children[l];
+  
+          // make sure it's a group node
+          if (headingObj.type === 'GROUP') {
+            const [nameArray, title, idRaw] = headingObj.name.split('|');
+            const [, typeName = 'h2'] = nameArray.split(':');
+            const id = idRaw.trim();
+            const type = typeName.trim();
+  
+            const nodeHeading = figma.getNodeById(id);
+  
+            // make sure previously mapped node, still exists
+            // prevent memory leak (if not found, don't add)
+            if (nodeHeading !== null) {
+              headings[id] = {
+                id,
+                bounds: nodeHeading.absoluteRenderBounds,
+                title,
+                type,
+                value: parseInt(type.replace(/\D+/g, ''), 10)
+              };
+            }
+          }
+        }
+  
+        stepsData[stepName] = {
+          id: frameChild.id,
+          existingData: headings,
+          stateKey: 'headings',
+          visible: frameChild.visible
+        };
+        a11yCompletedLayers.push(stepName);
+      }
 
-      for (let l = 0; l < frameChild.children.length; l += 1) {
-        const headingObj = frameChild.children[l];
 
-        // make sure it's a group node
-        if (headingObj.type === 'GROUP') {
-          const [nameArray, title, idRaw] = headingObj.name.split('|');
-          const [, typeName = 'h2'] = nameArray.split(':');
-          const id = idRaw.trim();
-          const type = typeName.trim();
-
-          const nodeHeading = figma.getNodeById(id);
-
-          // make sure previously mapped node, still exists
-          // prevent memory leak (if not found, don't add)
-          if (nodeHeading !== null) {
-            headings[id] = {
-              id,
-              bounds: nodeHeading.absoluteRenderBounds,
-              title,
-              type,
-              value: parseInt(type.replace(/\D+/g, ''), 10)
+      else if (stepName === 'Semantics') {
+        // get semantic nodes and format
+        const semantics = {};
+        for (let l = 0; l < frameChild.children.length; l += 1) {
+          const semanticObj = frameChild.children[l];
+  
+          // make sure it's a frame node OR group node (backwards compatibility)
+          if (semanticObj.type === 'FRAME' || semanticObj.type === 'GROUP') {
+            const [nameArray] = semanticObj.name.split('|');
+            const typeName = nameArray.replace('Semantic: ', '');
+  
+            // if we have a label, grab it
+            const [type, label = null] = typeName.split(':');
+  
+            semantics[semanticObj.id] = {
+              id: semanticObj.id,
+              label: label !== null ? label.trim() : label,
+              name: semanticObj.name,
+              type: type.trim()
             };
           }
         }
+  
+        stepsData[stepName] = {
+          id: frameChild.id,
+          existingData: semantics,
+          stateKey: 'semantics',
+          visible: frameChild.visible
+        };
+        a11yCompletedLayers.push(stepName);
       }
-
-      stepsData[stepName] = {
-        id: frameChild.id,
-        existingData: headings,
-        stateKey: 'headings',
-        visible: frameChild.visible
-      };
-      a11yCompletedLayers.push(stepName);
-    } else if (stepName === 'Reading order') {
+      
+      
+      else if (stepName === 'Reading order') {
       // set Reading order as completed if exists
       stepsData[stepName] = {
         id: frameChild.id,

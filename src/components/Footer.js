@@ -58,6 +58,8 @@ const Footer = ({ primaryAction, secondaryAction, routeName }) => {
 
     updateState('headings', {});
 
+    updateState('semantics', {});
+
     updateState('imagesData', []);
     updateState('imagesScanned', []);
 

@@ -5,7 +5,15 @@
     "designerCheck": "Headings",
     "path": "",
     "shouldHide": true,
-    "percent": 12
+    "percent": 6
+  },
+  "Semantics": {
+    "id": "Semantics",
+    "label": "Semantics",
+    "designerCheck": "Semantics",
+    "path": "semantics",
+    "shouldHide": true,
+    "percent": 6
   },
   "Focus grouping": {
     "id": "Focus grouping",

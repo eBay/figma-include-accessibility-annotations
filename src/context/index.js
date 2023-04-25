@@ -29,6 +29,9 @@ export default React.createContext({
   headings: {},
   headingTemp: null,
 
+  // semantics
+  semantics: {},
+
   // alt text
   noImages: false,
   imagesData: [],

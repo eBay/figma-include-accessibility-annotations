@@ -25,6 +25,7 @@
       "stepsData": {
         "Landmarks": { "id": "251:298" },
         "Headings": { "id": "254:198" },
+        "Semantics": { "id": "254:191" },
         "Contrast": { "id": "244:195" },
         "Responsive reflow": { "id": "244:192" },
         "Text zoom": { "id": "244:193" },
@@ -51,6 +52,13 @@
       "title": "How We Use Color",
       "type": "h2",
       "value": 2
+    }
+  },
+  "semantics": {
+    "254:306": {
+      "id": "254:306",
+      "name": "semantic: checkbox | 254:306",
+      "type": "checkbox"
     }
   },
   "imagesData": [

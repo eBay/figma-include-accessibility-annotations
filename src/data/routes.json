@@ -5,7 +5,7 @@
     "designerCheck": "Landmarks",
     "path": "",
     "shouldHide": true,
-    "percent": 12
+    "percent": 8
   },
   "Headings": {
     "id": "Headings",
@@ -13,7 +13,15 @@
     "designerCheck": "Headings",
     "path": "headings",
     "shouldHide": true,
-    "percent": 12
+    "percent": 8
+  },
+  "Semantics": {
+    "id": "Semantics",
+    "label": "Semantics",
+    "designerCheck": "Semantics",
+    "path": "semantics",
+    "shouldHide": true,
+    "percent": 8
   },
   "Reading order": {
     "id": "Reading order",
