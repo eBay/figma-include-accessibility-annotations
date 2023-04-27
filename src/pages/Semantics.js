@@ -16,10 +16,8 @@ import { SvgInfo } from '../icons';
 import Context from '../context';
 
 // get semantic types
-import semanticsTypesObj from '../data/semantic-types';
-
-const semanticsTypesArray = Object.keys(semanticsTypesObj);
-const semanticsOnlyOnce = ['main', 'banner', 'content-info'];
+import semanticTypesWeb from '../data/semantic-types';
+import semanticTypesNative from '../data/semantic-types-native';
 
 const Semantics = () => {
   // main app state
@@ -27,10 +25,15 @@ const Semantics = () => {
   const { semantics, page, pageType, stepsCompleted } = cnxt;
   const { removeNodes, sendToFigma, updateState, zoomTo } = cnxt;
 
+  const semanticTypes =
+    pageType === 'web' ? semanticTypesWeb : semanticTypesNative;
+  const semanticTypesArray = Object.keys(semanticTypes);
+  // const semanticsOnlyOnce = ['main', 'banner', 'content-info'];
+
   // ui state
   const routeName = 'Semantics';
   const semanticsArray = Object.keys(semantics);
-  const semanticsValue = Object.values(semantics);
+  // const semanticsValue = Object.values(semantics);
   const semanticsAreSet = semanticsArray.length !== 0;
 
   // state defaults
@@ -157,7 +160,7 @@ const Semantics = () => {
 
   const onBlur = (id, type) => {
     console.log(`id: {1}, type: {2}`, id, type);
-    
+
     // grab label if exists in temp
     // onBlur with original value doesn't do any updates to Figma
     const value = labelsTemp[id]?.value || null;
@@ -285,22 +288,22 @@ const Semantics = () => {
         )}
         {!noSemantics && (
           <div className="button-group">
-            {semanticsTypesArray.map((type) => {
-              const { label, icon } = semanticsTypesObj[type];
+            {semanticTypesArray.map((type) => {
+              const { label, icon } = semanticTypes[type];
 
               // check if limit usage has been reached
-              const maxUsageReached = semanticsValue.filter(
-                (l) => l.type === type && semanticsOnlyOnce.includes(type)
-              );
-              const maxReached = maxUsageReached.length > 0;
+              // const maxUsageReached = semanticsValue.filter(
+              //   (l) => l.type === type && semanticsOnlyOnce.includes(type)
+              // );
+              // const maxReached = maxUsageReached.length > 0;
 
               // display / disabled state
-              const fadedClass = maxReached ? 'faded' : '';
-              const isDisabled = maxReached;
+              const fadedClass = '';
+              // const isDisabled = maxReached;
 
               // handle non-interactive state
-              const noEvents = isDisabled ? ' no-events' : '';
-              const onClick = isDisabled ? () => null : () => onSelect(type);
+              const noEvents = '';
+              const onClick = () => onSelect(type);
 
               return (
                 <div key={label} className="container-selection-button">
@@ -309,10 +312,10 @@ const Semantics = () => {
                     onClick={onClick}
                     onKeyPress={onClick}
                     role="button"
-                    tabIndex={isDisabled ? -1 : 0}
+                    tabIndex="0"
                   >
                     <div className={fadedClass}>{icon}</div>
-                    {maxReached && <div className="limit-reached">Limit 1</div>}
+                    {/* {maxReached && <div className="limit-reached">Limit 1</div>} */}
                   </div>
 
                   <div className="selection-button-label">{label}</div>

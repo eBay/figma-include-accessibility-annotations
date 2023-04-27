@@ -3,8 +3,16 @@ import * as React from 'react';
 // svg semantics
 import SvgSemantics from '../icons/semantics';
 
-// setup semantic options
+// setup native semantic options
 export default {
+  'action sheet': {
+    icon: <SvgSemantics.SvgActionsheet />,
+    label: 'action sheet'
+  },
+  'alert / modal dialog': {
+    icon: <SvgSemantics.SvgInfo />,
+    label: 'alert / modal dialog'
+  },
   button: {
     icon: <SvgSemantics.SvgButton />,
     label: 'button'
@@ -17,25 +25,21 @@ export default {
     icon: <SvgSemantics.SvgDatepicker />,
     label: 'date picker'
   },
-  'expander accordion': {
-    icon: <SvgSemantics.SvgExpanderaccordion />,
-    label: 'expander accordion'
+  'form': {
+    icon: <SvgSemantics.SvgForm />,
+    label: 'form'
   },
   link: {
     icon: <SvgSemantics.SvgLink />,
     label: 'link'
   },
-  list: {
-    icon: <SvgSemantics.SvgList />,
-    label: 'list'
+  'picker / spinner / dropdown': {
+    icon: <SvgSemantics.SvgSelectdropdown />,
+    label: 'picker / spinner / dropdown'
   },
-  'modal dialog': {
-    icon: <SvgSemantics.SvgModaldialog />,
-    label: 'modal dialog'
-  },
-  'progress indicator': {
-    icon: <SvgSemantics.SvgProgressindicator />,
-    label: 'progress indicator'
+  popover: {
+    icon: <SvgSemantics.SvgChat />,
+    label: 'popover'
   },
   'radio button': {
     icon: <SvgSemantics.SvgRadio />,
@@ -45,21 +49,13 @@ export default {
     icon: <SvgSemantics.SvgRangeslider />,
     label: 'range slider'
   },
-  searchbox: {
-    icon: <SvgSemantics.SvgSearchbox />,
-    label: 'searchbox'
+  scrollview: {
+    icon: <SvgSemantics.SvgScrollview />,
+    label: 'scrollview'
   },
-  'select dropdown': {
-    icon: <SvgSemantics.SvgSelectdropdown />,
-    label: 'select dropdown'
-  },
-  'separator / horiz. rule': {
-    icon: <SvgSemantics.SvgSeparator />,
-    label: 'separator / horizontal rule'
-  },
-  'tab group': {
+  'segmented control / tab group': {
     icon: <SvgSemantics.SvgTabgroup />,
-    label: 'tab group'
+    label: 'segmented control / tab group'
   },
   table: {
     icon: <SvgSemantics.SvgTable />,
@@ -69,9 +65,9 @@ export default {
     icon: <SvgSemantics.SvgTextarea />,
     label: 'textarea / multi-line'
   },
-  'text input': {
+  'text input field': {
     icon: <SvgSemantics.SvgTextbox />,
-    label: 'text input box'
+    label: 'text input field'
   },
   'toggle switch': {
     icon: <SvgSemantics.SvgToggleswitch />,

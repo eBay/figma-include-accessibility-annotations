@@ -69,9 +69,9 @@ export default {
       icon: <SvgSemantics.SvgTextarea />,
       label: 'textarea / multi-line'
   },
-  'text input': {
+  'text input field': {
       icon: <SvgSemantics.SvgTextbox />,
-      label: 'text input box'
+      label: 'text input field'
   },
   'toggle switch': {
       icon: <SvgSemantics.SvgToggleswitch />,
