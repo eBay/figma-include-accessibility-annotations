@@ -61,10 +61,6 @@ export default {
     icon: <SvgSemantics.SvgTable />,
     label: 'table'
   },
-  'textarea / multi-line': {
-    icon: <SvgSemantics.SvgTextarea />,
-    label: 'textarea / multi-line'
-  },
   'text input field': {
     icon: <SvgSemantics.SvgTextbox />,
     label: 'text input field'
