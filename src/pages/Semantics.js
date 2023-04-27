@@ -159,8 +159,6 @@ const Semantics = () => {
   };
 
   const onBlur = (id, type) => {
-    console.log(`id: {1}, type: {2}`, id, type);
-
     // grab label if exists in temp
     // onBlur with original value doesn't do any updates to Figma
     const value = labelsTemp[id]?.value || null;
@@ -177,7 +175,7 @@ const Semantics = () => {
     setNoSemantics(!noSemantics);
   };
 
-  // on semantics change, check for duplicates to add labels to
+  // on semantics change, check for duplicates to add optional labels
   React.useEffect(() => {
     // mount
     checkForDuplicates();
@@ -211,7 +209,7 @@ const Semantics = () => {
             <Alert
               icon={<SvgInfo />}
               style={{ padding: 0 }}
-              text="Optional: label duplicate semantics for distinction."
+              text="Optional: label duplicate elements for distinction."
               type="info"
             />
             <div className="spacer1" />
@@ -222,11 +220,10 @@ const Semantics = () => {
           <React.Fragment>
             {semanticsArray.map((key) => {
               const { id, label, type } = semantics[key];
-
               const showLabel = label !== null || needsLabel.includes(id);
               const hasTempLabel = labelsTemp[id]?.value || label;
 
-              // is flagged for not having label
+              // flag to add optional label for duplicate elements, e.g., two buttons
               const infoClass =
                 needsLabel.includes(id) && hasTempLabel === null
                   ? ' info'
@@ -272,7 +269,6 @@ const Semantics = () => {
             })}
 
             <div className="spacer1" />
-
             <div className="divider" />
             <div className="spacer2" />
           </React.Fragment>
@@ -290,32 +286,18 @@ const Semantics = () => {
           <div className="button-group">
             {semanticTypesArray.map((type) => {
               const { label, icon } = semanticTypes[type];
-
-              // check if limit usage has been reached
-              // const maxUsageReached = semanticsValue.filter(
-              //   (l) => l.type === type && semanticsOnlyOnce.includes(type)
-              // );
-              // const maxReached = maxUsageReached.length > 0;
-
-              // display / disabled state
-              const fadedClass = '';
-              // const isDisabled = maxReached;
-
-              // handle non-interactive state
-              const noEvents = '';
               const onClick = () => onSelect(type);
 
               return (
                 <div key={label} className="container-selection-button">
                   <div
-                    className={`selection-button${noEvents}`}
+                    className="selection-button"
                     onClick={onClick}
                     onKeyPress={onClick}
                     role="button"
                     tabIndex="0"
                   >
-                    <div className={fadedClass}>{icon}</div>
-                    {/* {maxReached && <div className="limit-reached">Limit 1</div>} */}
+                    <div>{icon}</div>
                   </div>
 
                   <div className="selection-button-label">{label}</div>
