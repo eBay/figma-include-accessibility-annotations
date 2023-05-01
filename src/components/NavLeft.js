@@ -18,8 +18,8 @@ import routesNative from '../data/routes-native.json';
 const NavLeft = ({ progress }) => {
   // main app state
   const cnxt = React.useContext(Context);
-  const { leftNavVisible, pageType, stepsCompleted, sendToFigma } = cnxt;
-  const { updateState, colorBlindnessView } = cnxt;
+  const { leftNavVisible, pageType, stepsCompleted } = cnxt;
+  const { sendToFigma, updateState } = cnxt;
 
   // flow type
   const isWeb = pageType === 'web';
@@ -58,10 +58,6 @@ const NavLeft = ({ progress }) => {
     } else if (progress > 10) {
       encouragement = 'Just started';
     }
-  }
-
-  if (colorBlindnessView) {
-    return null;
   }
 
   return (

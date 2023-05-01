@@ -223,7 +223,7 @@ const ColorBlindness = () => {
 
   return (
     <AnnotationStepPage
-      title="Color blindness checks"
+      title="Use of color"
       bannerTipProps={{ pageType, routeName }}
       routeName={routeName}
       footerProps={{
@@ -234,12 +234,12 @@ const ColorBlindness = () => {
       <React.Fragment>
         <HeadingStep
           number={1}
-          text="Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+          text="Check if there are any color contrast issues with graphics"
         />
 
         <HeadingStep
           number={2}
-          text="Donec lacinia velit mi, ut pulvinar tellus tristique a. Maecenas faucibus tincidunt semper. Cras sit amet velit sed quam congue interdum."
+          text="Take a look at the visualzation below to understand how your design might be perceived by people with color blindness"
         />
       </React.Fragment>
     </AnnotationStepPage>
