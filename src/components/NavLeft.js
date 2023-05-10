@@ -89,7 +89,13 @@ const NavLeft = ({ progress }) => {
               <NavLink
                 to={path}
                 // if keyboard user, put focus on main content after navigation
-                onClick={() => document.getElementById('main').focus()}
+                onClick={() => {
+                  const elMain = document.getElementById('main');
+
+                  if (elMain !== null) {
+                    elMain.focus();
+                  }
+                }}
               >
                 <div className="left-nav-link">
                   <div className="flex-row-center">

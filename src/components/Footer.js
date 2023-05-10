@@ -172,7 +172,11 @@ const Footer = ({ primaryAction, secondaryAction, routeName }) => {
                 if (isLast) {
                   backToDashboard();
                   // if keyboard user, focus on main content after navigation
-                  document.getElementById('main').focus();
+                  const elMain = document.getElementById('main');
+
+                  if (elMain !== null) {
+                    elMain.focus();
+                  }
                 }
               }
             }}
@@ -196,7 +200,11 @@ const Footer = ({ primaryAction, secondaryAction, routeName }) => {
                 if (isLast) {
                   backToDashboard();
                   // if keyboard user, focus on main content after navigation
-                  document.getElementById('main').focus();
+                  const elMain = document.getElementById('main');
+
+                  if (elMain !== null) {
+                    elMain.focus();
+                  }
                 }
               }
             }}
