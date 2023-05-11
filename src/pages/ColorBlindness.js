@@ -107,25 +107,14 @@ const ColorBlindness = () => {
 
       const isCondensed = leftNavVisible === false;
 
-      // if mobile file
-      if (newIsMobile) {
-        const pluginHeight = outerHeight - 240;
+      const pluginHeight = outerHeight - 240;
+      const pluginWidth = outerWidth - 440;
 
-        sendToFigma('resize-plugin', {
-          condensed: isCondensed,
-          height: pluginHeight,
-          width: 432
-        });
-      } else {
-        const pluginHeight = outerHeight - 240;
-        const pluginWidth = outerWidth - 440;
-
-        sendToFigma('resize-plugin', {
-          condensed: isCondensed,
-          height: pluginHeight,
-          width: pluginWidth
-        });
-      }
+      sendToFigma('resize-plugin', {
+        condensed: isCondensed,
+        height: pluginHeight,
+        width: pluginWidth
+      });
 
       // show color blindness viewer
       updateState('colorBlindnessView', true);
