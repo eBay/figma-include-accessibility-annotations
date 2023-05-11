@@ -1,5 +1,6 @@
 // icons
 export { default as SvgArrowRight } from './SvgArrowRight';
+export { default as SvgCarrot } from './SvgCarrot';
 export { default as SvgCheck } from './SvgCheck';
 export { default as SvgCheckSm } from './SvgCheckSm';
 export { default as SvgChevronLeft } from './SvgChevronLeft';

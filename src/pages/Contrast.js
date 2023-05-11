@@ -10,7 +10,7 @@ import {
 } from '../components';
 
 // icons
-import { SvgCheck, SvgChevronLeft, SvgText, SvgWarning } from '../icons';
+import { SvgCarrot, SvgCheck, SvgText, SvgWarning } from '../icons';
 
 // app state
 import Context from '../context';
@@ -34,7 +34,7 @@ const Contrast = () => {
   // display
   const didPass = failed === null && contrastResults !== null;
   const showRescan = isCompleted || contrastResults !== null;
-  const arrowClass = showPreview ? 'rotate-90' : 'rotate-270';
+  const arrowClass = showPreview ? 'rotate-180' : '';
   const showText = showPreview ? 'Hide' : 'Show';
 
   const onClick = (nodeId) => zoomTo([nodeId], true);
@@ -273,11 +273,11 @@ const Contrast = () => {
               role="button"
               tabIndex="0"
             >
-              <h2 className="mr1">{`${showText} preview`}</h2>
-
-              <div className={`svg-theme animated ${arrowClass}`}>
-                <SvgChevronLeft size={12} />
+              <div className={`svg-theme mr1 animated ${arrowClass}`}>
+                <SvgCarrot />
               </div>
+
+              <h2>{`${showText} preview`}</h2>
             </div>
 
             {showPreview && (
