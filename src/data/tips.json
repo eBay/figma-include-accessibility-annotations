@@ -4,7 +4,7 @@
       "text": "Headings help provide a hierarchy for the screen's content, and allow people using a screen reader to quickly jump between sections. Numbered headings (H1,H2 etc)  are not supported by iOS or Android."
     },
     "Semantics": {
-      "text": "Semantics WE NEED SEMANTICS FOR NATIVE TIPS HERE"
+      "text": "Provide useful additional semantics that browsers and assistive technologies can recognize, and let users know what is going on."
     },
     "Focus grouping": {
       "text": "Grouping elements like the contents of a tile or cell can make for a better experience when using assistive technology.<br /><br />If multiple actions are in the group more instruction will be needed on how this will behave."
@@ -36,7 +36,7 @@
       "text": "Headings help provide a hierarchy for the screen’s content, and allow people using a screen reader to quickly jump between sections. Use only one H1 per page, avoid skipping heading levels, and make them succinct."
     },
     "Semantics": {
-      "text": "Semantics WE NEED SEMANTICS FOR WEB TIPS HERE"
+      "text": "Provide useful additional semantics that browsers and assistive technologies can recognize, and let users know what is going on."
     },
     "Reading order": {
       "text": "Draw a path to reflect the desired order of consuming content. Typically, it follows the visual layout of the content—left-to-right, top-to-bottom (for LTR languages)."
