@@ -132,6 +132,14 @@ const ColorBlindness = () => {
   }, []);
 
   const getPrimaryAction = () => {
+    if (colorBlindnessView) {
+      return {
+        buttonText: 'All looks good',
+        completesStep: false,
+        onClick: onClose
+      };
+    }
+
     if (isCompleted === false) {
       return {
         buttonText: 'Color blindness viewer',
@@ -159,54 +167,17 @@ const ColorBlindness = () => {
     return null;
   };
 
+  const cbTypeClass =
+    cbType === null ? '' : cbType.toLowerCase().replace(/\s/g, '-');
+  const isOpened = openedDropdown !== null;
+  const mobileClass = isMobile ? ' is-mobile' : '';
+
   if (loading) {
     return (
       <div className="h-100 w-100 flex-center">
         <LoadingSpinner size={36} />
         <div className="muted font-12 pt1">Grabbing design file</div>
       </div>
-    );
-  }
-
-  if (colorBlindnessView) {
-    const cbTypeClass =
-      cbType === null ? '' : cbType.toLowerCase().replace(/\s/g, '-');
-    const isOpened = openedDropdown !== null;
-    const mobileClass = isMobile ? ' is-mobile' : '';
-
-    return (
-      <main id="main" tabIndex="-1">
-        <div className="cb-controls">
-          <div className="flex-row-center">
-            <p>Select Color blindness type:</p>
-
-            <div className="spacer-xs-w" />
-
-            <Dropdown
-              data={cbTypes}
-              index={cbType}
-              isOpened={isOpened}
-              onOpen={setOpenedDropdown}
-              onSelect={onSelect}
-              type={cbType}
-            />
-          </div>
-
-          <button className="btn" onClick={onClose} type="button">
-            Exit viewer
-          </button>
-        </div>
-
-        <div className={`cb-preview-content${mobileClass}`}>
-          <ColorBlindnessFilter />
-
-          <img
-            src={designUri}
-            className={cbTypeClass}
-            alt="current design file"
-          />
-        </div>
-      </main>
     );
   }
 
@@ -231,6 +202,41 @@ const ColorBlindness = () => {
           text="Take a look at the visualzation below to understand how your design might be perceived by people with color blindness"
         />
       </React.Fragment>
+
+      {colorBlindnessView && (
+        <React.Fragment>
+          <div className="cb-controls">
+            <div className="flex-row-center">
+              <p>Select Color blindness type:</p>
+
+              <div className="spacer-xs-w" />
+
+              <Dropdown
+                data={cbTypes}
+                index={cbType}
+                isOpened={isOpened}
+                onOpen={setOpenedDropdown}
+                onSelect={onSelect}
+                type={cbType}
+              />
+            </div>
+
+            <button className="btn" onClick={onClose} type="button">
+              Exit viewer
+            </button>
+          </div>
+
+          <div className={`cb-preview-content${mobileClass}`}>
+            <ColorBlindnessFilter />
+
+            <img
+              src={designUri}
+              className={cbTypeClass}
+              alt="current design file"
+            />
+          </div>
+        </React.Fragment>
+      )}
     </AnnotationStepPage>
   );
 };
