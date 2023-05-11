@@ -20,7 +20,7 @@ const Footer = ({ primaryAction, secondaryAction, routeName }) => {
   // main app state
   const cnxt = React.useContext(Context);
   const { hasDashboard, isProd, page, pages, pageType } = cnxt;
-  const { steps, stepsNative, stepsCompleted, colorBlindnessView } = cnxt;
+  const { steps, stepsNative, stepsCompleted, leftNavVisible } = cnxt;
   const { sessionId, currentUser, sendToFigma, updateState } = cnxt;
 
   // web or native flow
@@ -39,6 +39,16 @@ const Footer = ({ primaryAction, secondaryAction, routeName }) => {
   const location = useLocation();
 
   const backToDashboard = () => {
+    updateState('colorBlindnessView', false);
+
+    // resize plugin (go back to their pref)
+    const pluginWidth = leftNavVisible === false ? 516 : 700;
+    sendToFigma('resize-plugin', {
+      condensed: leftNavVisible === false,
+      height: 518,
+      width: pluginWidth
+    });
+
     // reset main state and return to dashboard
     updateState('showDashboard', true);
 
@@ -133,10 +143,6 @@ const Footer = ({ primaryAction, secondaryAction, routeName }) => {
     setNext(newNext);
     setIsLast(newIsLast);
   }, [location]);
-
-  if (colorBlindnessView) {
-    return null;
-  }
 
   return (
     <footer className={hasDashboardClass}>
