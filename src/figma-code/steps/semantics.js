@@ -4,6 +4,7 @@ import config from '../config';
 import { getOrCreateMainA11yFrame } from '../frame-helpers';
 
 const semanticLayerName = 'Semantics Layer';
+// TIPS for Semantics adapted from https://developer.mozilla.org/en-US/docs/Web/Accessibility
 
 export const noSemantics = (msg) => {
   const { bounds, name, page, pageId, pageType } = msg;
