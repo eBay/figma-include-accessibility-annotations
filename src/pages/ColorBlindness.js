@@ -17,14 +17,54 @@ import Context from '../context';
 
 const cbTypes = [
   { id: '0', value: 'None' },
-  { id: '1', value: 'Protanopia' },
-  { id: '2', value: 'Protanomaly' },
-  { id: '3', value: 'Deuteranopia' },
-  { id: '4', value: 'Deuteranomaly' },
-  { id: '5', value: 'Tritanopia' },
-  { id: '6', value: 'Tritanomaly' },
-  { id: '7', value: 'Achromatopsia' },
-  { id: '8', value: 'Achromatomaly' }
+  {
+    id: '1',
+    desc: 'Trichromatic—can distinguish all the primary colours',
+    population: '68%',
+    value: 'Tritanomaly'
+  },
+  {
+    id: '2',
+    desc: 'Deuteranomaly—reduced sensitivity to green trouble distinguishing reds & greens',
+    population: '5.3%',
+    value: 'Deuteranomaly'
+  },
+  {
+    id: '3',
+    desc: "Deuteranopia—can't see greens at all",
+    population: '1.2%',
+    value: 'Deuteranopia'
+  },
+  {
+    id: '4',
+    desc: 'Protonomaly—reduced sensitivity to red trouble distinguishing reds & greens',
+    population: '1.3%',
+    value: 'Protanomaly'
+  },
+  {
+    id: '5',
+    desc: "Protanopia—can't see reds at all",
+    population: '1.5%',
+    value: 'Protanopia'
+  },
+  {
+    id: '6',
+    desc: "Tritanopia—can't distinguish blues and greens, purples and reds, and yellows and pinks",
+    population: '0.03%',
+    value: 'Tritanopia'
+  },
+  {
+    id: '7',
+    desc: 'Achromatomaly—sees the absence of most colors',
+    population: '0.09%',
+    value: 'Achromatomaly'
+  },
+  {
+    id: '8',
+    desc: 'Achromatopsia—full color blindness, can only see shades',
+    population: '0.05%',
+    value: 'Achromatopsia'
+  }
 ];
 
 const ColorBlindness = () => {
@@ -194,7 +234,7 @@ const ColorBlindness = () => {
       <React.Fragment>
         <HeadingStep
           number={1}
-          text="Check if there are any color contrast issues with graphics"
+          text="Scan your design to get a color palette used in your mock."
         />
 
         <HeadingStep
