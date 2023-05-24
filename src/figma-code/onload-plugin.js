@@ -162,31 +162,34 @@ const isA11yLayer = (children, childNode, name) => {
           const type = typeName.trim();
 
           const nodeAltText = figma.getNodeById(id);
-          // get fills
-          const { fills } = nodeAltText;
-
-          // get the first fill that is an image type
-          const [imageFill] = fills.filter((fill) => fill.type === 'IMAGE');
 
           // make sure previously mapped node, still exists
-          // prevent memory leak (if not found, don't add)
-          if (nodeAltText !== null && typeof imageFill === 'object') {
-            const { imageHash } = imageFill;
+          if (nodeAltText !== null) {
+            // get fills
+            const { fills } = nodeAltText;
 
-            imagesScannedArray.push({
-              hash: imageHash,
-              bounds: nodeAltText.absoluteRenderBounds,
-              id,
-              name: nameString
-            });
+            // get the first fill that is an image type
+            const [imageFill] = fills.filter((fill) => fill.type === 'IMAGE');
 
-            altTextArray.push({
-              id,
-              altText: altTextString,
-              bounds: nodeAltText.absoluteRenderBounds,
-              name: nameString,
-              type
-            });
+            // prevent memory leak (if not found, don't add)
+            if (typeof imageFill === 'object') {
+              const { imageHash } = imageFill;
+
+              imagesScannedArray.push({
+                hash: imageHash,
+                bounds: nodeAltText.absoluteRenderBounds,
+                id,
+                name: nameString
+              });
+
+              altTextArray.push({
+                id,
+                altText: altTextString,
+                bounds: nodeAltText.absoluteRenderBounds,
+                name: nameString,
+                type
+              });
+            }
           }
         }
       }
