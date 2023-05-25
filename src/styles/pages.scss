@@ -480,6 +480,26 @@ $selection-button-width: 72px;
   }
 }
 
+.cb-glossary-item {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  font-size: 11px;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  max-width: 500px;
+  width: 100%;
+
+  & .cb-glossary-desc {
+    flex: 1;
+    margin: 0 8px;
+  }
+
+  & .cb-pop {
+    color: var(--figma-color-bg-disabled-secondary);
+  }
+}
+
 .cb-preview-content {
   display: flex;
   margin-top: 16px;

@@ -1,12 +1,7 @@
 import * as React from 'react';
 
 // components
-import {
-  AnnotationStepPage,
-  Dropdown,
-  HeadingStep,
-  LoadingSpinner
-} from '../components';
+import { AnnotationStepPage, HeadingStep, LoadingSpinner } from '../components';
 import ColorBlindnessFilter from '../components/ColorBlindnessFilter';
 
 // helpers
@@ -36,8 +31,7 @@ const ColorBlindness = () => {
   // local state
   const [loading, setLoading] = React.useState(false);
   const [designUri, setURI] = React.useState(null);
-  const [cbType, setCBType] = React.useState('None');
-  const [openedDropdown, setOpenedDropdown] = React.useState(null);
+  const [selected, setSelected] = React.useState('None');
   const [isMobile, setIsMobile] = React.useState(false);
   const [showGlossary, setShowGlossary] = React.useState(false);
   const [showPreview, setShowPreview] = React.useState(false);
@@ -45,10 +39,6 @@ const ColorBlindness = () => {
   // display
   const arrowGlossaryClass = showGlossary ? '' : 'rotate-270';
   const arrowPreviewClass = showPreview ? '' : 'rotate-270';
-
-  const onSelect = async (selected) => {
-    setCBType(selected);
-  };
 
   const showColorBlindnessViewer = () => {
     // show loading state
@@ -120,6 +110,8 @@ const ColorBlindness = () => {
 
       // show color blindness viewer
       updateState('colorBlindnessView', true);
+
+      setShowPreview(true);
     }
   };
 
@@ -170,8 +162,7 @@ const ColorBlindness = () => {
   };
 
   const cbTypeClass =
-    cbType === null ? '' : cbType.toLowerCase().replace(/\s/g, '-');
-  const isOpened = openedDropdown !== null;
+    selected === null ? '' : selected.toLowerCase().replace(/\s/g, '-');
   const mobileClass = isMobile ? ' is-mobile' : '';
 
   if (loading) {
@@ -226,66 +217,59 @@ const ColorBlindness = () => {
           <React.Fragment>
             <div className="spacer2" />
 
-            <p>SHOWING Glossary</p>
-          </React.Fragment>
-        )}
+            {colorBlindnessTypesArray.map((type) => {
+              const { desc, icon, population } = colorBlindnessTypesObj[type];
 
-        <div className="spacer2" />
-
-        <div
-          className="flex-row-center border-radius-2 cursor-pointer"
-          onClick={() => setShowPreview(!showPreview)}
-          onKeyDown={() => setShowPreview(!showPreview)}
-          role="button"
-          tabIndex="0"
-        >
-          <div className={`svg-theme mr1 animated ${arrowPreviewClass}`}>
-            <SvgCarrot />
-          </div>
-
-          <h2>Preview</h2>
-        </div>
-
-        {showPreview && (
-          <React.Fragment>
-            <div className="spacer2" />
-
-            <p>SHOWING</p>
+              return (
+                <div className="cb-glossary-item" key={type}>
+                  {icon}
+                  <div className="cb-glossary-desc">{`${desc} `}</div>
+                  <span className="cb-pop">{`${population} population`}</span>
+                </div>
+              );
+            })}
           </React.Fragment>
         )}
 
         {colorBlindnessView && (
           <React.Fragment>
-            <div className="cb-controls">
-              <div className="flex-row-center">
-                <p>Select Color blindness type:</p>
+            <div className="spacer2" />
 
-                <div className="spacer-xs-w" />
-
-                <Dropdown
-                  data={colorBlindnessTypesArray}
-                  index={cbType}
-                  isOpened={isOpened}
-                  onOpen={setOpenedDropdown}
-                  onSelect={onSelect}
-                  type={cbType}
-                />
+            <div
+              className="flex-row-center border-radius-2 cursor-pointer"
+              onClick={() => setShowPreview(!showPreview)}
+              onKeyDown={() => setShowPreview(!showPreview)}
+              role="button"
+              tabIndex="0"
+            >
+              <div className={`svg-theme mr1 animated ${arrowPreviewClass}`}>
+                <SvgCarrot />
               </div>
 
-              <button className="btn" onClick={onClose} type="button">
-                Exit viewer
-              </button>
+              <h2>Preview</h2>
             </div>
 
-            <div className={`cb-preview-content${mobileClass}`}>
-              <ColorBlindnessFilter />
+            {showPreview && (
+              <React.Fragment>
+                <div className="spacer2" />
 
-              <img
-                src={designUri}
-                className={cbTypeClass}
-                alt="current design file"
-              />
-            </div>
+                <div className="cb-controls">
+                  <button className="btn" onClick={onClose} type="button">
+                    Exit viewer
+                  </button>
+                </div>
+
+                <div className={`cb-preview-content${mobileClass}`}>
+                  <ColorBlindnessFilter />
+
+                  <img
+                    src={designUri}
+                    className={cbTypeClass}
+                    alt="current design file"
+                  />
+                </div>
+              </React.Fragment>
+            )}
           </React.Fragment>
         )}
       </React.Fragment>
