@@ -15,57 +15,13 @@ import { contrast } from '../constants';
 // app state
 import Context from '../context';
 
-const cbTypes = [
-  { id: '0', value: 'None' },
-  {
-    id: '1',
-    desc: 'Trichromatic—can distinguish all the primary colours',
-    population: '68%',
-    value: 'Tritanomaly'
-  },
-  {
-    id: '2',
-    desc: 'Deuteranomaly—reduced sensitivity to green trouble distinguishing reds & greens',
-    population: '5.3%',
-    value: 'Deuteranomaly'
-  },
-  {
-    id: '3',
-    desc: "Deuteranopia—can't see greens at all",
-    population: '1.2%',
-    value: 'Deuteranopia'
-  },
-  {
-    id: '4',
-    desc: 'Protonomaly—reduced sensitivity to red trouble distinguishing reds & greens',
-    population: '1.3%',
-    value: 'Protanomaly'
-  },
-  {
-    id: '5',
-    desc: "Protanopia—can't see reds at all",
-    population: '1.5%',
-    value: 'Protanopia'
-  },
-  {
-    id: '6',
-    desc: "Tritanopia—can't distinguish blues and greens, purples and reds, and yellows and pinks",
-    population: '0.03%',
-    value: 'Tritanopia'
-  },
-  {
-    id: '7',
-    desc: 'Achromatomaly—sees the absence of most colors',
-    population: '0.09%',
-    value: 'Achromatomaly'
-  },
-  {
-    id: '8',
-    desc: 'Achromatopsia—full color blindness, can only see shades',
-    population: '0.05%',
-    value: 'Achromatopsia'
-  }
-];
+// icons
+import { SvgCarrot } from '../icons';
+
+// get color blindness types
+import colorBlindnessTypesObj from '../data/color-blindness-types';
+
+const colorBlindnessTypesArray = Object.keys(colorBlindnessTypesObj);
 
 const ColorBlindness = () => {
   // main app state
@@ -83,6 +39,12 @@ const ColorBlindness = () => {
   const [cbType, setCBType] = React.useState('None');
   const [openedDropdown, setOpenedDropdown] = React.useState(null);
   const [isMobile, setIsMobile] = React.useState(false);
+  const [showGlossary, setShowGlossary] = React.useState(false);
+  const [showPreview, setShowPreview] = React.useState(false);
+
+  // display
+  const arrowGlossaryClass = showGlossary ? '' : 'rotate-270';
+  const arrowPreviewClass = showPreview ? '' : 'rotate-270';
 
   const onSelect = async (selected) => {
     setCBType(selected);
@@ -241,42 +203,92 @@ const ColorBlindness = () => {
           number={2}
           text="Take a look at the visualzation below to understand how your design might be perceived by people with color blindness"
         />
-      </React.Fragment>
 
-      {colorBlindnessView && (
-        <React.Fragment>
-          <div className="cb-controls">
-            <div className="flex-row-center">
-              <p>Select Color blindness type:</p>
+        <div className="divider" />
 
-              <div className="spacer-xs-w" />
+        <div className="spacer2" />
 
-              <Dropdown
-                data={cbTypes}
-                index={cbType}
-                isOpened={isOpened}
-                onOpen={setOpenedDropdown}
-                onSelect={onSelect}
-                type={cbType}
-              />
+        <div
+          className="flex-row-center border-radius-2 cursor-pointer"
+          onClick={() => setShowGlossary(!showGlossary)}
+          onKeyDown={() => setShowGlossary(!showGlossary)}
+          role="button"
+          tabIndex="0"
+        >
+          <div className={`svg-theme mr1 animated ${arrowGlossaryClass}`}>
+            <SvgCarrot />
+          </div>
+
+          <h2>Glossary</h2>
+        </div>
+
+        {showGlossary && (
+          <React.Fragment>
+            <div className="spacer2" />
+
+            <p>SHOWING Glossary</p>
+          </React.Fragment>
+        )}
+
+        <div className="spacer2" />
+
+        <div
+          className="flex-row-center border-radius-2 cursor-pointer"
+          onClick={() => setShowPreview(!showPreview)}
+          onKeyDown={() => setShowPreview(!showPreview)}
+          role="button"
+          tabIndex="0"
+        >
+          <div className={`svg-theme mr1 animated ${arrowPreviewClass}`}>
+            <SvgCarrot />
+          </div>
+
+          <h2>Preview</h2>
+        </div>
+
+        {showPreview && (
+          <React.Fragment>
+            <div className="spacer2" />
+
+            <p>SHOWING</p>
+          </React.Fragment>
+        )}
+
+        {colorBlindnessView && (
+          <React.Fragment>
+            <div className="cb-controls">
+              <div className="flex-row-center">
+                <p>Select Color blindness type:</p>
+
+                <div className="spacer-xs-w" />
+
+                <Dropdown
+                  data={colorBlindnessTypesArray}
+                  index={cbType}
+                  isOpened={isOpened}
+                  onOpen={setOpenedDropdown}
+                  onSelect={onSelect}
+                  type={cbType}
+                />
+              </div>
+
+              <button className="btn" onClick={onClose} type="button">
+                Exit viewer
+              </button>
             </div>
 
-            <button className="btn" onClick={onClose} type="button">
-              Exit viewer
-            </button>
-          </div>
+            <div className={`cb-preview-content${mobileClass}`}>
+              <ColorBlindnessFilter />
 
-          <div className={`cb-preview-content${mobileClass}`}>
-            <ColorBlindnessFilter />
-
-            <img
-              src={designUri}
-              className={cbTypeClass}
-              alt="current design file"
-            />
-          </div>
-        </React.Fragment>
-      )}
+              <img
+                src={designUri}
+                className={cbTypeClass}
+                alt="current design file"
+              />
+            </div>
+          </React.Fragment>
+        )}
+      </React.Fragment>
     </AnnotationStepPage>
   );
 };
