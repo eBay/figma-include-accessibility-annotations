@@ -466,13 +466,11 @@ $selection-button-width: 72px;
 .cb-controls {
   background-color: var(--figma-color-bg);
   border-bottom: 1px solid var(--figma-color-border);
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  padding: 16px 0;
+  margin: 0 0 0 -16px;
+  padding: 16px;
   position: sticky;
   top: -16px;
-  width: 100%;
+  width: calc(100% + 32px);
   z-index: 100;
 
   p {
@@ -497,6 +495,28 @@ $selection-button-width: 72px;
 
   & .cb-pop {
     color: var(--figma-color-bg-disabled-secondary);
+  }
+}
+
+.cb-types {
+  display: grid;
+  grid-gap: 8px;
+  grid-template-columns: repeat(auto-fit, minmax(186px, 1fr));
+
+  & .cb-type {
+    align-items: center;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    height: 46px;
+    justify-content: center;
+  }
+
+  & .cb-selected {
+    border-color: var(--figma-color-border-onselected-strong);
+    font-weight: bold;
   }
 }
 

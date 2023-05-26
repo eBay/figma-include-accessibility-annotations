@@ -202,7 +202,11 @@ const ColorBlindness = () => {
         <div
           className="flex-row-center border-radius-2 cursor-pointer"
           onClick={() => setShowGlossary(!showGlossary)}
-          onKeyDown={() => setShowGlossary(!showGlossary)}
+          onKeyDown={({ key }) => {
+            if (key === 'Enter' || key === ' ') {
+              setShowGlossary(!showGlossary);
+            }
+          }}
           role="button"
           tabIndex="0"
         >
@@ -238,7 +242,11 @@ const ColorBlindness = () => {
             <div
               className="flex-row-center border-radius-2 cursor-pointer"
               onClick={() => setShowPreview(!showPreview)}
-              onKeyDown={() => setShowPreview(!showPreview)}
+              onKeyDown={({ key }) => {
+                if (key === 'Enter' || key === ' ') {
+                  setShowPreview(!showPreview);
+                }
+              }}
               role="button"
               tabIndex="0"
             >
@@ -251,12 +259,33 @@ const ColorBlindness = () => {
 
             {showPreview && (
               <React.Fragment>
-                <div className="spacer2" />
-
                 <div className="cb-controls">
-                  <button className="btn" onClick={onClose} type="button">
-                    Exit viewer
-                  </button>
+                  <div className="cb-types">
+                    {colorBlindnessTypesArray.map((type) => {
+                      const { icon, value } = colorBlindnessTypesObj[type];
+                      const isSelected = value === selected;
+                      const newValue = isSelected ? 'None' : value;
+                      const selectedClass = isSelected ? ' cb-selected' : '';
+
+                      return (
+                        <div
+                          className={`cb-type${selectedClass}`}
+                          key={type}
+                          onClick={() => setSelected(newValue)}
+                          onKeyDown={({ key }) => {
+                            if (key === 'Enter' || key === ' ') {
+                              setSelected(newValue);
+                            }
+                          }}
+                          role="button"
+                          tabIndex="0"
+                        >
+                          {icon}
+                          <div className="cb-name">{value}</div>
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
 
                 <div className={`cb-preview-content${mobileClass}`}>
