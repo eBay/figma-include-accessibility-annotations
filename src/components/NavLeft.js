@@ -18,7 +18,7 @@ import routesNative from '../data/routes-native.json';
 const NavLeft = ({ progress }) => {
   // main app state
   const cnxt = React.useContext(Context);
-  const { leftNavVisible, pageType, stepsCompleted } = cnxt;
+  const { colorBlindnessView, leftNavVisible, pageType, stepsCompleted } = cnxt;
   const { sendToFigma, updateState } = cnxt;
 
   // flow type
@@ -68,17 +68,21 @@ const NavLeft = ({ progress }) => {
         </div>
         <div className="flow-text">{pageType}</div>
       </div>
-      <div
-        className="toggle-nav"
-        onClick={toggleLeftNav}
-        onKeyPress={toggleLeftNav}
-        role="button"
-        tabIndex="0"
-      >
-        <div className={`svg-theme animated ${rotateClass}`}>
-          <SvgChevronLeft size={14} />
+
+      {colorBlindnessView === false && (
+        <div
+          className="toggle-nav"
+          onClick={toggleLeftNav}
+          onKeyPress={toggleLeftNav}
+          role="button"
+          tabIndex="0"
+        >
+          <div className={`svg-theme animated ${rotateClass}`}>
+            <SvgChevronLeft size={14} />
+          </div>
         </div>
-      </div>
+      )}
+
       <ul>
         {Object.keys(routeData).map((routeLabel) => {
           const { label, path, percent } = routeData[routeLabel];
