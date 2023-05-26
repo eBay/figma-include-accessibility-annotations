@@ -54,16 +54,6 @@ const ColorBlindness = () => {
     }, 100);
   };
 
-  const confirmColorBlindnessChecked = () => {
-    // let figma side know the state of this step
-    sendToFigma('add-checkmark-layer', {
-      layerName: 'Color blindness Layer',
-      create: true,
-      page,
-      pageType
-    });
-  };
-
   const onClose = () => {
     updateState('colorBlindnessView', false);
 
@@ -73,6 +63,18 @@ const ColorBlindness = () => {
       condensed: leftNavVisible === false,
       height: 518,
       width: pluginWidth
+    });
+  };
+
+  const confirmColorBlindnessChecked = () => {
+    onClose();
+
+    // let figma side know the state of this step
+    sendToFigma('add-checkmark-layer', {
+      layerName: 'Color blindness Layer',
+      create: true,
+      page,
+      pageType
     });
   };
 
@@ -129,8 +131,8 @@ const ColorBlindness = () => {
     if (colorBlindnessView) {
       return {
         buttonText: 'All looks good',
-        completesStep: false,
-        onClick: onClose
+        completesStep: true,
+        onClick: confirmColorBlindnessChecked
       };
     }
 
@@ -150,7 +152,7 @@ const ColorBlindness = () => {
   };
 
   const getSecondaryAction = () => {
-    if (isCompleted) {
+    if (isCompleted && colorBlindnessView === false) {
       return {
         buttonText: 'View again',
         skipsStep: false,
@@ -164,15 +166,6 @@ const ColorBlindness = () => {
   const cbTypeClass =
     selected === null ? '' : selected.toLowerCase().replace(/\s/g, '-');
   const mobileClass = isMobile ? ' is-mobile' : '';
-
-  if (loading) {
-    return (
-      <div className="h-100 w-100 flex-center">
-        <LoadingSpinner size={36} />
-        <div className="muted font-12 pt1">Grabbing design file</div>
-      </div>
-    );
-  }
 
   return (
     <AnnotationStepPage
@@ -233,6 +226,14 @@ const ColorBlindness = () => {
               );
             })}
           </React.Fragment>
+        )}
+
+        {loading && (
+          <div className="w-100 flex-center">
+            <div className="spacer2" />
+            <LoadingSpinner size={36} />
+            <div className="muted font-12 pt1">Grabbing design file</div>
+          </div>
         )}
 
         {colorBlindnessView && (
