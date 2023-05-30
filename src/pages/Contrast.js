@@ -34,7 +34,7 @@ const Contrast = () => {
   // display
   const didPass = failed === null && contrastResults !== null;
   const showRescan = isCompleted || contrastResults !== null;
-  const arrowClass = showPreview ? 'rotate-180' : '';
+  const arrowClass = showPreview ? '' : 'rotate-270';
   const showText = showPreview ? 'Hide' : 'Show';
 
   const onClick = (nodeId) => zoomTo([nodeId], true);
