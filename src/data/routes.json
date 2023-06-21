@@ -39,6 +39,14 @@
     "shouldHide": false,
     "percent": 8
   },
+  "Color blindness": {
+    "id": "Color blindness",
+    "label": "Color",
+    "designerCheck": "Color checked",
+    "path": "color-blindness",
+    "shouldHide": false,
+    "percent": 10
+  },
   "Touch target": {
     "id": "Touch target",
     "label": "Touch target",
@@ -60,14 +68,6 @@
     "label": "Responsive reflow",
     "designerCheck": "Responsive reflow documented",
     "path": "responsive-reflow",
-    "shouldHide": false,
-    "percent": 10
-  },
-  "Color blindness": {
-    "id": "Color blindness",
-    "label": "Color blindness",
-    "designerCheck": "Color blindness checked",
-    "path": "color-blindness",
     "shouldHide": false,
     "percent": 10
   }
