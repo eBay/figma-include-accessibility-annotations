@@ -494,7 +494,9 @@ $selection-button-width: 72px;
   }
 
   & .cb-pop {
-    color: var(--figma-color-bg-disabled-secondary);
+    @include themed() {
+      color: t($muted);
+    }
   }
 }
 

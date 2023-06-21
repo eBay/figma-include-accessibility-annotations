@@ -11,6 +11,8 @@ $red-theme-dark: #ff6383;
 $warning-theme-dark: #592e13;
 $onbrand-dark: #191919;
 $onwarning-dark: #ffffff;
+$muted-light: #767676;
+$muted-dark: #aaaaaa;
 
 $bg-brand: 'bg-brand';
 $bg-danger: 'bg-danger';
@@ -18,6 +20,7 @@ $bg-warning: 'bg-warning';
 $on-brand: 'on-brand';
 $on-danger: 'on-danger';
 $on-warning: 'on-warning';
+$muted: 'muted';
 
 // Using theme defs and a fancy SCSS mixin to get the correct colors for dark vs light mode
 // Inspo: https://medium.com/@katiemctigue/how-to-create-a-dark-mode-in-sass-609f131a3995
@@ -28,7 +31,8 @@ $themes: (
     bg-warning: var(--figma-color-bg-warning-tertiary),
     on-brand: var(--figma-color-text-onbrand),
     on-danger: var(--figma-color-text-ondanger),
-    on-warning: var(--figma-color-text-onwarning)
+    on-warning: var(--figma-color-text-onwarning),
+    muted: $muted-light
   ),
   dark: (
     bg-brand: $blue-theme-dark,
@@ -36,7 +40,8 @@ $themes: (
     bg-warning: $warning-theme-dark,
     on-brand: $onbrand-dark,
     on-danger: $onbrand-dark,
-    on-warning: $onwarning-dark
+    on-warning: $onwarning-dark,
+    muted: $muted-dark
   )
 );
 
