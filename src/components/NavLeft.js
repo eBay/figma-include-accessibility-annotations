@@ -101,14 +101,6 @@ const NavLeft = ({ progress }) => {
                   }
 
                   updateState('colorBlindnessView', false);
-
-                  // resize plugin (go back to their pref)
-                  const pluginWidth = leftNavVisible === false ? 516 : 700;
-                  sendToFigma('resize-plugin', {
-                    condensed: leftNavVisible === false,
-                    height: 518,
-                    width: pluginWidth
-                  });
                 }}
               >
                 <div className="left-nav-link">

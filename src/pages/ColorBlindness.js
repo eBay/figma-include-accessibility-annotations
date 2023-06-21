@@ -56,14 +56,6 @@ const ColorBlindness = () => {
 
   const onClose = () => {
     updateState('colorBlindnessView', false);
-
-    // resize plugin (go back to their pref)
-    const pluginWidth = leftNavVisible === false ? 516 : 700;
-    sendToFigma('resize-plugin', {
-      condensed: leftNavVisible === false,
-      height: 518,
-      width: pluginWidth
-    });
   };
 
   const confirmColorBlindnessChecked = () => {
@@ -85,30 +77,12 @@ const ColorBlindness = () => {
     if (type === 'color-blindness-design-image') {
       setLoading(false);
 
-      const { result, width } = data;
+      const { result } = data;
       const { imageWithTextLayers } = result;
 
       // display image
       const imageUri = contrast.urlForImageBytes(imageWithTextLayers);
       setURI(imageUri);
-
-      // adjust plugin size depending on design
-      const newIsMobile = width < 800;
-      setIsMobile(newIsMobile);
-
-      // get figma app dimensions
-      const { outerHeight, outerWidth } = window;
-
-      const isCondensed = leftNavVisible === false;
-
-      const pluginHeight = outerHeight - 240;
-      const pluginWidth = outerWidth - 440;
-
-      sendToFigma('resize-plugin', {
-        condensed: isCondensed,
-        height: pluginHeight,
-        width: pluginWidth
-      });
 
       // show color blindness viewer
       updateState('colorBlindnessView', true);

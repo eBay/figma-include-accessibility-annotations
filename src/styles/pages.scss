@@ -503,7 +503,7 @@ $selection-button-width: 72px;
 .cb-types {
   display: grid;
   grid-gap: 8px;
-  grid-template-columns: repeat(auto-fit, minmax(222px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
 
   & .cb-type {
     align-items: center;
