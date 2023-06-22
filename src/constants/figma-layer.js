@@ -316,6 +316,7 @@ export function createTransparentFrame({ name, x = 0, y = 0, height, width }) {
   frame.y = y;
   frame.fills = [{ type: 'SOLID', color: colors.white, opacity: 0 }];
   frame.resizeWithoutConstraints(width, height);
+  frame.expanded = false;
 
   return frame;
 }

@@ -29,6 +29,7 @@ export const createClone = (msg) => {
     pageNode.x + pageNode.width + config.annotationWidth + gutterSpace;
   clone.name = cloneLayerName;
   clone.x = newX;
+  clone.expanded = false;
 
   // find all text nodes in the selected page
   const textNodes = clone.findAll((node) => node.type === 'TEXT');
