@@ -1,12 +1,12 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
+import { contrast, utils } from '../constants';
+
+// icons
+import { SvgWarning } from '../icons';
 
 // app state
 import Context from '../context';
-
-// helpers
-import { contrast, utils } from '../constants';
-import { SvgWarning } from '../icons';
 
 const ContrastScreenshot = ({ benchmark, report }) => {
   // main app state

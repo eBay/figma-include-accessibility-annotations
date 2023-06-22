@@ -47,13 +47,21 @@
     "shouldHide": false,
     "percent": 8
   },
+  "Color blindness": {
+    "id": "Color blindness",
+    "label": "Color",
+    "designerCheck": "Color checked",
+    "path": "color-blindness",
+    "shouldHide": false,
+    "percent": 10
+  },
   "Text zoom": {
     "id": "Text zoom",
     "label": "Text resizing",
     "designerCheck": "Text resizing documented",
     "path": "text-zoom",
     "shouldHide": false,
-    "percent": 15
+    "percent": 10
   },
   "Complex gestures": {
     "id": "Complex gestures",
@@ -61,6 +69,6 @@
     "designerCheck": "Complex gestures documented",
     "path": "complex-gestures",
     "shouldHide": true,
-    "percent": 15
+    "percent": 10
   }
 }

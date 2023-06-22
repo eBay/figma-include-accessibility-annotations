@@ -460,3 +460,128 @@ $selection-button-width: 72px;
     background-color: var(--figma-color-bg-success);
   }
 }
+
+// Color Blindness
+// /////////////////////////////////////////////////////////////////////////////
+.cb-controls {
+  background-color: var(--figma-color-bg);
+  border-bottom: 1px solid var(--figma-color-border);
+  margin: 0 0 0 -16px;
+  padding: 16px;
+  position: sticky;
+  top: -16px;
+  width: calc(100% + 32px);
+  z-index: 100;
+
+  p {
+    font-weight: bold;
+  }
+}
+
+.cb-glossary-item {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  font-size: 11px;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  max-width: 500px;
+  width: 100%;
+
+  & .cb-glossary-desc {
+    flex: 1;
+    margin: 0 8px;
+  }
+
+  & .cb-pop {
+    @include themed() {
+      color: t($muted);
+    }
+  }
+}
+
+.cb-types {
+  display: grid;
+  grid-gap: 8px;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+
+  & .cb-type {
+    align-items: center;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    height: 46px;
+    justify-content: center;
+  }
+
+  & .cb-selected {
+    border-color: var(--figma-color-border-onselected-strong);
+    font-weight: bold;
+  }
+}
+
+.cb-preview-content {
+  border: 1px solid var(--figma-color-border);
+  display: flex;
+  margin-top: 16px;
+  position: relative;
+
+  &.is-mobile {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 425px;
+  }
+
+  & svg {
+    position: absolute;
+    top: 0;
+    z-index: -1000;
+  }
+
+  & img {
+    height: auto;
+    width: 100%;
+  }
+}
+
+.protanopia {
+  -webkit-filter: url("#protanopia");
+  filter: url("#protanopia");
+}
+
+.protanomaly {
+  -webkit-filter: url("#protanomaly");
+  filter: url("#protanomaly");
+}
+
+.deuteranopia {
+  -webkit-filter: url("#deuteranopia");
+  filter: url("#deuteranopia");
+}
+
+.deuteranomaly {
+  -webkit-filter: url("#deuteranomaly");
+  filter: url("#deuteranomaly");
+}
+
+.tritanopia {
+  -webkit-filter: url("#tritanopia");
+  filter: url("#tritanopia");
+}
+
+.tritanomaly {
+  -webkit-filter: url("#tritanomaly");
+  filter: url("#tritanomaly");
+}
+
+.achromatopsia {
+  -webkit-filter: url("#achromatopsia");
+  filter: url("#achromatopsia");
+}
+
+.achromatomaly {
+  -webkit-filter: url("#achromatomaly");
+  filter: url("#achromatomaly");
+}

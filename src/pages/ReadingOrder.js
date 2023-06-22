@@ -7,13 +7,15 @@ import {
   HeadingStep
 } from '../components';
 
+// icons
+import { SvgCheck } from '../icons';
+
 // icons: reading order
 import SvgReadingOrder from '../icons/reading-order';
 import readingOrderTypes from '../data/reading-order-types';
 
 // app state
 import Context from '../context';
-import { SvgCheck } from '../icons';
 
 const customFooter = (
   <React.Fragment>

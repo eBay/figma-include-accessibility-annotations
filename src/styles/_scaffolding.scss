@@ -12,6 +12,7 @@
 // /////////////////////////////////////////////////////////////////////////////
 main {
   height: calc(100% - $footer-height);
+  overflow-x: hidden;
   overflow-y: scroll;
   padding: $spacing-sm;
   transition: width 500ms ease-in-out;
@@ -23,6 +24,10 @@ main {
 
   .view-condensed & {
     width: 468px;
+  }
+
+  .cb-viewer & {
+    width: 100%;
   }
 }
 

@@ -158,6 +158,9 @@ function createDesignerChecksFrame({
   });
   designerChecksAnnotation.appendChild(annotationTitle);
 
+  // have layer collapsed on creation
+  designerChecksAnnotation.expanded = false;
+
   // for each step, add a check box to indicate completion
   const stepsForPage = getStepDataForPage({ pageType, steps, stepsNative });
   stepsForPage.forEach((step) => {
@@ -166,6 +169,10 @@ function createDesignerChecksFrame({
       name: step.designerCheck,
       completed: stepsCompleted.includes(step.id)
     });
+
+    // have layer collapsed on creation
+    checkMarkFrame.expanded = false;
+
     designerChecksAnnotation.appendChild(checkMarkFrame);
   });
 

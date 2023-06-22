@@ -233,6 +233,11 @@ figma.ui.onmessage = async (msg) => {
     step.checkmark.add(msg);
   }
 
+  // grab design file image and start the viewer
+  if (type === 'start-color-blindness-view') {
+    step.colorBlindness.getDesignFile(msg);
+  }
+
   // remove node(s) by array of IDs
   if (type === 'remove-nodes') {
     const { nodeIds } = msg;

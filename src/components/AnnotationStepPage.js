@@ -1,11 +1,13 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
+import { analytics } from '../constants';
 
-import Context from '../context';
-
+// components
 import BannerTip from './BannerTip';
 import Footer from './Footer';
-import { analytics } from '../constants';
+
+// app state
+import Context from '../context';
 
 const AnnotationStepPage = ({
   children,
@@ -59,18 +61,21 @@ AnnotationStepPage.defaultProps = {
 };
 
 AnnotationStepPage.propTypes = {
-  children: PropTypes.element.isRequired,
+  // required
   bannerTipProps: PropTypes.shape({
     pageType: PropTypes.oneOf(['web', 'native']).isRequired,
     routeName: PropTypes.string.isRequired,
     customFooter: PropTypes.element
   }).isRequired,
+  children: PropTypes.element.isRequired,
+  routeName: PropTypes.string.isRequired,
+  title: PropTypes.string.isRequired,
+
+  // optional
   footerProps: PropTypes.shape({
     primaryAction: PropTypes.object,
     secondaryAction: PropTypes.object
-  }),
-  title: PropTypes.string.isRequired,
-  routeName: PropTypes.string.isRequired
+  })
 };
 
 export default AnnotationStepPage;

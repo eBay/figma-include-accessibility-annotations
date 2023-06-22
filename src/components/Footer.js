@@ -1,6 +1,10 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import { Link, useLocation } from 'react-router-dom';
+import { analytics } from '../constants';
+
+// components
+import FooterActionButton from './FooterActionButton';
 
 // icons
 import { SvgArrowRight } from '../icons';
@@ -11,24 +15,13 @@ import Context from '../context';
 // data
 import routes from '../data/routes.json';
 import routesNative from '../data/routes-native.json';
-import { analytics } from '../constants';
 
 const Footer = ({ primaryAction, secondaryAction, routeName }) => {
   // main app state
   const cnxt = React.useContext(Context);
-  const {
-    hasDashboard,
-    isProd,
-    pageType,
-    steps,
-    stepsNative,
-    stepsCompleted,
-    page,
-    pages,
-    sessionId,
-    currentUser
-  } = cnxt;
-  const { sendToFigma, updateState } = cnxt;
+  const { hasDashboard, isProd, page, pages, pageType } = cnxt;
+  const { steps, stepsNative, stepsCompleted, leftNavVisible } = cnxt;
+  const { sessionId, currentUser, sendToFigma, updateState } = cnxt;
 
   // web or native flow
   const isWeb = pageType === 'web';
@@ -46,6 +39,16 @@ const Footer = ({ primaryAction, secondaryAction, routeName }) => {
   const location = useLocation();
 
   const backToDashboard = () => {
+    updateState('colorBlindnessView', false);
+
+    // resize plugin (go back to their pref)
+    const pluginWidth = leftNavVisible === false ? 516 : 700;
+    sendToFigma('resize-plugin', {
+      condensed: leftNavVisible === false,
+      height: 518,
+      width: pluginWidth
+    });
+
     // reset main state and return to dashboard
     updateState('showDashboard', true);
 
@@ -175,7 +178,11 @@ const Footer = ({ primaryAction, secondaryAction, routeName }) => {
                 if (isLast) {
                   backToDashboard();
                   // if keyboard user, focus on main content after navigation
-                  document.getElementById('main').focus();
+                  const elMain = document.getElementById('main');
+
+                  if (elMain !== null) {
+                    elMain.focus();
+                  }
                 }
               }
             }}
@@ -199,7 +206,11 @@ const Footer = ({ primaryAction, secondaryAction, routeName }) => {
                 if (isLast) {
                   backToDashboard();
                   // if keyboard user, focus on main content after navigation
-                  document.getElementById('main').focus();
+                  const elMain = document.getElementById('main');
+
+                  if (elMain !== null) {
+                    elMain.focus();
+                  }
                 }
               }
             }}
@@ -215,62 +226,16 @@ const Footer = ({ primaryAction, secondaryAction, routeName }) => {
   );
 };
 
-// This may or may not be a link to the next step
-const FooterActionButton = ({
-  className,
-  onClick,
-  children,
-  goToNextStep,
-  isLast,
-  isDisabled,
-  next
-}) =>
-  goToNextStep && !isDisabled ? (
-    <Link
-      to={isLast ? '/' : `/${next}`}
-      type="button"
-      className={className}
-      onClick={onClick}
-      tabIndex="-1"
-    >
-      {children}
-    </Link>
-  ) : (
-    <button
-      disabled={isDisabled}
-      type="button"
-      className={`${className}${isDisabled ? ' no-events' : ''}`}
-      onClick={isDisabled ? () => {} : onClick}
-    >
-      {children}
-    </button>
-  );
-
-FooterActionButton.defaultProps = {
-  className: '',
-  isDisabled: false,
-  onClick: () => {},
-  goToNextStep: false,
-  next: null
-};
-
-FooterActionButton.propTypes = {
-  className: PropTypes.string,
-  onClick: PropTypes.func,
-  isLast: PropTypes.bool.isRequired,
-  isDisabled: PropTypes.bool,
-  next: PropTypes.string,
-  children: PropTypes.node.isRequired,
-  goToNextStep: PropTypes.bool
-};
-
 Footer.defaultProps = {
   primaryAction: null,
   secondaryAction: null
 };
 
 Footer.propTypes = {
+  // required
   routeName: PropTypes.string.isRequired,
+
+  // optional
   primaryAction: PropTypes.shape({
     onClick: PropTypes.func,
     buttonText: PropTypes.string,

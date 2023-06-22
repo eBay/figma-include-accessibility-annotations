@@ -39,6 +39,14 @@
     "shouldHide": false,
     "percent": 8
   },
+  "Color blindness": {
+    "id": "Color blindness",
+    "label": "Color",
+    "designerCheck": "Color checked",
+    "path": "color-blindness",
+    "shouldHide": false,
+    "percent": 10
+  },
   "Touch target": {
     "id": "Touch target",
     "label": "Touch target",
@@ -53,7 +61,7 @@
     "designerCheck": "Text resizing documented",
     "path": "text-zoom",
     "shouldHide": false,
-    "percent": 15
+    "percent": 10
   },
   "Responsive reflow": {
     "id": "Responsive reflow",
@@ -61,6 +69,6 @@
     "designerCheck": "Responsive reflow documented",
     "path": "responsive-reflow",
     "shouldHide": false,
-    "percent": 15
+    "percent": 10
   }
 }

@@ -18,8 +18,8 @@ import routesNative from '../data/routes-native.json';
 const NavLeft = ({ progress }) => {
   // main app state
   const cnxt = React.useContext(Context);
-  const { leftNavVisible, pageType, stepsCompleted, sendToFigma } = cnxt;
-  const { updateState } = cnxt;
+  const { colorBlindnessView, leftNavVisible, pageType, stepsCompleted } = cnxt;
+  const { sendToFigma, updateState } = cnxt;
 
   // flow type
   const isWeb = pageType === 'web';
@@ -68,17 +68,21 @@ const NavLeft = ({ progress }) => {
         </div>
         <div className="flow-text">{pageType}</div>
       </div>
-      <div
-        className="toggle-nav"
-        onClick={toggleLeftNav}
-        onKeyPress={toggleLeftNav}
-        role="button"
-        tabIndex="0"
-      >
-        <div className={`svg-theme animated ${rotateClass}`}>
-          <SvgChevronLeft size={14} />
+
+      {colorBlindnessView === false && (
+        <div
+          className="toggle-nav"
+          onClick={toggleLeftNav}
+          onKeyPress={toggleLeftNav}
+          role="button"
+          tabIndex="0"
+        >
+          <div className={`svg-theme animated ${rotateClass}`}>
+            <SvgChevronLeft size={14} />
+          </div>
         </div>
-      </div>
+      )}
+
       <ul>
         {Object.keys(routeData).map((routeLabel) => {
           const { label, path, percent } = routeData[routeLabel];
@@ -89,7 +93,15 @@ const NavLeft = ({ progress }) => {
               <NavLink
                 to={path}
                 // if keyboard user, put focus on main content after navigation
-                onClick={() => document.getElementById('main').focus()}
+                onClick={() => {
+                  const elMain = document.getElementById('main');
+
+                  if (elMain !== null) {
+                    elMain.focus();
+                  }
+
+                  updateState('colorBlindnessView', false);
+                }}
               >
                 <div className="left-nav-link">
                   <div className="flex-row-center">
