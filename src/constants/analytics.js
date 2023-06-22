@@ -7,6 +7,8 @@ export const logEvent = async (data) => {
 
   if (baseURL?.length > 0 && isProd) {
     try {
+      // specify network access
+      // https://www.figma.com/plugin-docs/making-network-requests/#specify-network-access
       const fullURL = `${baseURL}/${sessionId}/${currentUser}/${name}/${pageTitle}`;
       const response = await fetch(fullURL, { mode: 'no-cors' });
 
