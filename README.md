@@ -1,5 +1,5 @@
 <div align="center">
-<img alt="include logo" height="48" width="48" src="previews/include_logo.png" />
+<img alt="include logo" height="64" width="64" src="previews/v9/include_logo.png" />
 
 # Include
 
@@ -11,7 +11,7 @@ an accessibility annotation Figma plugin
 
 ## Intro
 
-<img alt="plugin version 0.1.0" src="previews/include_banner.png" />
+<img alt="plugin version 9" src="previews/v9/include_banner.png" />
 
 The eBay Include accessibility annotation Figma plugin is a tool to make annotating for accessibility (a11y) easier — easier for designers to spec and easier for developers to understand what is required.
 
@@ -29,7 +29,15 @@ npm i
 npm run dev
 ```
 
-To open the plugin in development mode on Figma, point Figma to the manifest file at the root of this project.
+To open **Inspect mode**
+
+<kbd>⌘ Command</kbd> + <kbd>⌥ Option</kbd> + <kbd>I</kbd>
+
+With the iframe of web app in a Figma plugin, hot-reloading doesn't really work, so to re-start the plugin quickly:
+
+<kbd>⌘ Command</kbd> + <kbd>⌥ Option</kbd> + <kbd>P</kbd>
+
+To open the plugin in development mode on Figma, map the manifest file at the root of this project.
 
 <img alt="import manifest of Figma plugin" src="previews/import-manifest.png" />
 
