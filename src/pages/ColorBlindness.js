@@ -166,12 +166,12 @@ const ColorBlindness = () => {
       <React.Fragment>
         <HeadingStep
           number={1}
-          text="Scan your design to get a color palette used in your mock."
+          text="Generate a preview of your design through different lenses and toggle between the views"
         />
 
         <HeadingStep
           number={2}
-          text="Take a look at the visualzation below to understand how your design might be perceived by people with color blindness"
+          text="Take a look at the visualization below to understand how your design might be perceived by people with color blindness"
         />
 
         <div className="divider" />
