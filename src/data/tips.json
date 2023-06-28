@@ -7,13 +7,13 @@
       "text": "Grouping elements like the contents of a tile or cell can make for a better experience when using assistive technology.<br /><br />If multiple actions are in the group more instruction will be needed on how this will behave."
     },
     "Reading order": {
-      "text": "Draw a path to reflect the desired order of consuming content. Typically, it follows the visual layout of the content – left-to-right, top-to-bottom (for LTR languages)."
+      "text": "Designing the order that keyboard-only or screen reader users will flow through the content can improve their experience.<br /><br />Typically, focus order (the order of interactive elements, e.g moving with the TAB key) aligns with reading order (the order of all content e.g. using the down arrow key, or 'say all' command with a screen reader)."
     },
     "Alt text": {
       "text": "Alternative text is announced by screen readers and describes the purpose, function, or content of an image.<br/><br/>Images that convey meaning are <em>informative</em> and require alt text. Images that do not convey meaning, or are non-functional and beside text that conveys their meaning are considered <em>decorative.</em>"
     },
     "Contrast": {
-      "text": "Text must have at least a 4.5:1 contrast ratio with its background. Interactive and meaningful graphical elements must have a minimum 3:1 contrast ratio."
+      "text": "Text must have a contrast ratio of 4.5:1<br/>Large text must have a contrast ratio of 3:1<br/>Interactive and meaningful graphical elements must have a contrast ratio of 3:1<br/><br/>Large text is 24px or greater, or 19px bold or greater."
     },
     "Touch target": {
       "text": "Click or touch areas should  be a minimum of 48px x 48px unless the target is in a sentence or block of text."
@@ -30,28 +30,28 @@
   },
   "web": {
     "Landmarks": {
-      "text": "Landmarks identify main regions of a screen and help people who use assistive technology to make a mental model of a screen's content. Overdoing landmarks can create a lot of noise."
+      "text": "Landmarks identify regions of a screen and help people who use assistive technology to make a mental model of a screen's content.<br/><br/>When creating multiple landmarks of the same type you'll be prompted to a short label. Do not include  words like 'landmark', 'region' or 'navigation' in  the label as screen readers already announce the type."
     },
     "Headings": {
-      "text": "Headings help provide a hierarchy for the screen’s content, and allow people using a screen reader to quickly jump between sections. Use only one H1 per page, avoid skipping heading levels, and make them succinct."
+      "text": "Headings help provide a hierarchy for the screen's content, and allow people using a screen reader to quickly jump between sections. Use only one H1 per page, avoid skipping heading levels, and make them succinct."
     },
     "Reading order": {
-      "text": "Draw a path to reflect the desired order of consuming content. Typically, it follows the visual layout of the content—left-to-right, top-to-bottom (for LTR languages)."
+      "text": "Designing the order that keyboard-only or screen reader users will flow through the content can improve their experience.<br /><br />Typically, focus order (the order of interactive elements, e.g moving with the TAB key) aligns with reading order (the order of all content e.g. using the down arrow key, or 'say all' command with a screen reader)."
     },
     "Alt text": {
       "text": "Alternative text is announced by screen readers and describes the purpose, function, or content of an image.<br/><br/>Images that convey meaning are <em>informative</em> and require alt text. Images that do not convey meaning, or are non-functional and beside text that conveys their meaning are considered <em>decorative.</em>"
     },
     "Contrast": {
-      "text": "Text must have at least a 4.5:1 contrast ratio with its background. Interactive and meaningful graphical elements must have a minimum 3:1 contrast ratio."
+      "text": "Text must have a contrast ratio of 4.5:1<br />Large text must have a contrast ratio of 3:1<br />Interactive and meaningful graphical elements must have a contrast ratio of 3:1<br /><br />Large text is 24px or greater, or 19px bold or greater. In CSS, bold text typically has font-weight:bold, or font-weight:700 or greater."
     },
     "Touch target": {
       "text": "Click or touch areas should  be a minimum of 48px x 48px unless the target is in a sentence or block of text."
     },
     "Text zoom": {
-      "text": "Users must be able to resize text without loss of information. Enlarge the text in your design and consider how the content and layout is impacted."
+      "text": "Users must be able to resize text at least 200% without loss of information. Enlarge the text in your design and consider how the content and layout is impacted.<br /><br />This step aligns with WCAG SC 1.4.4 Resize text"
     },
     "Responsive reflow": {
-      "text": "Web content needs to reflow, without horizontal scrolling, at a screen width of 320px"
+      "text": "Web content needs to reflow, without horizontal scrolling, at a screen width of 320px, Text does not need to resize to meet this, but if it does, no information must be lost.<br /><br />This step aligns with WCAG SC 1.4.10 Reflow."
     },
     "Interactive elements": {
       "text": "Naming interactive elements determines what the screen reader is going to read out. Accessibility for each interactive element from the storybook is already coded in the control."
