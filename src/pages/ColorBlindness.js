@@ -1,7 +1,12 @@
 import * as React from 'react';
 
 // components
-import { AnnotationStepPage, HeadingStep, LoadingSpinner } from '../components';
+import {
+  AnnotationStepPage,
+  HeadingStep,
+  LoadingSpinner,
+  scrollToBottomOfAnnotationStep
+} from '../components';
 import ColorBlindnessFilter from '../components/ColorBlindnessFilter';
 
 // helpers
@@ -21,7 +26,7 @@ const colorBlindnessTypesArray = Object.keys(colorBlindnessTypesObj);
 const ColorBlindness = () => {
   // main app state
   const cnxt = React.useContext(Context);
-  const { colorBlindnessView, leftNavVisible, page, pageType } = cnxt;
+  const { colorBlindnessView, page, pageType } = cnxt;
   const { sendToFigma, stepsCompleted, updateState } = cnxt;
 
   // ui state
@@ -32,7 +37,6 @@ const ColorBlindness = () => {
   const [loading, setLoading] = React.useState(false);
   const [designUri, setURI] = React.useState(null);
   const [selected, setSelected] = React.useState('None');
-  const [isMobile, setIsMobile] = React.useState(false);
   const [showGlossary, setShowGlossary] = React.useState(false);
   const [showPreview, setShowPreview] = React.useState(false);
 
@@ -43,6 +47,15 @@ const ColorBlindness = () => {
   const showColorBlindnessViewer = () => {
     // show loading state
     setLoading(true);
+
+    // hide glossary for now
+    setShowGlossary(false);
+
+    // set to first filter
+    setSelected('Tritanomaly');
+
+    // scroll up just in case
+    scrollToBottomOfAnnotationStep();
 
     // loading image was killing the thread, causing loading state to not show, so delaying
     // https://www.figma.com/plugin-docs/frozen-plugins/
@@ -112,7 +125,7 @@ const ColorBlindness = () => {
 
     if (isCompleted === false) {
       return {
-        buttonText: 'Color blindness viewer',
+        buttonText: 'Generate preview',
         completesStep: false,
         onClick: showColorBlindnessViewer
       };
@@ -139,7 +152,6 @@ const ColorBlindness = () => {
 
   const cbTypeClass =
     selected === null ? '' : selected.toLowerCase().replace(/\s/g, '-');
-  const mobileClass = isMobile ? ' is-mobile' : '';
 
   return (
     <AnnotationStepPage
@@ -154,12 +166,12 @@ const ColorBlindness = () => {
       <React.Fragment>
         <HeadingStep
           number={1}
-          text="Scan your design to get a color palette used in your mock."
+          text="Generate a preview of your design through different lenses and toggle between the views"
         />
 
         <HeadingStep
           number={2}
-          text="Take a look at the visualzation below to understand how your design might be perceived by people with color blindness"
+          text="Take a look at the visualization below to understand how your design might be perceived by people with color blindness"
         />
 
         <div className="divider" />
@@ -238,6 +250,7 @@ const ColorBlindness = () => {
                   <div className="cb-types">
                     {colorBlindnessTypesArray.map((type) => {
                       const { icon, value } = colorBlindnessTypesObj[type];
+
                       const isSelected = value === selected;
                       const newValue = isSelected ? 'None' : value;
                       const selectedClass = isSelected ? ' cb-selected' : '';
@@ -263,7 +276,7 @@ const ColorBlindness = () => {
                   </div>
                 </div>
 
-                <div className={`cb-preview-content${mobileClass}`}>
+                <div className="cb-preview-content">
                   <ColorBlindnessFilter />
 
                   <img
