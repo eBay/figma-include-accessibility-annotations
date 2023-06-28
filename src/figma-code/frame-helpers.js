@@ -49,6 +49,7 @@ function getOrCreateMainAnnotationsFrame({ mainFrame, page }) {
   ];
   mainAnnotationsFrame.layoutMode = 'VERTICAL';
   mainAnnotationsFrame.itemSpacing = 4;
+
   return mainAnnotationsFrame;
 }
 

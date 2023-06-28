@@ -5,5 +5,11 @@
   "main": "dist/code.js",
   "ui": "dist/ui.html",
   "editorType": ["figma"],
-  "permissions": ["currentuser"]
+  "permissions": ["currentuser"],
+  "networkAccess": {
+    "allowedDomains": [
+      "https://include-accessibility-annotation-analytics.vercel.app"
+    ],
+    "reasoning": "No file data is collected at all. The only analytics we track are: who is using it (Figma user ID used for anonymized usage), when a new annotation is started, a step is completed, and dashboard is opened."
+  }
 }

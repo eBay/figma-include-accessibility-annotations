@@ -342,6 +342,7 @@ figma.ui.onmessage = async (msg) => {
         // if hard value passed (visible), use that, else toggle visible state
         const changeVisibleTo = visible !== null ? visible : !nodeFound.visible;
         nodeFound.visible = changeVisibleTo;
+        nodeFound.expanded = false;
       }
 
       return null;

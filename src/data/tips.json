@@ -25,7 +25,7 @@
       "text": "When actions can be performed with a <em>gesture</em> ensure there is an alternate and visible way to perform this using one finger and taps."
     },
     "Color blindness": {
-      "text": "Ensure that you use other means than color for communication."
+      "text": "People may perceive colors differently, and may not be able to differentiate between some or all colors. Ensure a design does not rely only on color to convey meaning."
     }
   },
   "web": {
@@ -57,7 +57,7 @@
       "text": "Naming interactive elements determines what the screen reader is going to read out. Accessibility for each interactive element from the storybook is already coded in the control."
     },
     "Color blindness": {
-      "text": "Ensure that you use other means than color for communication."
+      "text": "People may perceive colors differently, and may not be able to differentiate between some or all colors. Ensure a design does not rely only on color to convey meaning."
     }
   }
 }
