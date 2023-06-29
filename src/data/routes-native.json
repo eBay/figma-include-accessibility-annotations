@@ -17,8 +17,8 @@
   },
   "Reading order": {
     "id": "Reading order",
-    "label": "Reading order",
-    "designerCheck": "Reading order",
+    "label": "Reading & focus order",
+    "designerCheck": "Reading & focus order",
     "path": "reading-order",
     "shouldHide": true,
     "percent": 10
