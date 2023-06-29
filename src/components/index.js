@@ -6,6 +6,7 @@ export {
   scrollToBottomOfAnnotationStep
 } from './AnnotationStepPage';
 export { default as BannerAlert } from './BannerAlert';
+export { default as BannerSuccess } from './BannerSuccess';
 export { default as BannerTip } from './BannerTip';
 export { default as Checkbox } from './Checkbox';
 export { default as ContrastScreenshot } from './ContrastScreenshot';
