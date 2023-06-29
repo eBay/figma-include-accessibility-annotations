@@ -13,7 +13,7 @@
       "text": "Alternative text is announced by screen readers and describes the purpose, function, or content of an image.<br/><br/>Images that convey meaning are <em>informative</em> and require alt text. Images that do not convey meaning, or are non-functional and beside text that conveys their meaning are considered <em>decorative.</em>"
     },
     "Contrast": {
-      "text": "Text must have a contrast ratio of 4.5:1<br/>Large text must have a contrast ratio of 3:1<br/>Interactive and meaningful graphical elements must have a contrast ratio of 3:1<br/><br/>Large text is 24px or greater, or 19px bold or greater."
+      "text": "Text must have a contrast ratio of 4.5:1. Large text must have a contrast ratio of 3:1. Interactive and meaningful graphical elements must have a contrast ratio of 3:1.<br />Large text is 24px or greater, or 19px bold or greater. In CSS, bold text typically has font-weight:bold, or font-weight:700 or greater."
     },
     "Touch target": {
       "text": "Click or touch areas should  be a minimum of 48px x 48px unless the target is in a sentence or block of text."
@@ -42,7 +42,7 @@
       "text": "Alternative text is announced by screen readers and describes the purpose, function, or content of an image.<br/><br/>Images that convey meaning are <em>informative</em> and require alt text. Images that do not convey meaning, or are non-functional and beside text that conveys their meaning are considered <em>decorative.</em>"
     },
     "Contrast": {
-      "text": "Text must have a contrast ratio of 4.5:1<br />Large text must have a contrast ratio of 3:1<br />Interactive and meaningful graphical elements must have a contrast ratio of 3:1<br /><br />Large text is 24px or greater, or 19px bold or greater. In CSS, bold text typically has font-weight:bold, or font-weight:700 or greater."
+      "text": "Text must have a contrast ratio of 4.5:1. Large text must have a contrast ratio of 3:1. Interactive and meaningful graphical elements must have a contrast ratio of 3:1.<br />Large text is 24px or greater, or 19px bold or greater. In CSS, bold text typically has font-weight:bold, or font-weight:700 or greater."
     },
     "Touch target": {
       "text": "Click or touch areas should  be a minimum of 48px x 48px unless the target is in a sentence or block of text."

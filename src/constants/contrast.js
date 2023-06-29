@@ -60,7 +60,8 @@ const detailFor = (numFail, numPass, minCR, maxCR) => {
   const note =
     minCR === maxCR
       ? formatContrastRatio(minCR)
-      : `${formatContrastRatio(minCR)} – ${formatContrastRatio(maxCR)}`;
+      : `${formatContrastRatio(minCR)} - ${formatContrastRatio(maxCR)}`;
+
   if (numFail > 0 && numPass > 0) {
     return {
       status: 'mixed',
@@ -68,6 +69,7 @@ const detailFor = (numFail, numPass, minCR, maxCR) => {
       note
     };
   }
+
   if (numFail > 0) {
     return {
       status: 'fail',
@@ -75,6 +77,7 @@ const detailFor = (numFail, numPass, minCR, maxCR) => {
       note
     };
   }
+
   if (numPass > 0) {
     return {
       status: 'pass',
@@ -82,6 +85,7 @@ const detailFor = (numFail, numPass, minCR, maxCR) => {
       note
     };
   }
+
   return { status: 'unknown', contrastRatio: 0 };
 };
 
@@ -136,6 +140,7 @@ const decodeToImageData = async (bytes) => {
   ctx.canvas.width = image.width;
   ctx.canvas.height = image.height;
   ctx.drawImage(image, 0, 0);
+
   const imageData = ctx.getImageData(0, 0, image.width, image.height);
 
   return imageData;
