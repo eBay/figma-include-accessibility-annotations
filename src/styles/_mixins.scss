@@ -19,7 +19,8 @@ $paddingsT: (
 // margin bottom
 // /////////////////////////////////////////////////////////////////////////////
 $marginsB: (
-  'mb1': $spacing-xs
+  'mb1': $spacing-xs,
+  'mb2': $spacing-sm
 );
 
 @each $margin, $value in $marginsB {
