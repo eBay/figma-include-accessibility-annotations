@@ -4,13 +4,14 @@ import * as React from 'react';
 import {
   Alert,
   AnnotationStepPage,
+  BannerSuccess,
   ContrastScreenshot,
   HeadingStep,
   LoadingSpinner
 } from '../components';
 
 // icons
-import { SvgCarrot, SvgCheck, SvgText, SvgWarning } from '../icons';
+import { SvgCarrot, SvgText, SvgWarning } from '../icons';
 
 // app state
 import Context from '../context';
@@ -29,6 +30,8 @@ const Contrast = () => {
   const isCompleted = stepsCompleted.includes(routeName);
   const [isLoading, setLoading] = React.useState(false);
   const [failed, setFailed] = React.useState(null);
+  const [failedBold, setFailedBold] = React.useState(null);
+  const [failedReg, setFailedReg] = React.useState(null);
   const [showPreview, setShowPreview] = React.useState(false);
 
   // display
@@ -81,6 +84,9 @@ const Contrast = () => {
 
       const hotspots = [];
       const failedArray = [];
+      const failedBoldArray = [];
+      const failedRegArray = [];
+
       result.textNodeInfos.map((textInfo) => {
         const contrastReport = contrast.computeTypeContrast(
           textInfo,
@@ -89,12 +95,24 @@ const Contrast = () => {
 
         // only if fail
         if (contrastReport.aa.status === 'fail') {
-          failedArray.push({
+          const newObj = {
             name: textInfo.name,
             nodeId: textInfo.nodeId,
             value: textInfo.value,
             ...contrastReport.aa
-          });
+          };
+
+          if (textInfo.textStyleSamples.length > 0) {
+            const { isBold } = textInfo.textStyleSamples[0];
+
+            if (isBold) {
+              failedBoldArray.push(newObj);
+            } else {
+              failedRegArray.push(newObj);
+            }
+          }
+
+          failedArray.push(newObj);
         }
 
         hotspots.push({
@@ -115,10 +133,12 @@ const Contrast = () => {
         pageBgColor: result.pageBgColor
       };
 
-      const noErrorsFound = failedArray.length === 0;
-
       updateState('contrastResults', withHotspots);
-      setFailed(noErrorsFound ? null : failedArray);
+
+      setFailed(failedArray.length === 0 ? null : failedArray);
+      setFailedBold(failedBoldArray.length === 0 ? null : failedBoldArray);
+      setFailedReg(failedRegArray.length === 0 ? null : failedRegArray);
+
       setLoading(false);
     }
   };
@@ -135,20 +155,37 @@ const Contrast = () => {
     // do we have results already?
     if (contrastResults !== null) {
       const failedArray = [];
+      const failedBoldArray = [];
+      const failedRegArray = [];
+
       contrastResults.hotspots.map((hotspot) => {
         // only if fail
         if (hotspot.aa.status === 'fail') {
-          failedArray.push({
+          const newObj = {
             name: hotspot.name,
             nodeId: hotspot.nodeId,
             ...hotspot.aa
-          });
+          };
+
+          if (hotspot.textStyleSamples.length > 0) {
+            const { isBold } = hotspot.textStyleSamples[0];
+
+            if (isBold) {
+              failedBoldArray.push(newObj);
+            } else {
+              failedRegArray.push(newObj);
+            }
+          }
+
+          failedArray.push(newObj);
         }
 
         return null;
       });
 
       if (failedArray.length > 0) setFailed(failedArray);
+      if (failedBoldArray.length > 0) setFailedBold(failedBoldArray);
+      if (failedRegArray.length > 0) setFailedReg(failedRegArray);
     }
 
     return () => {
@@ -208,23 +245,8 @@ const Contrast = () => {
       <React.Fragment>
         <HeadingStep
           number={1}
-          text="Check if there are any color contrast issues"
+          text="Check if there are any color contrast issues with text"
         />
-
-        {failed !== null && (
-          <React.Fragment>
-            <Alert
-              icon={<SvgWarning />}
-              style={{ padding: 0 }}
-              text={`${failed.length} contrast issue${
-                failed.length === 1 ? '' : 's'
-              } found`}
-              type="warning"
-            />
-
-            <div className="spacer3" />
-          </React.Fragment>
-        )}
 
         {isLoading && (
           <React.Fragment>
@@ -241,28 +263,80 @@ const Contrast = () => {
 
         {failed !== null && (
           <React.Fragment>
-            <HeadingStep number={2} text="Fix the contrast issues found" />
+            <Alert
+              icon={<SvgWarning />}
+              style={{ padding: 0 }}
+              text={`${failed.length} contrast issue${
+                failed.length === 1 ? '' : 's'
+              } found`}
+              type="warning"
+            />
 
-            {failed.map(({ name, value, nodeId }) => (
-              <div
-                key={nodeId}
-                className="contrast-row mb2"
-                onClick={() => onClick(nodeId)}
-                onKeyPress={() => onClick(nodeId)}
-                role="link"
-                tabIndex="0"
-              >
-                <div className="flex-row-center">
-                  <div className="svg-theme mr2">
-                    <SvgText />
+            <div className="spacer3" />
+
+            <HeadingStep
+              number={2}
+              text="Fix large/bold text contrast issues (3:1 requirement)"
+            />
+
+            {failedBold === null && (
+              <BannerSuccess text="All large/bold text passes AA contrast ratio requirement." />
+            )}
+
+            {failedBold !== null &&
+              failedBold.map(({ name, value, nodeId }) => (
+                <div
+                  key={nodeId}
+                  className="contrast-row mb2"
+                  onClick={() => onClick(nodeId)}
+                  onKeyPress={() => onClick(nodeId)}
+                  role="link"
+                  tabIndex="0"
+                >
+                  <div className="flex-row-center">
+                    <div className="svg-theme mr2">
+                      <SvgText />
+                    </div>
+
+                    <div className="contrast-name">{value || name}</div>
                   </div>
 
-                  <div className="contrast-name">{value || name}</div>
+                  <div className="contrast-goto">Go to</div>
                 </div>
+              ))}
 
-                <div className="contrast-goto">Go to</div>
-              </div>
-            ))}
+            <div className="spacer2" />
+
+            <HeadingStep
+              number={3}
+              text="Fix small/regular text contrast issues (4.5:1 requirement)"
+            />
+
+            {failedReg === null && (
+              <BannerSuccess text="All small/regular text passes AA contrast ratio requirement." />
+            )}
+
+            {failedReg !== null &&
+              failedReg.map(({ name, value, nodeId }) => (
+                <div
+                  key={nodeId}
+                  className="contrast-row mb2"
+                  onClick={() => onClick(nodeId)}
+                  onKeyPress={() => onClick(nodeId)}
+                  role="link"
+                  tabIndex="0"
+                >
+                  <div className="flex-row-center">
+                    <div className="svg-theme mr2">
+                      <SvgText />
+                    </div>
+
+                    <div className="contrast-name">{value || name}</div>
+                  </div>
+
+                  <div className="contrast-goto">Go to</div>
+                </div>
+              ))}
 
             <div className="spacer2" />
 
@@ -291,16 +365,11 @@ const Contrast = () => {
         )}
 
         {didPass && (
-          <div className="flex-row align-start">
-            <div className="circle-success svg-theme-success mr1">
-              <SvgCheck size={14} />
-            </div>
-            <p>
-              All text passes AA contrast ratio requirement. Be sure to validate
+          <BannerSuccess
+            text="All text passes AA contrast ratio requirement. Be sure to validate
               non-text contrast for interactive elements and meaningful
-              graphics.
-            </p>
-          </div>
+              graphics."
+          />
         )}
       </React.Fragment>
     </AnnotationStepPage>
