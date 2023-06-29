@@ -7,9 +7,36 @@ import {
   HeadingStep
 } from '../components';
 
+// icons
+import { SvgFocusGroup } from '../icons';
+
+// icons: focus grouping
+import SvgFocusGrouping from '../icons/focus-grouping';
+
 // app state
 import Context from '../context';
-import { SvgFocusGroup } from '../icons';
+
+const customFooter = (
+  <React.Fragment>
+    <div className="spacer2" />
+
+    <div className="flex-row justify-center">
+      <SvgFocusGrouping.SvgHelp1 />
+      <div className="spacer1w" />
+      <SvgFocusGrouping.SvgHelp2 />
+    </div>
+
+    <div className="flex-row justify-center">
+      <div className="reading-order-text font-10">
+        ex. typical group for a toggle switch
+      </div>
+      <div className="spacer1w" />
+      <div className="reading-order-text font-10">
+        ex. typical group for image link with title
+      </div>
+    </div>
+  </React.Fragment>
+);
 
 const FocusGrouping = () => {
   // main app state
@@ -96,7 +123,7 @@ const FocusGrouping = () => {
     <AnnotationStepPage
       title="Focus grouping"
       routeName={routeName}
-      bannerTipProps={{ pageType, routeName }}
+      bannerTipProps={{ pageType, routeName, footer: customFooter }}
       footerProps={{
         primaryAction: getPrimaryAction(),
         secondaryAction: null
