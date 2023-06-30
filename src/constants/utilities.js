@@ -16,9 +16,8 @@ import { createTransparentFrame } from './figma-layer';
  *
  * @return {string} capitalized string
  */
-const capitalize = (string) => {
-  return string[0].toUpperCase() + string.slice(1).toLowerCase();
-};
+const capitalize = (string) =>
+  string[0].toUpperCase() + string.slice(1).toLowerCase();
 
 /**
  * Checks if layerName exists wihin the children of NodeID passed

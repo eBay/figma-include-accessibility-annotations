@@ -35,9 +35,8 @@ const flattenColors = (fg, bg) => {
   };
 };
 
-const formatContrastRatio = (contrastRatio) => {
-  return isNaN(contrastRatio) ? 'NA' : `${contrastRatio.toFixed(2)}:1`;
-};
+const formatContrastRatio = (contrastRatio) =>
+  isNaN(contrastRatio) ? 'NA' : `${contrastRatio.toFixed(2)}:1`;
 
 /**
  * Mixes the given colors (RGBA dicts) at the given amount (0 to 1).
@@ -278,9 +277,7 @@ const computeTypeContrast = (textNodeInfo, bgImageData) => {
   };
 };
 
-const urlForImageBytes = (ui8arr) => {
-  return URL.createObjectURL(new Blob([ui8arr]));
-};
+const urlForImageBytes = (ui8arr) => URL.createObjectURL(new Blob([ui8arr]));
 
 export default {
   computeTypeContrast,
