@@ -21,7 +21,7 @@ import landmarksTypesObj from '../data/landmark-types';
 const landmarksTypesArray = Object.keys(landmarksTypesObj);
 const landmarksOnlyOnce = ['main', 'banner', 'content-info'];
 
-const Landmarks = () => {
+function Landmarks() {
   // main app state
   const cnxt = React.useContext(Context);
   const { landmarks, page, pageType, stepsCompleted } = cnxt;
@@ -335,6 +335,6 @@ const Landmarks = () => {
       </React.Fragment>
     </AnnotationStepPage>
   );
-};
+}
 
 export default Landmarks;

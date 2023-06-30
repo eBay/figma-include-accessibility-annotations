@@ -14,7 +14,7 @@ import Context from '../context';
 // helpers
 import { analytics } from '../constants';
 
-const SelectFrameToStart = ({ alertMsg, name }) => {
+function SelectFrameToStart({ alertMsg, name }) {
   // main app state
   const cnxt = React.useContext(Context);
   const {
@@ -148,7 +148,7 @@ const SelectFrameToStart = ({ alertMsg, name }) => {
       <div className="absolute-bottom-right muted">{`v.${version}`}</div>
     </div>
   );
-};
+}
 
 SelectFrameToStart.defaultProps = {
   alertMsg: null,

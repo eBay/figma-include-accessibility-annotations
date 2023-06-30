@@ -6,7 +6,7 @@ import { AnnotationStepPage, HeadingStep } from '../components';
 // app state
 import Context from '../context';
 
-const TouchTarget = () => {
+function TouchTarget() {
   // main app state
   const cnxt = React.useContext(Context);
   const { page, pageType, sendToFigma } = cnxt;
@@ -51,6 +51,6 @@ const TouchTarget = () => {
       </React.Fragment>
     </AnnotationStepPage>
   );
-};
+}
 
 export default TouchTarget;
