@@ -23,7 +23,7 @@ import routesNative from '../data/routes-native.json';
 
 const feedbackFormUrl = process.env.FEEDBACK_FORM_URL;
 
-const Dashboard = () => {
+function Dashboard() {
   // main app state
   const cnxt = React.useContext(Context);
   const { condensedUI, imagesScanned, pages, steps, version } = cnxt;
@@ -295,9 +295,10 @@ const Dashboard = () => {
           const routeData = isWeb ? routes : routesNative;
 
           const progress = Math.ceil(
-            stepsCompleted.reduce((accum, step) => {
-              return accum + routeData[step].percent;
-            }, 0)
+            stepsCompleted.reduce(
+              (accum, step) => accum + routeData[step].percent,
+              0
+            )
           );
 
           return (
@@ -422,6 +423,6 @@ const Dashboard = () => {
       )}
     </div>
   );
-};
+}
 
 export default Dashboard;

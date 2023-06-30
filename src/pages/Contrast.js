@@ -19,7 +19,7 @@ import Context from '../context';
 // helpers
 import { contrast, utils } from '../constants';
 
-const Contrast = () => {
+function Contrast() {
   // main app state
   const cnxt = React.useContext(Context);
   const { contrastResults, page, pageType, stepsCompleted } = cnxt;
@@ -374,6 +374,6 @@ const Contrast = () => {
       </React.Fragment>
     </AnnotationStepPage>
   );
-};
+}
 
 export default Contrast;

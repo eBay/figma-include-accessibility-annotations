@@ -6,7 +6,7 @@ import { SvgArrowRight, SvgMobile, SvgWeb } from '../icons';
 // app state
 import Context from '../context';
 
-const ChooseYourOwnAdventure = () => {
+function ChooseYourOwnAdventure() {
   // main app state
   const { updateState, version } = React.useContext(Context);
 
@@ -73,6 +73,6 @@ const ChooseYourOwnAdventure = () => {
       <div className="absolute-bottom-right muted">{`v.${version}`}</div>
     </div>
   );
-};
+}
 
 export default React.memo(ChooseYourOwnAdventure);

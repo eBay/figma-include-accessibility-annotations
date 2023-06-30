@@ -116,11 +116,10 @@ export const listener = (msg) => {
   return { newListenForHeadings, newDefaultHeadingType };
 };
 
-const getHeadingBlockName = ({ pageType, headingType, headingTitle, id }) => {
-  return `Heading${
+const getHeadingBlockName = ({ pageType, headingType, headingTitle, id }) =>
+  `Heading${
     pageType === 'web' ? `: ${headingType.trim()}` : ''
   } | ${headingTitle.trim()} | ${id.trim()}`;
-};
 
 const createHeadingFrameInFigma = ({
   pageType,

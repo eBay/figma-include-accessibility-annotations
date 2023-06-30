@@ -23,7 +23,7 @@ import colorBlindnessTypesObj from '../data/color-blindness-types';
 
 const colorBlindnessTypesArray = Object.keys(colorBlindnessTypesObj);
 
-const ColorBlindness = () => {
+function ColorBlindness() {
   // main app state
   const cnxt = React.useContext(Context);
   const { colorBlindnessView, page, pageType } = cnxt;
@@ -292,6 +292,6 @@ const ColorBlindness = () => {
       </React.Fragment>
     </AnnotationStepPage>
   );
-};
+}
 
 export default ColorBlindness;

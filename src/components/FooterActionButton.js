@@ -2,7 +2,7 @@ import * as React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
-const FooterActionButton = (props) => {
+function FooterActionButton(props) {
   const { children, className, goToNextStep, isDisabled } = props;
   const { isLast, onClick, next } = props;
 
@@ -32,7 +32,7 @@ const FooterActionButton = (props) => {
       {children}
     </button>
   );
-};
+}
 
 FooterActionButton.defaultProps = {
   className: '',

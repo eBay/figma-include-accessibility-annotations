@@ -37,7 +37,7 @@ import routes from './data/routes.json';
 import routesNative from './data/routes-native.json';
 import ErrorBoundary from './components/ErrorBoundary';
 
-const App = () => {
+function App() {
   const cnxt = React.useContext(Context);
   const { alertMsg, condensedUI, isLoading, leftNavVisible } = cnxt;
   const { colorBlindnessView, page, pageSelected, pageType } = cnxt;
@@ -183,7 +183,7 @@ const App = () => {
       </div>
     </div>
   );
-};
+}
 
 const container = document.getElementById('root');
 const root = createRoot(container);

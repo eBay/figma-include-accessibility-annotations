@@ -10,7 +10,7 @@ import imageTypesArray from '../data/dropdown-image-types.json';
 // app state
 import Context from '../context';
 
-const AltTextRow = (props) => {
+function AltTextRow(props) {
   // main app state
   const { zoomTo } = React.useContext(Context);
 
@@ -66,7 +66,7 @@ const AltTextRow = (props) => {
       />
     </div>
   );
-};
+}
 
 AltTextRow.defaultProps = {
   warnClass: ''

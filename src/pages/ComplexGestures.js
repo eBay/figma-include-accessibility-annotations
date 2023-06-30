@@ -18,7 +18,7 @@ import { SvgWarning } from '../icons';
 
 const gestureTypesArray = Object.keys(gestureTypesObj);
 
-const ComplexGestures = () => {
+function ComplexGestures() {
   // main app state
   const cnxt = React.useContext(Context);
   const { gestures, page, pageType } = cnxt;
@@ -42,12 +42,12 @@ const ComplexGestures = () => {
   const [labelsTemp, setLabelsTemp] = React.useState({});
   const [annotateAttempted, setAnnotateAttempted] = React.useState(false);
 
-  const labelNeeded = React.useMemo(() => {
-    return (
+  const labelNeeded = React.useMemo(
+    () =>
       needsLabel.length > 0 &&
-      !!needsLabel.find((gestureId) => !labelsTemp[gestureId])
-    );
-  }, [needsLabel, labelsTemp]);
+      !!needsLabel.find((gestureId) => !labelsTemp[gestureId]),
+    [needsLabel, labelsTemp]
+  );
 
   const checkForNeededLabels = () => {
     const rowsNeedLabelArray = [];
@@ -323,19 +323,17 @@ const ComplexGestures = () => {
         </React.Fragment>
 
         {selected && (
-          <React.Fragment>
-            <HeadingStep
-              number={2}
-              text={`Place the overlay on the onscreen elements that enable users to perform the ${selected.replace(
-                /-/g,
-                ' '
-              )} action with one finger and taps.`}
-            />
-          </React.Fragment>
+          <HeadingStep
+            number={2}
+            text={`Place the overlay on the onscreen elements that enable users to perform the ${selected.replace(
+              /-/g,
+              ' '
+            )} action with one finger and taps.`}
+          />
         )}
       </React.Fragment>
     </AnnotationStepPage>
   );
-};
+}
 
 export default ComplexGestures;
