@@ -4,15 +4,17 @@ import PropTypes from 'prop-types';
 // icons
 import { SvgCheck } from '../icons';
 
-const BannerSuccess = ({ text }) => (
-  <div className="flex-row align-start">
-    <div className="circle-success svg-theme-success mr1">
-      <SvgCheck size={14} />
-    </div>
+function BannerSuccess({ text }) {
+  return (
+    <div className="flex-row align-start">
+      <div className="circle-success svg-theme-success mr1">
+        <SvgCheck size={14} />
+      </div>
 
-    <p>{text}</p>
-  </div>
-);
+      <p>{text}</p>
+    </div>
+  );
+}
 
 BannerSuccess.propTypes = {
   // required

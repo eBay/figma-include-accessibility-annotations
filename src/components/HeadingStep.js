@@ -1,13 +1,15 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 
-const HeadingStep = ({ number, text }) => (
-  <div className="heading-step">
-    {number && <div className="circle-step">{`Step ${number}`}</div>}
+function HeadingStep({ number, text }) {
+  return (
+    <div className="heading-step">
+      {number && <div className="circle-step">{`Step ${number}`}</div>}
 
-    <p dangerouslySetInnerHTML={{ __html: text }} />
-  </div>
-);
+      <p dangerouslySetInnerHTML={{ __html: text }} />
+    </div>
+  );
+}
 
 HeadingStep.defaultProps = {
   number: null

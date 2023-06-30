@@ -9,13 +9,13 @@ import Footer from './Footer';
 // app state
 import Context from '../context';
 
-const AnnotationStepPage = ({
+function AnnotationStepPage({
   children,
   bannerTipProps,
   footerProps,
   title,
   routeName
-}) => {
+}) {
   const cnxt = React.useContext(Context);
   const { currentUser, sessionId, isProd } = cnxt;
 
@@ -31,18 +31,16 @@ const AnnotationStepPage = ({
   return (
     <React.Fragment>
       <main id="main" tabIndex="-1">
-        <React.Fragment>
-          <BannerTip {...bannerTipProps} />
-          <div className="spacer2" />
-          <h2>{title}</h2>
-          <div className="spacer2" />
-          {children}
-        </React.Fragment>
+        <BannerTip {...bannerTipProps} />
+        <div className="spacer2" />
+        <h2>{title}</h2>
+        <div className="spacer2" />
+        {children}
       </main>
       <Footer routeName={routeName} {...footerProps} />
     </React.Fragment>
   );
-};
+}
 
 export const scrollToBottomOfAnnotationStep = () => {
   // scroll to bottom of main

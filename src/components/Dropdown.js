@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 // icons
 import { SvgCheckSm, SvgDownCarrot } from '../icons';
 
-const Dropdown = ({ align, data, index, isOpened, onOpen, onSelect, type }) => {
+function Dropdown({ align, data, index, isOpened, onOpen, onSelect, type }) {
   const toggledValue = isOpened ? null : index;
   const openedClass = isOpened ? ' opened' : '';
   const alignClass = align === 'right' ? ' align-right' : '';
@@ -67,7 +67,7 @@ const Dropdown = ({ align, data, index, isOpened, onOpen, onSelect, type }) => {
       </div>
     </div>
   );
-};
+}
 
 Dropdown.defaultProps = {
   align: 'left',

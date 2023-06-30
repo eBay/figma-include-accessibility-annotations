@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 // icons
 import { SvgCheck } from '../icons';
 
-const Checkbox = ({ checked, id, isDisabled, label, onClick }) => {
+function Checkbox({ checked, id, isDisabled, label, onClick }) {
   const checkedClass = checked ? ' checked' : '';
 
   // handle non-interactive state
@@ -32,7 +32,7 @@ const Checkbox = ({ checked, id, isDisabled, label, onClick }) => {
       )}
     </div>
   );
-};
+}
 
 Checkbox.defaultProps = {
   checked: false,

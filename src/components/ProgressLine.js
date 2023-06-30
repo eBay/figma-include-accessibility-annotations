@@ -17,7 +17,7 @@ const progressDisplay = {
   }
 };
 
-const ProgressLine = ({ progressType }) => {
+function ProgressLine({ progressType }) {
   const { animation, icon, msg } = progressDisplay[progressType];
 
   return (
@@ -33,7 +33,7 @@ const ProgressLine = ({ progressType }) => {
       </div>
     </React.Fragment>
   );
-};
+}
 
 ProgressLine.propTypes = {
   // required
