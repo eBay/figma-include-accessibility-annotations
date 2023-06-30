@@ -8,7 +8,7 @@ import { SvgWarning } from '../icons';
 // app state
 import Context from '../context';
 
-const ContrastScreenshot = ({ benchmark, report }) => {
+function ContrastScreenshot({ benchmark, report }) {
   // main app state
   const { condensedUI, zoomTo } = React.useContext(Context);
 
@@ -69,7 +69,7 @@ const ContrastScreenshot = ({ benchmark, report }) => {
       )}
     </div>
   );
-};
+}
 
 ContrastScreenshot.defaultProps = {
   benchmark: 'aa'

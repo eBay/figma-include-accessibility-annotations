@@ -6,7 +6,7 @@ import { AnnotationStepPage, HeadingStep } from '../components';
 // app state
 import Context from '../context';
 
-const TextZoom = () => {
+function TextZoom() {
   // main app state
   const cnxt = React.useContext(Context);
   const { page, pageType } = cnxt;
@@ -86,6 +86,6 @@ const TextZoom = () => {
       </React.Fragment>
     </AnnotationStepPage>
   );
-};
+}
 
 export default TextZoom;

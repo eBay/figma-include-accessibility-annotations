@@ -15,7 +15,7 @@ import { SvgCheck, SvgWarning } from '../icons';
 // app state
 import Context from '../context';
 
-const AltText = () => {
+function AltText() {
   // main app state
   const cnxt = React.useContext(Context);
   const { imagesData, imageScan, imagesScanned, page, pageType } = cnxt;
@@ -237,6 +237,6 @@ const AltText = () => {
       </React.Fragment>
     </AnnotationStepPage>
   );
-};
+}
 
 export default React.memo(AltText);

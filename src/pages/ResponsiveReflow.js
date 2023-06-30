@@ -6,7 +6,7 @@ import { AnnotationStepPage, HeadingStep } from '../components';
 // app state
 import Context from '../context';
 
-const ResponsiveReflow = () => {
+function ResponsiveReflow() {
   // main app state
   const cnxt = React.useContext(Context);
   const { page, pageType } = cnxt;
@@ -49,6 +49,6 @@ const ResponsiveReflow = () => {
       </React.Fragment>
     </AnnotationStepPage>
   );
-};
+}
 
 export default ResponsiveReflow;

@@ -38,7 +38,7 @@ const customFooter = (
   </React.Fragment>
 );
 
-const FocusGrouping = () => {
+function FocusGrouping() {
   // main app state
   const cnxt = React.useContext(Context);
   const { groups, page, pageType, stepsCompleted } = cnxt;
@@ -132,25 +132,23 @@ const FocusGrouping = () => {
       <React.Fragment>
         {groupsAreSet && (
           <React.Fragment>
-            {groupsArray.map((id, idx) => {
-              return (
+            {groupsArray.map((id, idx) => (
+              <div
+                key={`focus-group-${id}`}
+                className="flex-row-space-between flex-row-center"
+              >
+                <div>{`group ${idx + 1}`}</div>
                 <div
-                  key={`focus-group-${id}`}
-                  className="flex-row-space-between flex-row-center"
+                  className="btn-remove"
+                  onClick={() => onRemoveGroup(idx)}
+                  onKeyPress={() => onRemoveGroup(idx)}
+                  role="button"
+                  tabIndex="0"
                 >
-                  <div>{`group ${idx + 1}`}</div>
-                  <div
-                    className="btn-remove"
-                    onClick={() => onRemoveGroup(idx)}
-                    onKeyPress={() => onRemoveGroup(idx)}
-                    role="button"
-                    tabIndex="0"
-                  >
-                    <div className="remove-dash" />
-                  </div>
+                  <div className="remove-dash" />
                 </div>
-              );
-            })}
+              </div>
+            ))}
 
             <div className="spacer1" />
             <div className="divider" />
@@ -187,6 +185,6 @@ const FocusGrouping = () => {
       </React.Fragment>
     </AnnotationStepPage>
   );
-};
+}
 
 export default FocusGrouping;

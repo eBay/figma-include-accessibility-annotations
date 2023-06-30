@@ -39,7 +39,7 @@ const customFooter = (
   </React.Fragment>
 );
 
-const ReadingOrder = () => {
+function ReadingOrder() {
   // main app state
   const cnxt = React.useContext(Context);
   const { page, pageType, sendToFigma } = cnxt;
@@ -143,6 +143,6 @@ const ReadingOrder = () => {
       </React.Fragment>
     </AnnotationStepPage>
   );
-};
+}
 
 export default ReadingOrder;

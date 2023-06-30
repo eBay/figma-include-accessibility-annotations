@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 // icons
 import { SvgCheck } from '../icons';
 
-const ProgressPieChart = ({ progress }) => {
+function ProgressPieChart({ progress }) {
   const percentCss = {
     background: `conic-gradient(var(--figma-color-text) 0, var(--figma-color-text) ${progress}%, transparent 0, transparent 100%)`
   };
@@ -24,7 +24,7 @@ const ProgressPieChart = ({ progress }) => {
       <div className="progress">{`${progress}%`}</div>
     </div>
   );
-};
+}
 
 ProgressPieChart.propTypes = {
   // required

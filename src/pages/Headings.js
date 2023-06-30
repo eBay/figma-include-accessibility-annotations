@@ -19,7 +19,7 @@ import Context from '../context';
 import headingTypesWeb from '../data/heading-types';
 import headingTypesNative from '../data/heading-types-native';
 
-const Headings = () => {
+function Headings() {
   // main app state
   const cnxt = React.useContext(Context);
   const { headings, headingTemp, page, pageType } = cnxt;
@@ -200,57 +200,55 @@ const Headings = () => {
       }}
     >
       <React.Fragment>
-        <React.Fragment>
-          {headingsArray.length > 0 && (
-            <>
-              {headingsArray.map((key) => {
-                const { id, title, type } = headings[key];
-                const isOpened = openedDropdown === id;
+        {headingsArray.length > 0 && (
+          <>
+            {headingsArray.map((key) => {
+              const { id, title, type } = headings[key];
+              const isOpened = openedDropdown === id;
 
-                return (
-                  <div key={id} className="flex-row-space-between">
-                    <div className="flex-row-center">
-                      <SvgText fill="#b3b3b3" />
+              return (
+                <div key={id} className="flex-row-space-between">
+                  <div className="flex-row-center">
+                    <SvgText fill="#b3b3b3" />
 
-                      <div className="heading-title">{title}</div>
-                    </div>
+                    <div className="heading-title">{title}</div>
+                  </div>
 
-                    <div className="flex-row-center">
-                      {pageType === 'web' && (
-                        <Dropdown
-                          align="right"
-                          data={headingTypesArrayDropdown}
-                          index={id}
-                          isOpened={isOpened}
-                          onOpen={setOpenedDropdown}
-                          onSelect={onTypeUpdate}
-                          type={type}
-                        />
-                      )}
+                  <div className="flex-row-center">
+                    {pageType === 'web' && (
+                      <Dropdown
+                        align="right"
+                        data={headingTypesArrayDropdown}
+                        index={id}
+                        isOpened={isOpened}
+                        onOpen={setOpenedDropdown}
+                        onSelect={onTypeUpdate}
+                        type={type}
+                      />
+                    )}
 
-                      <div className="spacer1w" />
+                    <div className="spacer1w" />
 
-                      <div
-                        className="btn-remove"
-                        onClick={() => onRemoveHeading(id)}
-                        onKeyPress={() => onRemoveHeading(id)}
-                        role="button"
-                        tabIndex="0"
-                      >
-                        <div className="remove-dash" />
-                      </div>
+                    <div
+                      className="btn-remove"
+                      onClick={() => onRemoveHeading(id)}
+                      onKeyPress={() => onRemoveHeading(id)}
+                      role="button"
+                      tabIndex="0"
+                    >
+                      <div className="remove-dash" />
                     </div>
                   </div>
-                );
-              })}
-              <div className="spacer1" />
+                </div>
+              );
+            })}
+            <div className="spacer1" />
 
-              <div className="divider" />
+            <div className="divider" />
 
-              <div className="spacer3" />
-            </>
-          )}
-        </React.Fragment>
+            <div className="spacer3" />
+          </>
+        )}
 
         <React.Fragment>
           <HeadingStep number={1} text={stepOneText} />
@@ -311,6 +309,6 @@ const Headings = () => {
       </React.Fragment>
     </AnnotationStepPage>
   );
-};
+}
 
 export default Headings;

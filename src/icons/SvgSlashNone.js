@@ -1,12 +1,14 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 
-const SvgSlashNone = ({ bgFill, fill }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="none">
-    <rect width="60" height="60" fill={bgFill} rx="4" />
-    <path stroke={fill} d="M11.662 44.499 47.7 14.729" />
-  </svg>
-);
+function SvgSlashNone({ bgFill, fill }) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="none">
+      <rect width="60" height="60" fill={bgFill} rx="4" />
+      <path stroke={fill} d="M11.662 44.499 47.7 14.729" />
+    </svg>
+  );
+}
 
 SvgSlashNone.defaultProps = {
   bgFill: '#e5e5e5',

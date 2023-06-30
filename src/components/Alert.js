@@ -1,13 +1,15 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 
-const Alert = ({ icon, style, text, type }) => (
-  <div className={`alert ${type}`} style={style}>
-    {icon && <div className="mr2">{icon}</div>}
+function Alert({ icon, style, text, type }) {
+  return (
+    <div className={`alert ${type}`} style={style}>
+      {icon && <div className="mr2">{icon}</div>}
 
-    <p>{text}</p>
-  </div>
-);
+      <p>{text}</p>
+    </div>
+  );
+}
 
 Alert.defaultProps = {
   icon: null,

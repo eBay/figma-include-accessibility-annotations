@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 // components
 import Checkbox from './Checkbox';
 
-const EmptyStepSelection = ({ stepName, isSelected, onClick, isDisabled }) => {
+function EmptyStepSelection({ stepName, isSelected, onClick, isDisabled }) {
   const label = `no ${stepName}`;
 
   return (
@@ -19,7 +19,7 @@ const EmptyStepSelection = ({ stepName, isSelected, onClick, isDisabled }) => {
       <div className="spacer2" />
     </React.Fragment>
   );
-};
+}
 
 EmptyStepSelection.defaultProps = {
   isDisabled: false
