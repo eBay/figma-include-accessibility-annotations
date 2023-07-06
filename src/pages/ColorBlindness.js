@@ -132,7 +132,7 @@ function ColorBlindness() {
     }
 
     return {
-      buttonText: 'Color blindness checked',
+      buttonText: 'Color checked',
       completesStep: true,
       onClick: confirmColorBlindnessChecked
     };
