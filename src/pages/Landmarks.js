@@ -43,6 +43,12 @@ function Landmarks() {
   const [needsLabel, setNeedsLabel] = React.useState([]);
   const [labelsTemp, setLabelsTemp] = React.useState({});
 
+  // warnings
+  const showNoLandmarkTextWarning = false;
+  const showWarning =
+    needsLabel.length > 0 &&
+    Object.keys(labelsTemp).length !== needsLabel.length;
+
   const onAddLandmark = (landmarkType) => {
     const { bounds, id } = page;
 
@@ -87,10 +93,6 @@ function Landmarks() {
     onAddLandmark(value);
   };
 
-  const showWarning =
-    needsLabel.length > 0 &&
-    Object.keys(labelsTemp).length !== needsLabel.length;
-
   const onDoneWithLandmarks = () => {
     if (noLandmarks) {
       sendToFigma('no-landmark', {
@@ -108,10 +110,11 @@ function Landmarks() {
     }
   };
 
-  const checkForDuplicates = () => {
+  const checkValidLabelRules = () => {
     const typesArray = [];
     const typesDupArray = [];
     const rowsNeedLabelArray = [];
+    let landmarkInLabel = false;
 
     // get all types used and if it's a duplicate
     Object.values(landmarks).map((row) => {
@@ -136,12 +139,25 @@ function Landmarks() {
         rowsNeedLabelArray.push(id);
       }
 
+      // remove the word "landmark" as it is already included in the landmark type
+      if (noLabel === false && label.toLowerCase().includes('landmark')) {
+        landmarkInLabel = true;
+
+        if (rowsNeedLabelArray.includes(id) === false) {
+          rowsNeedLabelArray.push(id);
+        }
+      }
+
       return null;
     });
 
     // do we have landmarks that need labels?
     if (rowsNeedLabelArray.length > 0) {
       setNeedsLabel(rowsNeedLabelArray);
+    }
+
+    if (landmarkInLabel) {
+      console.log('alert that label can not have Landmark');
     }
   };
 
@@ -164,6 +180,14 @@ function Landmarks() {
     if (value !== null) {
       // update label on figma document
       sendToFigma('update-landmark-label', { id, landmarkType: type, value });
+
+      // check if label needs to be updated
+      const newLandmarks = { ...landmarks };
+      if (newLandmarks?.[id] !== undefined) {
+        // update main state
+        newLandmarks[id].label = value;
+        updateState('landmarks', newLandmarks);
+      }
     }
   };
 
@@ -175,7 +199,7 @@ function Landmarks() {
   // on landmarks change, check for duplicates to add labels to
   React.useEffect(() => {
     // mount
-    checkForDuplicates();
+    checkValidLabelRules();
   }, [landmarks]);
 
   const getPrimaryAction = () => {
@@ -281,6 +305,7 @@ function Landmarks() {
             stepName="landmarks"
           />
         )}
+
         {!noLandmarks && (
           <div className="button-group">
             {landmarksTypesArray.map((type) => {
@@ -319,6 +344,7 @@ function Landmarks() {
             })}
           </div>
         )}
+
         {selected && (
           <React.Fragment>
             <div className="spacer2" />
