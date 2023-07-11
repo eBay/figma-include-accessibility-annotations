@@ -5,13 +5,6 @@ import ColorBlindness from '../icons/color-blindness';
 
 // setup color blindness options
 export default {
-  normal: {
-    id: '1',
-    desc: 'Trichromatic—can distinguish all the primary colours',
-    icon: <ColorBlindness.SvgOriginal />,
-    population: '68%',
-    value: 'Tritanomaly'
-  },
   deuteranomaly: {
     id: '2',
     desc: 'Deuteranomaly—reduced sensitivity to green trouble distinguishing reds & greens',
@@ -60,5 +53,12 @@ export default {
     icon: <ColorBlindness.SvgAchromatopsia />,
     population: '0.05%',
     value: 'Achromatopsia'
+  },
+  normal: {
+    id: '1',
+    desc: 'Trichromatic—can distinguish all the primary colours',
+    icon: <ColorBlindness.SvgOriginal />,
+    population: '68%',
+    value: 'Tritanomaly'
   }
 };
