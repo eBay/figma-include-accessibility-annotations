@@ -21,26 +21,26 @@ The plugin was developed by members of the accessibility and design teams at eBa
 
 **Near term bug fixes & improvements**
 
-[ ] Updates for keyboard navigation
-[ ] Add ability to edit landmarks
-[ ] Add ability to multi-select for headings
-[ ] Scan for svg (alternative text)
-[ ] Add images manually (alternative text)
-[ ] Placing new annotation below previously inserted (e.g. arrows)
-[ ] Synchronize copy/paste, undo/redo between the plugin and Figma layers
-[ ] Allow designer to annotate a section of a design
-[ ] Add delete in multiple steps
-[ ] Bug fixes
+- [ ] Updates for keyboard navigation
+- [ ] Add ability to edit landmarks
+- [ ] Add ability to multi-select for headings
+- [ ] Scan for svg (alternative text)
+- [ ] Add images manually (alternative text)
+- [ ] Placing new annotation below previously inserted (e.g. arrows)
+- [ ] Synchronize copy/paste, undo/redo between the plugin and Figma layers
+- [ ] Allow designer to annotate a section of a design
+- [ ] Add delete in multiple steps
+- [ ] Bug fixes
 
 **Future explorations**
 
-[ ] Touch target revision (we are waiting for the WCAG updates to make the step aligned with the latest recommendations)
-[ ] Pointer gestures
-[ ] Split between focus & reading order
-[ ] Interactive elements step
-[ ] Use of AI to generate labels
-[ ] Cognitive step
-[ ] Hearing step
+- [ ] Touch target revision (we are waiting for the WCAG updates to make the step aligned with the latest recommendations)
+- [ ] Pointer gestures
+- [ ] Split between focus & reading order
+- [ ] Interactive elements step
+- [ ] Use of AI to generate labels
+- [ ] Cognitive step
+- [ ] Hearing step
 
 ## Installation
 
