@@ -62,7 +62,7 @@
     "react-router-dom": "^6.14.0"
   },
   "engines": {
-    "node": ">=16.13.1"
+    "node": ">=18.13.0"
   },
   "prettier": {
     "singleQuote": true,
