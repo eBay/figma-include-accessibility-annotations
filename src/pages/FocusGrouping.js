@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { utils } from '../constants';
 
 // components
 import {
@@ -141,7 +142,9 @@ function FocusGrouping() {
                 <div
                   className="btn-remove"
                   onClick={() => onRemoveGroup(idx)}
-                  onKeyPress={() => onRemoveGroup(idx)}
+                  onKeyDown={({ key }) => {
+                    if (utils.isEnterKey(key)) onRemoveGroup(idx);
+                  }}
                   role="button"
                   tabIndex="0"
                 >
@@ -155,7 +158,9 @@ function FocusGrouping() {
             <div className="spacer2" />
           </React.Fragment>
         )}
+
         <HeadingStep number={1} text="Place an overlay for a focus group" />
+
         {!groupsAreSet && (
           <EmptyStepSelection
             isSelected={noGroups}
@@ -163,13 +168,16 @@ function FocusGrouping() {
             stepName="groups"
           />
         )}
+
         {!noGroups && (
           <div className="button-group">
             <div className="container-selection-button">
               <div
                 className="selection-button"
                 onClick={onClick}
-                onKeyPress={onClick}
+                onKeyDown={({ key }) => {
+                  if (utils.isEnterKey(key)) onClick();
+                }}
                 role="button"
                 tabIndex={0}
               >

@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { utils } from '../constants';
 
 // data
 import routes from '../data/routes.json';
@@ -7,9 +8,6 @@ import routesNative from '../data/routes-native.json';
 
 // context
 import Context from './index';
-
-// helpers
-import { utils } from '../constants';
 
 const sendToFigma = (type, data = null) => {
   parent.postMessage({ pluginMessage: { type, ...data } }, '*');

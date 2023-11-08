@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { utils } from '../constants';
 
 // components
 import {
@@ -209,6 +210,7 @@ function Landmarks() {
               text="Multiple landmarks on a page need labeling for distinction."
               type="warning"
             />
+
             <div className="spacer1" />
           </React.Fragment>
         )}
@@ -237,6 +239,7 @@ function Landmarks() {
                         <div className="spacer2w" />
                         <div className="muted">Label</div>
                         <div className="spacer1w" />
+
                         <input
                           className={`input${warnClass}`}
                           type="text"
@@ -256,7 +259,9 @@ function Landmarks() {
                   <div
                     className="btn-remove"
                     onClick={() => onRemoveLandmark(id)}
-                    onKeyPress={() => onRemoveLandmark(id)}
+                    onKeyDown={(e) => {
+                      if (utils.isEnterKey(e.key)) onRemoveLandmark(id);
+                    }}
                     role="button"
                     tabIndex="0"
                   >
@@ -274,6 +279,7 @@ function Landmarks() {
         )}
 
         <HeadingStep number={1} text="Select landmark type" />
+
         {!landmarksAreSet && (
           <EmptyStepSelection
             isSelected={noLandmarks}
@@ -281,6 +287,7 @@ function Landmarks() {
             stepName="landmarks"
           />
         )}
+
         {!noLandmarks && (
           <div className="button-group">
             {landmarksTypesArray.map((type) => {
@@ -305,7 +312,9 @@ function Landmarks() {
                   <div
                     className={`selection-button${noEvents}`}
                     onClick={onClick}
-                    onKeyPress={onClick}
+                    onKeyDown={(e) => {
+                      if (utils.isEnterKey(e.key)) onClick();
+                    }}
                     role="button"
                     tabIndex={isDisabled ? -1 : 0}
                   >
@@ -319,6 +328,7 @@ function Landmarks() {
             })}
           </div>
         )}
+
         {selected && (
           <React.Fragment>
             <div className="spacer2" />

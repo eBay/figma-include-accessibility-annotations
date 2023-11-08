@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { utils } from '../constants';
 
 // icons
 import { SvgArrowRight, SvgMobile, SvgWeb } from '../icons';
@@ -28,7 +29,9 @@ function ChooseYourOwnAdventure() {
         <div
           className="select-page-block"
           onClick={() => onClick('web')}
-          onKeyPress={() => onClick('web')}
+          onKeyDown={({ key }) => {
+            if (utils.isEnterKey(key)) onClick('web');
+          }}
           role="button"
           tabIndex="0"
         >
@@ -43,7 +46,9 @@ function ChooseYourOwnAdventure() {
         <div
           className="select-page-block"
           onClick={() => onClick('native')}
-          onKeyPress={() => onClick('native')}
+          onKeyDown={({ key }) => {
+            if (utils.isEnterKey(key)) onClick('native');
+          }}
           role="button"
           tabIndex="0"
         >
@@ -58,7 +63,9 @@ function ChooseYourOwnAdventure() {
         <div
           className="flex-row-center border-radius-2 link cursor-pointer"
           onClick={backToDashboard}
-          onKeyPress={backToDashboard}
+          onKeyDown={({ key }) => {
+            if (utils.isEnterKey(key)) backToDashboard();
+          }}
           role="button"
           tabIndex="0"
         >
