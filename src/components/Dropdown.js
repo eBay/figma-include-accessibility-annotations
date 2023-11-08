@@ -1,10 +1,12 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
+import { utils } from '../constants';
 
 // icons
 import { SvgCheckSm, SvgDownCarrot } from '../icons';
 
 function Dropdown({ align, data, index, isOpened, onOpen, onSelect, type }) {
+  // ui state
   const toggledValue = isOpened ? null : index;
   const openedClass = isOpened ? ' opened' : '';
   const alignClass = align === 'right' ? ' align-right' : '';
@@ -21,7 +23,9 @@ function Dropdown({ align, data, index, isOpened, onOpen, onSelect, type }) {
       <div
         className="dropdown"
         onClick={() => onOpen(toggledValue)}
-        onKeyPress={() => onOpen(toggledValue)}
+        onKeyDown={({ key }) => {
+          if (utils.isEnterKey(key)) onOpen(toggledValue);
+        }}
         role="button"
         tabIndex="0"
       >
@@ -46,7 +50,9 @@ function Dropdown({ align, data, index, isOpened, onOpen, onSelect, type }) {
             <div
               className="dropdown-option"
               onClick={() => didSelect(value)}
-              onKeyPress={() => didSelect(value)}
+              onKeyDown={({ key }) => {
+                if (utils.isEnterKey(key)) didSelect(value);
+              }}
               role="button"
               tabIndex={isOpened ? 0 : -1}
             >
@@ -59,7 +65,9 @@ function Dropdown({ align, data, index, isOpened, onOpen, onSelect, type }) {
       <div
         className="dropdown-overlay-close"
         onClick={() => onOpen(toggledValue)}
-        onKeyPress={() => onOpen(toggledValue)}
+        onKeyDown={({ key }) => {
+          if (utils.isEnterKey(key)) onOpen(toggledValue);
+        }}
         role="button"
         tabIndex="-1"
       >

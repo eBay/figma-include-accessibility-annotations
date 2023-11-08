@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { contrast, utils } from '../constants';
 
 // components
 import {
@@ -9,14 +10,11 @@ import {
 } from '../components';
 import ColorBlindnessFilter from '../components/ColorBlindnessFilter';
 
-// helpers
-import { contrast } from '../constants';
+// icons
+import { SvgCarrot } from '../icons';
 
 // app state
 import Context from '../context';
-
-// icons
-import { SvgCarrot } from '../icons';
 
 // get color blindness types
 import colorBlindnessTypesObj from '../data/color-blindness-types';
@@ -182,7 +180,7 @@ function ColorBlindness() {
           className="flex-row-center border-radius-2 cursor-pointer"
           onClick={() => setShowGlossary(!showGlossary)}
           onKeyDown={({ key }) => {
-            if (key === 'Enter' || key === ' ') {
+            if (utils.isEnterKey(key)) {
               setShowGlossary(!showGlossary);
             }
           }}
@@ -221,7 +219,6 @@ function ColorBlindness() {
             <div className="muted font-12 pt1">Grabbing design file</div>
           </div>
         )}
-
         {colorBlindnessView && (
           <React.Fragment>
             <div className="spacer2" />
@@ -230,7 +227,7 @@ function ColorBlindness() {
               className="flex-row-center border-radius-2 cursor-pointer"
               onClick={() => setShowPreview(!showPreview)}
               onKeyDown={({ key }) => {
-                if (key === 'Enter' || key === ' ') {
+                if (utils.isEnterKey(key)) {
                   setShowPreview(!showPreview);
                 }
               }}
@@ -243,50 +240,50 @@ function ColorBlindness() {
 
               <h2>Preview</h2>
             </div>
+          </React.Fragment>
+        )}
 
-            {showPreview && (
-              <React.Fragment>
-                <div className="cb-controls">
-                  <div className="cb-types">
-                    {colorBlindnessTypesArray.map((type) => {
-                      const { icon, value } = colorBlindnessTypesObj[type];
+        {showPreview && (
+          <React.Fragment>
+            <div className="cb-controls">
+              <div className="cb-types">
+                {colorBlindnessTypesArray.map((type) => {
+                  const { icon, value } = colorBlindnessTypesObj[type];
 
-                      const isSelected = value === selected;
-                      const newValue = isSelected ? 'None' : value;
-                      const selectedClass = isSelected ? ' cb-selected' : '';
+                  const isSelected = value === selected;
+                  const newValue = isSelected ? 'None' : value;
+                  const selectedClass = isSelected ? ' cb-selected' : '';
 
-                      return (
-                        <div
-                          className={`cb-type${selectedClass}`}
-                          key={type}
-                          onClick={() => setSelected(newValue)}
-                          onKeyDown={({ key }) => {
-                            if (key === 'Enter' || key === ' ') {
-                              setSelected(newValue);
-                            }
-                          }}
-                          role="button"
-                          tabIndex="0"
-                        >
-                          {icon}
-                          <div className="cb-name">{value}</div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
+                  return (
+                    <div
+                      className={`cb-type${selectedClass}`}
+                      key={type}
+                      onClick={() => setSelected(newValue)}
+                      onKeyDown={({ key }) => {
+                        if (utils.isEnterKey(key)) {
+                          setSelected(newValue);
+                        }
+                      }}
+                      role="button"
+                      tabIndex="0"
+                    >
+                      {icon}
+                      <div className="cb-name">{value}</div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
 
-                <div className="cb-preview-content">
-                  <ColorBlindnessFilter />
+            <div className="cb-preview-content">
+              <ColorBlindnessFilter />
 
-                  <img
-                    src={designUri}
-                    className={cbTypeClass}
-                    alt="current design file"
-                  />
-                </div>
-              </React.Fragment>
-            )}
+              <img
+                src={designUri}
+                className={cbTypeClass}
+                alt="current design file"
+              />
+            </div>
           </React.Fragment>
         )}
       </React.Fragment>

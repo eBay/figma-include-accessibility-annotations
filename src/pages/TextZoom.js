@@ -15,7 +15,7 @@ function TextZoom() {
   // local state
   const routeName = 'Text zoom';
 
-  // To-do: figure out how to initialize this with existing work / existing frame copied
+  // TODO: figure out how to initialize this with existing work / existing frame copied
   const isCompleted = stepsCompleted.includes(routeName);
   const [frameCopied, setFrameCopied] = React.useState(false);
 

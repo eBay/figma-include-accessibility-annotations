@@ -1,6 +1,7 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import { NavLink } from 'react-router-dom';
+import { utils } from '../constants';
 
 // components
 import ProgressPieChart from './ProgressPieChart';
@@ -73,7 +74,9 @@ function NavLeft({ progress }) {
         <div
           className="toggle-nav"
           onClick={toggleLeftNav}
-          onKeyPress={toggleLeftNav}
+          onKeyDown={({ key }) => {
+            if (utils.isEnterKey(key)) toggleLeftNav();
+          }}
           role="button"
           tabIndex="0"
         >
@@ -120,6 +123,7 @@ function NavLeft({ progress }) {
           );
         })}
       </ul>
+
       <div className="absolute-bottom w-100">
         <div className="container-progress">
           <div className="progress-encourage">{encouragement}</div>

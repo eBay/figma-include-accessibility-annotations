@@ -1,5 +1,6 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
+import { utils } from '../constants';
 
 // components
 import Dropdown from './Dropdown';
@@ -28,9 +29,11 @@ function AltTextRow(props) {
       <div
         className="container-image-preview border-radius-xs cursor-pointer"
         onClick={() => zoomTo([id], true)}
-        onKeyPress={() => zoomTo([id], true)}
+        onKeyDown={({ key }) => {
+          if (utils.isEnterKey(key)) zoomTo([id], true);
+        }}
         role="button"
-        tabIndex="-1"
+        tabIndex="0"
       >
         <img
           alt={name}

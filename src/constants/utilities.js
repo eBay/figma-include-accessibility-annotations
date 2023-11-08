@@ -7,6 +7,15 @@ import { createTransparentFrame } from './figma-layer';
  */
 
 /**
+ * Check if enter or space key
+ *
+ * @param {string} key - key pressed
+ *
+ * @return {boolean} true/false
+ */
+const isEnterKey = (key) => key === 'Enter' || key === ' ';
+
+/**
  * Capitalize first letter of string passed
  *
  * input: banner
@@ -241,6 +250,7 @@ const getBase64FromHash = async (imagesScanned) => {
 };
 
 export default {
+  isEnterKey,
   capitalize,
   checkIfChildNameExists,
   checkTypeOfA11yLayer,

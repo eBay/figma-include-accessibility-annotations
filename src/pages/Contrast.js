@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { contrast, utils } from '../constants';
 
 // components
 import {
@@ -15,9 +16,6 @@ import { SvgCarrot, SvgText, SvgWarning } from '../icons';
 
 // app state
 import Context from '../context';
-
-// helpers
-import { contrast, utils } from '../constants';
 
 function Contrast() {
   // main app state
@@ -289,7 +287,9 @@ function Contrast() {
                   key={nodeId}
                   className="contrast-row mb2"
                   onClick={() => onClick(nodeId)}
-                  onKeyPress={() => onClick(nodeId)}
+                  onKeyDown={({ key }) => {
+                    if (utils.isEnterKey(key)) onClick(nodeId);
+                  }}
                   role="link"
                   tabIndex="0"
                 >
@@ -322,7 +322,9 @@ function Contrast() {
                   key={nodeId}
                   className="contrast-row mb2"
                   onClick={() => onClick(nodeId)}
-                  onKeyPress={() => onClick(nodeId)}
+                  onKeyDown={({ key }) => {
+                    if (utils.isEnterKey(key)) onClick(nodeId);
+                  }}
                   role="link"
                   tabIndex="0"
                 >
@@ -343,7 +345,9 @@ function Contrast() {
             <div
               className="flex-row-center border-radius-2 cursor-pointer"
               onClick={togglePreview}
-              onKeyPress={togglePreview}
+              onKeyDown={({ key }) => {
+                if (utils.isEnterKey(key)) togglePreview();
+              }}
               role="button"
               tabIndex="0"
             >

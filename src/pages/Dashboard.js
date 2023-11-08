@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { analytics, utils } from '../constants';
 
 // components
 import ProgressLine from '../components/ProgressLine';
@@ -13,9 +14,6 @@ import Context from '../context';
 
 // pages
 import ProgressLoading from './ProgressLoading';
-
-// helpers
-import { analytics } from '../constants';
 
 // data
 import routes from '../data/routes.json';
@@ -306,7 +304,9 @@ function Dashboard() {
               key={id}
               className={`card${selectedClass} cursor-pointer`}
               onClick={() => onSelect(id)}
-              onKeyPress={() => onSelect(id)}
+              onKeyDown={({ key }) => {
+                if (utils.isEnterKey(key)) onSelect(id);
+              }}
               role="button"
               tabIndex="0"
             >
@@ -330,7 +330,9 @@ function Dashboard() {
               <div
                 className="flex-row-center align-self-start border-radius-2 cursor-pointer"
                 onClick={() => loadInBase64(page, stepsCompleted)}
-                onKeyPress={() => loadInBase64(page, stepsCompleted)}
+                onKeyDown={({ key }) => {
+                  if (utils.isEnterKey(key)) loadInBase64(page, stepsCompleted);
+                }}
                 role="button"
                 tabIndex="0"
               >
@@ -359,6 +361,9 @@ function Dashboard() {
             className="btn"
             disabled={selected.length === 0}
             onClick={onDelete}
+            onKeyDown={({ key }) => {
+              if (utils.isEnterKey(key)) onDelete();
+            }}
             type="button"
           >
             {`Delete selected${selectedCount}`}
@@ -384,7 +389,9 @@ function Dashboard() {
               <div
                 className="container-close svg-theme"
                 onClick={onCloseModal}
-                onKeyPress={onCloseModal}
+                onKeyDown={({ key }) => {
+                  if (utils.isEnterKey(key)) onCloseModal();
+                }}
                 role="button"
                 tabIndex="0"
               >
@@ -411,6 +418,9 @@ function Dashboard() {
               <button
                 className="btn danger"
                 onClick={onDeleteConfirmed}
+                onKeyDown={({ key }) => {
+                  if (utils.isEnterKey(key)) onDeleteConfirmed();
+                }}
                 type="button"
               >
                 Delete selected

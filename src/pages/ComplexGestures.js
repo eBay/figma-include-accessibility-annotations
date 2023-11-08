@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { utils } from '../constants';
 
 // components
 import {
@@ -262,7 +263,9 @@ function ComplexGestures() {
                     <div
                       className="btn-remove"
                       onClick={() => onRemoveGesture(id)}
-                      onKeyPress={() => onRemoveGesture(id)}
+                      onKeyDown={(e) => {
+                        if (utils.isEnterKey(e.key)) onRemoveGesture(id);
+                      }}
                       role="button"
                       tabIndex="0"
                     >
@@ -307,7 +310,9 @@ function ComplexGestures() {
                     <div
                       className="selection-button"
                       onClick={onClick}
-                      onKeyPress={onClick}
+                      onKeyDown={(e) => {
+                        if (utils.isEnterKey(e.key)) onClick();
+                      }}
                       role="button"
                       tabIndex={0}
                     >

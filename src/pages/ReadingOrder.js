@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { utils } from '../constants';
 
 // components
 import {
@@ -109,13 +110,16 @@ function ReadingOrder() {
               >
                 <div
                   role="button"
-                  onKeyPress={onClick}
                   onClick={onClick}
+                  onKeyDown={({ key }) => {
+                    if (utils.isEnterKey(key)) onClick();
+                  }}
                   className="selection-button"
                   tabIndex={-1}
                 >
                   {readingOrderType.icon}
                 </div>
+
                 <div className="selection-button-label">
                   {readingOrderType.label}
                 </div>
@@ -127,13 +131,16 @@ function ReadingOrder() {
         {hasArrows === true && (
           <React.Fragment>
             <div className="spacer2" />
+
             <div className="flex-row align-start">
               <div className="circle-success svg-theme-success mr1">
                 <SvgCheck size={14} />
               </div>
               <p>Arrow placed in Figma</p>
             </div>
+
             <div className="spacer2" />
+
             <HeadingStep
               number={2}
               text="Position arrows to reflect the desired order of consuming content in the page/section you are designing"

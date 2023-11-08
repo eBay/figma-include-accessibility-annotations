@@ -46,7 +46,9 @@ function ContrastScreenshot({ benchmark, report }) {
                 key={nodeId}
                 className={`text-node-hotspot ${statusClass}`}
                 onClick={() => onClick(nodeId)}
-                onKeyPress={() => onClick(nodeId)}
+                onKeyDown={({ key }) => {
+                  if (utils.isEnterKey(key)) onClick(nodeId);
+                }}
                 role="link"
                 tabIndex="0"
                 style={{

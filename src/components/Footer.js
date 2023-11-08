@@ -1,7 +1,7 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import { Link, useLocation } from 'react-router-dom';
-import { analytics } from '../constants';
+import { analytics, utils } from '../constants';
 
 // components
 import FooterActionButton from './FooterActionButton';
@@ -151,7 +151,9 @@ function Footer({ primaryAction, secondaryAction, routeName }) {
           to="/"
           className="flex-row-center border-radius-2 link no-underline cursor-pointer"
           onClick={backToDashboard}
-          onKeyPress={backToDashboard}
+          onKeyDown={({ key }) => {
+            if (utils.isEnterKey(key)) backToDashboard();
+          }}
           role="button"
           tabIndex="0"
         >

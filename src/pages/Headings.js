@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { utils } from '../constants';
 
 // components
 import {
@@ -201,7 +202,7 @@ function Headings() {
     >
       <React.Fragment>
         {headingsArray.length > 0 && (
-          <>
+          <React.Fragment>
             {headingsArray.map((key) => {
               const { id, title, type } = headings[key];
               const isOpened = openedDropdown === id;
@@ -232,7 +233,9 @@ function Headings() {
                     <div
                       className="btn-remove"
                       onClick={() => onRemoveHeading(id)}
-                      onKeyPress={() => onRemoveHeading(id)}
+                      onKeyDown={(e) => {
+                        if (utils.isEnterKey(e.key)) onRemoveHeading(id);
+                      }}
                       role="button"
                       tabIndex="0"
                     >
@@ -242,70 +245,74 @@ function Headings() {
                 </div>
               );
             })}
+
             <div className="spacer1" />
 
             <div className="divider" />
 
             <div className="spacer3" />
-          </>
+          </React.Fragment>
         )}
 
-        <React.Fragment>
-          <HeadingStep number={1} text={stepOneText} />
-          {showWarning && (
-            <React.Fragment>
-              <Alert
-                icon={<SvgWarning />}
-                style={{ padding: 0 }}
-                text="Select text in your figma frame first"
-                type="warning"
-              />
-              <div className="spacer2" />
-            </React.Fragment>
-          )}
-          {!headingsAreSet && (
-            <EmptyStepSelection
-              isSelected={noHeadings}
-              onClick={onEmptySelected}
-              stepName="headings"
+        <HeadingStep number={1} text={stepOneText} />
+
+        {showWarning && (
+          <React.Fragment>
+            <Alert
+              icon={<SvgWarning />}
+              style={{ padding: 0 }}
+              text="Select text in your figma frame first"
+              type="warning"
             />
-          )}
-          {!noHeadings && (
-            <React.Fragment>
-              <HeadingStep number={2} text="Choose heading level" />
+            <div className="spacer2" />
+          </React.Fragment>
+        )}
 
-              <div className="button-group" role="radiogroup">
-                {headingTypesArray.map((type) => {
-                  const { label, icon } = headingTypes[type];
+        {!headingsAreSet && (
+          <EmptyStepSelection
+            isSelected={noHeadings}
+            onClick={onEmptySelected}
+            stepName="headings"
+          />
+        )}
 
-                  const onClick = () => {
-                    onInitialTypeSelect(type);
-                  };
+        {!noHeadings && (
+          <React.Fragment>
+            <HeadingStep number={2} text="Choose heading level" />
 
-                  return (
-                    <div key={label} className="container-selection-button">
-                      <div
-                        className="selection-button"
-                        onClick={onClick}
-                        onKeyPress={onClick}
-                        role="button"
-                        tabIndex={0}
-                      >
-                        <div>{icon}</div>
-                      </div>
+            <div className="button-group" role="radiogroup">
+              {headingTypesArray.map((type) => {
+                const { label, icon } = headingTypes[type];
 
-                      <div className="selection-button-label">
-                        heading
-                        <br />
-                        {label}
-                      </div>
+                const onClick = () => {
+                  onInitialTypeSelect(type);
+                };
+
+                return (
+                  <div key={label} className="container-selection-button">
+                    <div
+                      className="selection-button"
+                      onClick={onClick}
+                      onKeyDown={(e) => {
+                        if (utils.isEnterKey(e.key)) onClick();
+                      }}
+                      role="button"
+                      tabIndex={0}
+                    >
+                      <div>{icon}</div>
                     </div>
-                  );
-                })}
-              </div>
-            </React.Fragment>
-          )}
-        </React.Fragment>
+
+                    <div className="selection-button-label">
+                      heading
+                      <br />
+                      {label}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </React.Fragment>
+        )}
       </React.Fragment>
     </AnnotationStepPage>
   );

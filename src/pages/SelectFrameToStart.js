@@ -1,6 +1,7 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
+import { analytics, utils } from '../constants';
 
 // components
 import { Alert } from '../components';
@@ -10,9 +11,6 @@ import { SvgArrowRight, SvgFrame, SvgWarning } from '../icons';
 
 // app state
 import Context from '../context';
-
-// helpers
-import { analytics } from '../constants';
 
 function SelectFrameToStart({ alertMsg, name }) {
   // main app state
@@ -133,7 +131,9 @@ function SelectFrameToStart({ alertMsg, name }) {
         <div
           className="flex-row-center border-radius-2 link cursor-pointer"
           onClick={backToAdventure}
-          onKeyPress={backToAdventure}
+          onKeyDown={({ key }) => {
+            if (utils.isEnterKey(key)) backToAdventure();
+          }}
           role="button"
           tabIndex="0"
         >
