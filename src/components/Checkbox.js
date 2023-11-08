@@ -1,5 +1,6 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
+import { utils } from '../constants';
 
 // icons
 import { SvgCheck } from '../icons';
@@ -17,7 +18,9 @@ function Checkbox({ checked, id, isDisabled, label, onClick }) {
       className={`container-checkbox${noEvents}`}
       id={id}
       onClick={onSelect}
-      onKeyPress={onSelect}
+      onKeyDown={({ key }) => {
+        if (utils.isEnterKey(key)) onSelect();
+      }}
       role="radio"
       tabIndex="0"
     >
