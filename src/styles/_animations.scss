@@ -2,6 +2,7 @@
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(360deg);
   }
@@ -39,36 +40,38 @@
   }
 }
 
-@keyframes rotateLeft {
+@keyframes rotate-left {
   0% {
     transform: rotate(0deg);
   }
+
   100% {
     transform: rotate(-180deg);
   }
 }
 
 .rotate-left {
-  animation-name: rotateLeft;
+  animation-name: rotate-left;
 }
 
-@keyframes rotateRight {
+@keyframes rotate-right {
   0% {
     transform: rotate(-180deg);
   }
+
   100% {
     transform: rotate(0deg);
   }
 }
 
 .rotate-right {
-  animation-name: rotateRight;
+  animation-name: rotate-right;
 }
 
 // fade in
 // source: https://github.com/animate-css/animate.css/blob/main/source/fading_entrances/fadeIn.css
 // /////////////////////////////////////////////////////////////////////////////
-@keyframes fadeIn {
+@keyframes fade-in {
   from {
     opacity: 0;
   }
@@ -78,15 +81,15 @@
   }
 }
 
-.fadeIn {
-  animation-name: fadeIn;
+.fade-in {
+  animation-name: fade-in;
 }
 
 // pulse
 // source: https://github.com/animate-css/animate.css/blob/main/source/attention_seekers/pulse.css
 // /////////////////////////////////////////////////////////////////////////////
 @keyframes pulse {
-  from {
+  0% {
     transform: scale3d(1, 1, 1);
   }
 
@@ -94,7 +97,7 @@
     transform: scale3d(1.5, 1.5, 1.5);
   }
 
-  to {
+  100% {
     transform: scale3d(1, 1, 1);
   }
 }
@@ -108,7 +111,7 @@
 // source: https://github.com/animate-css/animate.css/blob/main/source/attention_seekers/tada.css
 // /////////////////////////////////////////////////////////////////////////////
 @keyframes tada {
-  from {
+  0% {
     transform: scale3d(1, 1, 1);
   }
 
@@ -130,41 +133,11 @@
     transform: scale3d(1.5, 1.5, 1.5) rotate3d(0, 0, 1, -3deg);
   }
 
-  to {
+  100% {
     transform: scale3d(1, 1, 1);
   }
 }
 
 .tada {
   animation-name: tada;
-}
-
-// heartBeat
-// source: https://github.com/animate-css/animate.css/blob/main/source/attention_seekers/heartBeat.css
-// /////////////////////////////////////////////////////////////////////////////
-@keyframes heartBeat {
-  0% {
-    transform: scale(1);
-  }
-
-  14% {
-    transform: scale(1.5);
-  }
-
-  28% {
-    transform: scale(1);
-  }
-
-  42% {
-    transform: scale(1.5);
-  }
-
-  70% {
-    transform: scale(1);
-  }
-}
-
-.heartBeat {
-  animation-name: heartBeat;
-  animation-timing-function: ease-in-out;
 }
