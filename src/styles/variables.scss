@@ -1,5 +1,6 @@
 // spacing
 // /////////////////////////////////////////////////////////////////////////////
+$spacing-xxs: 4px;
 $spacing-xs: 8px;
 $spacing-sm: 16px;
 $spacing-md: 24px;
@@ -11,3 +12,15 @@ $spacing-xxl: 48px;
 // /////////////////////////////////////////////////////////////////////////////
 $footer-height: 56px;
 $footer-height-condensed: 48px;
+
+:root {
+  // layout
+  // ///////////////////////////////////////////////////////////////////////////
+  --spacer-xxs: #{$spacing-xxs};
+  --spacing-xs: #{$spacing-xs};
+  --spacing-sm: #{$spacing-sm};
+  --spacing-md: #{$spacing-md};
+  --spacing-lg: #{$spacing-lg};
+  --spacing-xl: #{$spacing-xl};
+  --spacing-xxl: #{$spacing-xxl};
+}
