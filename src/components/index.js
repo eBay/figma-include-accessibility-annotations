@@ -1,10 +1,7 @@
 // components
 export { default as Alert } from './Alert';
 export { default as AltTextRow } from './AltTextRow';
-export {
-  default as AnnotationStepPage,
-  scrollToBottomOfAnnotationStep
-} from './AnnotationStepPage';
+export { default as AnnotationStepPage } from './AnnotationStepPage';
 export { default as BannerAlert } from './BannerAlert';
 export { default as BannerSuccess } from './BannerSuccess';
 export { default as BannerTip } from './BannerTip';

@@ -4,7 +4,6 @@ import { utils } from '../constants';
 // components
 import {
   AnnotationStepPage,
-  scrollToBottomOfAnnotationStep,
   Dropdown,
   EmptyStepSelection,
   HeadingStep,
@@ -157,7 +156,7 @@ function Headings() {
     if (headingTemp) {
       setShowWarning(false);
       // onHeadingsListenStop();
-      scrollToBottomOfAnnotationStep();
+      utils.scrollToBottomOfAnnotationStep();
     }
   }, [headingTemp]);
 

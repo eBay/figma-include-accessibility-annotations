@@ -2,12 +2,7 @@ import * as React from 'react';
 import { contrast, utils } from '../constants';
 
 // components
-import {
-  AnnotationStepPage,
-  HeadingStep,
-  LoadingSpinner,
-  scrollToBottomOfAnnotationStep
-} from '../components';
+import { AnnotationStepPage, HeadingStep, LoadingSpinner } from '../components';
 import ColorBlindnessFilter from '../components/ColorBlindnessFilter';
 
 // icons
@@ -53,7 +48,7 @@ function ColorBlindness() {
     setSelected('Tritanomaly');
 
     // scroll up just in case
-    scrollToBottomOfAnnotationStep();
+    utils.scrollToBottomOfAnnotationStep();
 
     // loading image was killing the thread, causing loading state to not show, so delaying
     // https://www.figma.com/plugin-docs/frozen-plugins/
