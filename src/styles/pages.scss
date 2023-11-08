@@ -11,7 +11,13 @@
 
 .select-page-type {
   align-items: center;
-  @include themed() {
+  border-radius: 8px;
+  display: flex;
+  height: 60px;
+  justify-content: center;
+  width: 60px;
+
+  @include themed {
     background-color: t($bg-warning);
     color: t($on-warning);
 
@@ -21,19 +27,14 @@
       }
     }
   }
-  border-radius: 8px;
-  display: flex;
-  height: 60px;
-  justify-content: center;
-  width: 60px;
 }
 
 // Left Nav
 .left-nav-link {
-  width: 100%;
-  justify-content: space-between;
   align-items: center;
   display: flex;
+  justify-content: space-between;
+  width: 100%;
 }
 
 // Page Change Panel
@@ -53,13 +54,14 @@
 
   .dashboard-scrollable {
     height: 356px;
-    overflow-y: scroll;
-    scroll-behavior: smooth;
-    scroll-snap-type: y mandatory;
 
     // hide scrollbar
     -ms-overflow-style: none;
+    overflow-y: scroll;
+    scroll-behavior: smooth;
+    scroll-snap-type: y mandatory;
     scrollbar-width: none;
+
     &::-webkit-scrollbar {
       display: none;
     }
@@ -90,7 +92,7 @@
   }
 
   &.selected {
-    @include themed() {
+    @include themed {
       border-color: t($bg-brand);
     }
   }
@@ -143,19 +145,19 @@
 
   textarea {
     background-color: var(--figma-color-bg);
-    color: var(--figma-color-text);
     border-color: var(--figma-color-border);
+    color: var(--figma-color-text);
     font-family: sans-serif;
     height: 240px;
-    min-width: 668px;
     max-height: 356px;
     max-width: 668px;
+    min-width: 668px;
     outline: none;
     padding: $spacing-xs;
     width: 100%;
 
     &:focus {
-      @include themed() {
+      @include themed {
         box-shadow: 0 0 2px 1px t($bg-brand);
       }
     }
@@ -190,8 +192,8 @@
 $selection-button-width: 72px;
 
 .button-group {
-  display: flex;
   align-items: flex-start;
+  display: flex;
   flex-wrap: wrap;
 }
 
@@ -206,20 +208,20 @@ $selection-button-width: 72px;
 }
 
 .selection-button {
-  border: 1px solid transparent;
-  width: $selection-button-width;
-  height: $selection-button-width;
   align-items: center;
   background-color: #e5e5e5;
+  border: 1px solid transparent;
   border-radius: 6px;
   cursor: pointer;
   display: flex;
+  height: $selection-button-width;
   justify-content: center;
   overflow: hidden;
   position: relative;
+  width: $selection-button-width;
 
   &:active {
-    @include themed() {
+    @include themed {
       background-color: #8f8f8f;
       border-color: t($bg-brand);
     }
@@ -373,7 +375,7 @@ $selection-button-width: 72px;
   &:focus-visible {
     outline: 1px solid transparent;
 
-    @include themed() {
+    @include themed {
       &.status-fail {
         outline-color: t($bg-danger);
       }
@@ -395,7 +397,7 @@ $selection-button-width: 72px;
 
   & span {
     border-radius: 4px;
-    color: #ffffff;
+    color: #fff;
     display: none;
     font-family: sans-serif;
     font-size: 10px;
@@ -409,14 +411,14 @@ $selection-button-width: 72px;
   }
 
   &.status-fail span {
-    display: flex;
     align-items: center;
+    display: flex;
 
     svg {
       margin-right: 4px;
     }
 
-    @include themed() {
+    @include themed {
       background-color: t($bg-danger);
       color: t($on-danger);
     }
@@ -424,7 +426,7 @@ $selection-button-width: 72px;
 
   &.status-mixed span,
   &.status-unknown span {
-    @include themed() {
+    @include themed {
       background-color: t($bg-warning);
       color: t($on-warning);
     }
@@ -444,14 +446,14 @@ $selection-button-width: 72px;
   z-index: 5;
 
   .status-fail & {
-    @include themed() {
+    @include themed {
       background-color: t($bg-danger);
     }
   }
 
   .status-mixed &,
   .status-unknown & {
-    @include themed() {
+    @include themed {
       background-color: t($bg-warning);
     }
   }
@@ -494,7 +496,7 @@ $selection-button-width: 72px;
   }
 
   & .cb-pop {
-    @include themed() {
+    @include themed {
       color: t($muted);
     }
   }
@@ -541,41 +543,33 @@ $selection-button-width: 72px;
 }
 
 .protanopia {
-  -webkit-filter: url("#protanopia");
   filter: url("#protanopia");
 }
 
 .protanomaly {
-  -webkit-filter: url("#protanomaly");
   filter: url("#protanomaly");
 }
 
 .deuteranopia {
-  -webkit-filter: url("#deuteranopia");
   filter: url("#deuteranopia");
 }
 
 .deuteranomaly {
-  -webkit-filter: url("#deuteranomaly");
   filter: url("#deuteranomaly");
 }
 
 .tritanopia {
-  -webkit-filter: url("#tritanopia");
   filter: url("#tritanopia");
 }
 
 .tritanomaly {
-  -webkit-filter: url("#tritanomaly");
   filter: url("#tritanomaly");
 }
 
 .achromatopsia {
-  -webkit-filter: url("#achromatopsia");
   filter: url("#achromatopsia");
 }
 
 .achromatomaly {
-  -webkit-filter: url("#achromatomaly");
   filter: url("#achromatomaly");
 }

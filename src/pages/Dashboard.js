@@ -374,9 +374,9 @@ function Dashboard() {
       </div>
 
       {showModal && (
-        <div className="container-modal animated-duration-400 fadeIn">
+        <div className="container-modal animated-duration-400 fade-in">
           <div
-            className="modal animated-duration-600 fadeIn delay-200ms"
+            className="modal animated-duration-600 fade-in delay-200ms"
             role="dialog"
             aria-labelledby="modal-title"
             aria-modal

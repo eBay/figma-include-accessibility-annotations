@@ -2,18 +2,17 @@
 // /////////////////////////////////////////////////////////////////////////////
 .app-top {
   display: flex;
-  height: calc(100vh);
   flex-direction: row;
-  width: 100vw;
+  height: calc(100vh);
   transition: width 500ms ease-in-out;
+  width: 100vw;
 }
 
 // main panel (layout)
 // /////////////////////////////////////////////////////////////////////////////
 main {
   height: calc(100% - $footer-height);
-  overflow-x: hidden;
-  overflow-y: scroll;
+  overflow: hidden scroll;
   padding: $spacing-sm;
   transition: width 500ms ease-in-out;
   width: 475px;

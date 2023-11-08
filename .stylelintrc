@@ -1,0 +1,11 @@
+{
+  "extends": ["stylelint-config-standard-scss"],
+  "plugins": [
+      "./custom-rules/hex-lowercase.js",
+      "stylelint-order"
+  ],
+  "rules": {
+      "custom-rules/hex-lowercase": true,
+      "order/properties-alphabetical-order": true
+  }
+}

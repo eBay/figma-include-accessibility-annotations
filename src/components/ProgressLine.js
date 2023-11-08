@@ -27,7 +27,7 @@ function ProgressLine({ progressType }) {
       <div className="flex-row-center">
         <div className="mr1" dangerouslySetInnerHTML={{ __html: msg }} />
 
-        <div className="animated fadeIn delay-400ms">
+        <div className="animated fade-in delay-400ms">
           <div className={`animated ${animation} delay-1s`}>{icon}</div>
         </div>
       </div>

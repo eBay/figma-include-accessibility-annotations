@@ -1,6 +1,6 @@
 *,
-*:before,
-*:after {
+*::before,
+*::after {
   box-sizing: border-box;
 }
 
@@ -9,10 +9,10 @@ body {
   color: var(--figma-color-text);
   font-family: Inter, sans-serif;
   font-size: 12px;
+  -webkit-font-smoothing: antialiased;
   line-height: 1.4;
   margin: 0;
   overflow: hidden;
-  -webkit-font-smoothing: antialiased;
 }
 
 a {
@@ -25,7 +25,7 @@ a:focus-visible,
 button:focus-visible,
 [tabIndex='0']:focus-visible,
 main:focus-visible {
-  @include themed() {
+  @include themed {
     box-shadow: 0 0 2px 2px t($bg-brand);
   }
 
@@ -41,7 +41,7 @@ main:focus-visible {
   &.dropdown,
   &.dropdown-option,
   nav & {
-    @include themed() {
+    @include themed {
       box-shadow: inset 0 0 2px 2px t($bg-brand);
     }
   }
@@ -82,8 +82,8 @@ strong,
 
 .absolute-bottom-left {
   bottom: 16px;
-  position: absolute;
   left: 16px;
+  position: absolute;
 }
 
 .absolute-bottom-right {
@@ -122,9 +122,10 @@ strong,
 }
 
 .link {
-  @include themed() {
+  @include themed {
     color: t($bg-brand);
   }
+
   cursor: pointer;
 }
 
@@ -223,12 +224,12 @@ strong,
 // /////////////////////////////////////////////////////////////////////////////
 .btn {
   background-color: var(--figma-color-bg);
-  border-radius: 6px;
   border: 1px solid var(--figma-color-text);
+  border-radius: 6px;
   color: var(--figma-color-text);
   cursor: pointer;
-  height: 30px;
   font-size: 13px;
+  height: 30px;
   min-width: 50px;
   padding: 0 12px;
 
@@ -240,7 +241,7 @@ strong,
   }
 
   &.primary {
-    @include themed() {
+    @include themed {
       background-color: t($bg-brand);
       border-color: t($bg-brand);
       color: t($on-brand);
@@ -255,7 +256,7 @@ strong,
   }
 
   &.danger {
-    @include themed() {
+    @include themed {
       background-color: t($bg-danger);
       border-color: t($bg-danger);
       color: t($on-danger);
@@ -279,7 +280,7 @@ strong,
   }
 
   &:hover {
-    @include themed() {
+    @include themed {
       background-color: t($bg-danger);
     }
 
@@ -312,7 +313,7 @@ strong,
   }
 
   &:focus {
-    @include themed() {
+    @include themed {
       border-color: t($bg-brand);
     }
   }
@@ -323,7 +324,7 @@ strong,
   }
 
   &.warning {
-    @include themed() {
+    @include themed {
       border-color: t($bg-danger);
     }
   }
@@ -355,7 +356,7 @@ strong,
   }
 
   &_link path {
-    @include themed() {
+    @include themed {
       stroke: t($bg-brand);
     }
   }
@@ -363,7 +364,7 @@ strong,
 
 .svg-theme-primary {
   path {
-    @include themed() {
+    @include themed {
       stroke: t($bg-brand);
     }
   }

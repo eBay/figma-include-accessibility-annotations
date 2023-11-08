@@ -10,10 +10,9 @@ $red-theme-light: #e0103a;
 $red-theme-dark: #ff6383;
 $warning-theme-dark: #592e13;
 $onbrand-dark: #191919;
-$onwarning-dark: #ffffff;
+$onwarning-dark: #fff;
 $muted-light: #767676;
-$muted-dark: #aaaaaa;
-
+$muted-dark: #aaa;
 $bg-brand: 'bg-brand';
 $bg-danger: 'bg-danger';
 $bg-warning: 'bg-warning';
@@ -49,6 +48,7 @@ $themes: (
   @each $theme, $map in $themes {
     .figma-#{$theme} & {
       $theme-map: () !global;
+
       @each $key, $submap in $map {
         $value: map-get(map-get($themes, $theme), '#{$key}');
         $theme-map: map-merge(
@@ -59,6 +59,7 @@ $themes: (
         ) !global;
       }
       @content;
+
       $theme-map: null !global;
     }
   }
