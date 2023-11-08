@@ -4,13 +4,13 @@
 
 // padding top
 // /////////////////////////////////////////////////////////////////////////////
-$paddingsT: (
+$paddings-t: (
   'pt0': 0,
   'pt1': $spacing-xs,
   'pt2': $spacing-sm
 );
 
-@each $padding, $value in $paddingsT {
+@each $padding, $value in $paddings-t {
   .#{$padding} {
     padding-top: #{$value};
   }
@@ -18,12 +18,12 @@ $paddingsT: (
 
 // margin bottom
 // /////////////////////////////////////////////////////////////////////////////
-$marginsB: (
+$margins-b: (
   'mb1': $spacing-xs,
   'mb2': $spacing-sm
 );
 
-@each $margin, $value in $marginsB {
+@each $margin, $value in $margins-b {
   .#{$margin} {
     margin-bottom: #{$value};
   }
@@ -31,13 +31,13 @@ $marginsB: (
 
 // margin right
 // /////////////////////////////////////////////////////////////////////////////
-$marginsR: (
+$margins-r: (
   'mr1': $spacing-xs,
   'mr2': $spacing-sm,
   'mr3': $spacing-md
 );
 
-@each $margin, $value in $marginsR {
+@each $margin, $value in $margins-r {
   .#{$margin} {
     margin-right: #{$value};
   }
@@ -45,11 +45,11 @@ $marginsR: (
 
 // margin left
 // /////////////////////////////////////////////////////////////////////////////
-$marginsL: (
+$margins-l: (
   'ml1': $spacing-xs
 );
 
-@each $margin, $value in $marginsL {
+@each $margin, $value in $margins-l {
   .#{$margin} {
     margin-left: #{$value};
   }
@@ -57,11 +57,11 @@ $marginsL: (
 
 // margin top
 // /////////////////////////////////////////////////////////////////////////////
-$marginsT: (
+$margins-t: (
   'mt1': $spacing-xs
 );
 
-@each $margin, $value in $marginsT {
+@each $margin, $value in $margins-t {
   .#{$margin} {
     margin-top: #{$value};
   }
