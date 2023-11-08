@@ -1,26 +1,23 @@
 // reset
-@import '_reset';
+@import 'reset';
 
 // variables
-@import '_variables';
+@import 'variables';
 
 // colors, theming
-@import '_colors';
-
-// fonts
-@import '_fonts';
+@import 'colors';
 
 // mixins
-@import '_mixins';
+@import 'mixins';
 
 // animations
-@import '_animations';
+@import 'animations';
 
 // scaffolding
-@import '_scaffolding';
+@import 'scaffolding';
 
 // shared
-@import '_shared';
+@import 'shared';
 
 // pages
 @import 'pages';
