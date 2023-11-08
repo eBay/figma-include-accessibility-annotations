@@ -10,6 +10,7 @@
     "serve": "webpack serve",
     "bundle": "webpack --mode=production && node zip.js",
     "lint": "eslint ./src",
+    "lint-scss": "stylelint \"**/*.scss\"",
     "docs": "node_modules/.bin/jsdoc --readme DOCS.md -c jsdoc.json"
   },
   "author": "eBay Design Technology",
@@ -48,6 +49,10 @@
     "sass": "^1.69.5",
     "sass-loader": "^12.6.0",
     "style-loader": "^3.2.1",
+    "stylelint": "^15.11.0",
+    "stylelint-config-standard-scss": "^11.1.0",
+    "stylelint-order": "^6.0.3",
+    "stylelint-prettier": "^4.0.2",
     "url-loader": "^4.1.1",
     "webpack": "^5.89.0",
     "webpack-cli": "^4.10.0",

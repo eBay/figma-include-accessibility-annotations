@@ -4,14 +4,18 @@
   "parserOptions": {
     "ecmaVersion": 2020
   },
+  "ignorePatterns": ["src/data/*.js"],
   "rules": {
     "global-require": 0,
     "prettier/prettier": ["error"],
     "no-case-declarations": 0,
+    "no-param-reassign": 0,
+    "no-promise-executor-return": 0,
     "no-restricted-globals": 0,
     "react/forbid-prop-types": 0,
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
     "react/jsx-fragments": 0,
+    "react/jsx-no-constructed-context-values": 0,
     "react/jsx-props-no-spreading": 0,
     "react/no-danger": 0
   },
