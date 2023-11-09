@@ -13,7 +13,28 @@ $spacing-xxl: 48px;
 $footer-height: 56px;
 $footer-height-condensed: 48px;
 
+
 :root {
+  // background
+  // ///////////////////////////////////////////////////////////////////////////
+  --background-accent: #3665f3;
+  --background-attention: #e0103a;
+  --background-warning: #fff1c2;
+
+  // foreground
+  // ///////////////////////////////////////////////////////////////////////////
+  --foreground-accent: #3665f3;
+  --foreground-attention: #e0103a;
+  --foreground-muted: #767676;
+  --foreground-on-color: #fff;
+  --foreground-on-warning: rgb(0 0 0 / 90%);
+
+  // border
+  // ///////////////////////////////////////////////////////////////////////////
+  --border-accent: #3665f3;
+  --border-attention: #e0103a;
+  --border-warning: #fff1c2;
+
   // layout
   // ///////////////////////////////////////////////////////////////////////////
   --spacer-xxs: #{$spacing-xxs};
@@ -23,4 +44,26 @@ $footer-height-condensed: 48px;
   --spacing-lg: #{$spacing-lg};
   --spacing-xl: #{$spacing-xl};
   --spacing-xxl: #{$spacing-xxl};
+
+  &.figma-dark {
+    // background
+    // /////////////////////////////////////////////////////////////////////////
+    --background-accent: #659eff;
+    --background-attention: #ff6383;
+    --background-warning: #592e13;
+
+    // foreground
+    // /////////////////////////////////////////////////////////////////////////
+    --foreground-accent: #659eff;
+    --foreground-attention: #ff6383;
+    --foreground-muted: #aaa;
+    --foreground-on-color: #191919;
+    --foreground-on-warning: #fff;
+
+    // border
+    // /////////////////////////////////////////////////////////////////////////
+    --border-accent: #659eff;
+    --border-attention: #ff6383;
+    --border-warning: #592e13;
+  }
 }

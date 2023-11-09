@@ -11,20 +11,17 @@
 
 .select-page-type {
   align-items: center;
+  background-color: var(--background-warning);
   border-radius: 8px;
+  color: var(--foreground-on-warning);
   display: flex;
   height: 60px;
   justify-content: center;
   width: 60px;
 
-  @include themed {
-    background-color: t($bg-warning);
-    color: t($on-warning);
-
-    svg {
-      path {
-        fill: t($on-warning);
-      }
+  svg {
+    path {
+      fill: var(--foreground-on-warning);
     }
   }
 }
@@ -92,9 +89,7 @@
   }
 
   &.selected {
-    @include themed {
-      border-color: t($bg-brand);
-    }
+    border-color: var(--border-accent);
   }
 }
 
@@ -157,9 +152,7 @@
     width: 100%;
 
     &:focus {
-      @include themed {
-        box-shadow: 0 0 2px 1px t($bg-brand);
-      }
+      box-shadow: 0 0 2px 1px var(--border-accent);
     }
   }
 
@@ -221,10 +214,8 @@ $selection-button-width: 72px;
   width: $selection-button-width;
 
   &:active {
-    @include themed {
-      background-color: #8f8f8f;
-      border-color: t($bg-brand);
-    }
+    background-color: #8f8f8f;
+    border-color: var(--border-accent);
   }
 
   &.no-events {
@@ -375,15 +366,13 @@ $selection-button-width: 72px;
   &:focus-visible {
     outline: 1px solid transparent;
 
-    @include themed {
-      &.status-fail {
-        outline-color: t($bg-danger);
-      }
+    &.status-fail {
+      outline-color: var(--border-attention);
+    }
 
-      &.status-mixed,
-      &.status-unknown {
-        outline-color: t($bg-warning);
-      }
+    &.status-mixed,
+    &.status-unknown {
+      outline-color: var(--border-warning);
     }
 
     &.status-pass {
@@ -412,24 +401,19 @@ $selection-button-width: 72px;
 
   &.status-fail span {
     align-items: center;
+    background-color: var(--background-attention);
+    color: var(--foreground-on-color);
     display: flex;
 
     svg {
       margin-right: 4px;
     }
-
-    @include themed {
-      background-color: t($bg-danger);
-      color: t($on-danger);
-    }
   }
 
   &.status-mixed span,
   &.status-unknown span {
-    @include themed {
-      background-color: t($bg-warning);
-      color: t($on-warning);
-    }
+    background-color: var(--background-warning);
+    color: var(--foreground-on-warning);
   }
 
   &.status-pass span {
@@ -446,16 +430,12 @@ $selection-button-width: 72px;
   z-index: 5;
 
   .status-fail & {
-    @include themed {
-      background-color: t($bg-danger);
-    }
+    background-color: var(--background-attention);
   }
 
   .status-mixed &,
   .status-unknown & {
-    @include themed {
-      background-color: t($bg-warning);
-    }
+    background-color: var(--background-warning);
   }
 
   .status-pass & {
@@ -496,9 +476,7 @@ $selection-button-width: 72px;
   }
 
   & .cb-pop {
-    @include themed {
-      color: t($muted);
-    }
+    color: var(--foreground-muted);
   }
 }
 

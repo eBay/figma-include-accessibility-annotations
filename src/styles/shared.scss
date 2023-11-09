@@ -25,10 +25,7 @@ a:focus-visible,
 button:focus-visible,
 [tabIndex='0']:focus-visible,
 main:focus-visible {
-  @include themed {
-    box-shadow: 0 0 2px 2px t($bg-brand);
-  }
-
+  box-shadow: 0 0 2px 2px var(--border-accent);
   outline: none;
 
   // next 2 lines keep the focus element in left nav at the top (no bleed behind)
@@ -41,9 +38,7 @@ main:focus-visible {
   &.dropdown,
   &.dropdown-option,
   nav & {
-    @include themed {
-      box-shadow: inset 0 0 2px 2px t($bg-brand);
-    }
+    box-shadow: inset 0 0 2px 2px var(--border-accent);
   }
 
   &.toggle-nav,
@@ -122,10 +117,7 @@ strong,
 }
 
 .link {
-  @include themed {
-    color: t($bg-brand);
-  }
-
+  color: var(--foreground-accent);
   cursor: pointer;
 }
 
@@ -241,11 +233,9 @@ strong,
   }
 
   &.primary {
-    @include themed {
-      background-color: t($bg-brand);
-      border-color: t($bg-brand);
-      color: t($on-brand);
-    }
+    background-color: var(--background-accent);
+    border-color: var(--border-accent);
+    color: var(--foreground-on-color);
 
     &:disabled {
       background-color: var(--figma-color-bg-disabled);
@@ -256,11 +246,9 @@ strong,
   }
 
   &.danger {
-    @include themed {
-      background-color: t($bg-danger);
-      border-color: t($bg-danger);
-      color: t($on-danger);
-    }
+    background-color: var(--background-attention);
+    border-color: var(--border-attention);
+    color: var(--foreground-on-color);
   }
 }
 
@@ -280,9 +268,7 @@ strong,
   }
 
   &:hover {
-    @include themed {
-      background-color: t($bg-danger);
-    }
+    background-color: var(--background-attention);
 
     .remove-dash {
       background-color: var(--figma-color-text-oninverse);
@@ -313,9 +299,7 @@ strong,
   }
 
   &:focus {
-    @include themed {
-      border-color: t($bg-brand);
-    }
+    border-color: var(--border-accent);
   }
 
   &::placeholder {
@@ -324,9 +308,7 @@ strong,
   }
 
   &.warning {
-    @include themed {
-      border-color: t($bg-danger);
-    }
+    border-color: var(--border-attention);
   }
 
   &-na {
@@ -356,17 +338,13 @@ strong,
   }
 
   &_link path {
-    @include themed {
-      stroke: t($bg-brand);
-    }
+    stroke: var(--border-accent);
   }
 }
 
 .svg-theme-primary {
   path {
-    @include themed {
-      stroke: t($bg-brand);
-    }
+    stroke: var(--border-accent);
   }
 }
 

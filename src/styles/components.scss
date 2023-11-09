@@ -21,12 +21,9 @@
 // Banner Tip
 // /////////////////////////////////////////////////////////////////////////////
 .banner-tip {
-  @include themed {
-    background-color: t($bg-warning);
-    color: t($on-warning);
-  }
-
+  background-color: var(--background-warning);
   border-radius: 6px;
+  color: var(--foreground-on-warning);
   font-size: 11px;
   line-height: 15px;
   padding: $spacing-xs $spacing-sm $spacing-xs $spacing-xs;
@@ -40,11 +37,8 @@
 }
 
 .tip-link {
-  @include themed {
-    color: t($on-warning);
-  }
-
   border-radius: 2px;
+  color: var(--foreground-on-warning);
   display: inline-block;
   font-size: 12px;
   margin-left: 26px;
@@ -89,10 +83,8 @@
   width: 18px;
 
   &.checked {
-    @include themed {
-      background-color: var(--figma-color-text);
-      border-color: var(--figma-color-text);
-    }
+    background-color: var(--figma-color-text);
+    border-color: var(--figma-color-text);
 
     svg {
       path {
@@ -183,9 +175,7 @@
     width: 100%;
 
     &:hover {
-      @include themed {
-        background-color: t($bg-brand);
-      }
+      background-color: var(--background-accent);
     }
   }
 
