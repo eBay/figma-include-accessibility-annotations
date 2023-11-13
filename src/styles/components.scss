@@ -1,31 +1,3 @@
-// Banner Tip
-// /////////////////////////////////////////////////////////////////////////////
-.banner-tip {
-  background-color: var(--background-warning);
-  border-radius: 6px;
-  color: var(--foreground-on-warning);
-  font-size: 11px;
-  line-height: 15px;
-  padding: $spacing-xs $spacing-sm $spacing-xs $spacing-xs;
-}
-
-.tip-label {
-  font-size: 12px;
-  font-weight: bold;
-  margin-right: $spacing-xs;
-  text-transform: uppercase;
-}
-
-.tip-link {
-  border-radius: 2px;
-  color: var(--foreground-on-warning);
-  display: inline-block;
-  font-size: 12px;
-  margin-left: 26px;
-  margin-top: 8px;
-  text-decoration: underline;
-}
-
 // Checkbox
 // /////////////////////////////////////////////////////////////////////////////
 .container-checkbox {
