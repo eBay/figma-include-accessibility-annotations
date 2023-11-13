@@ -1,16 +1,3 @@
-// Alert
-// /////////////////////////////////////////////////////////////////////////////
-.alert {
-  align-items: center;
-  color: var(--figma-color-text);
-  display: flex;
-  padding: $spacing-sm;
-
-  &.warning {
-    color: var(--figma-color-bg-danger);
-  }
-}
-
 // Banner Alert
 // /////////////////////////////////////////////////////////////////////////////
 .banner-alert-icon {
