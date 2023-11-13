@@ -266,48 +266,6 @@ $selection-button-width: 72px;
   max-width: 194px;
 }
 
-// Alt Text
-// /////////////////////////////////////////////////////////////////////////////
-.alt-text-row {
-  align-items: center;
-  column-gap: $spacing-xs;
-  display: flex;
-  margin-bottom: $spacing-xs;
-}
-
-.container-image-preview {
-  position: relative;
-
-  .scroll-to {
-    background-color: var(--figma-color-bg-inverse);
-    border-bottom-left-radius: 5px;
-    border-bottom-right-radius: 5px;
-    bottom: 0;
-    color: var(--figma-color-text-oninverse);
-    font-size: 10px;
-    left: 0;
-    opacity: 0;
-    padding-bottom: 2px;
-    position: absolute;
-    text-align: center;
-    transition: all 200ms ease;
-    width: 100%;
-  }
-
-  &:hover .scroll-to {
-    opacity: 1;
-  }
-}
-
-.image-preview {
-  background-color: var(--figma-color-bg-disabled);
-  border-radius: 6px;
-  height: 48px;
-  min-width: 48px;
-  object-fit: contain;
-  width: 48px;
-}
-
 // Color Contrast
 // /////////////////////////////////////////////////////////////////////////////
 .contrast-row {

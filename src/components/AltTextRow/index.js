@@ -1,15 +1,18 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import { utils } from '../constants';
+import { utils } from '../../constants';
 
 // components
-import Dropdown from './Dropdown';
+import Dropdown from '../Dropdown';
 
 // data
-import imageTypesArray from '../data/dropdown-image-types.json';
+import imageTypesArray from '../../data/dropdown-image-types.json';
 
 // app state
-import Context from '../context';
+import Context from '../../context';
+
+// styles
+import './styles.scss';
 
 function AltTextRow(props) {
   // main app state
