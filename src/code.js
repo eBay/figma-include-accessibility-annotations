@@ -238,6 +238,11 @@ figma.ui.onmessage = async (msg) => {
     step.colorBlindness.getDesignFile(msg);
   }
 
+  // responsive reflow (create designs)
+  if (type === 'create-responsive-designs') {
+    step.responsiveReflow.createResponsiveDesigns(msg);
+  }
+
   // remove node(s) by array of IDs
   if (type === 'remove-nodes') {
     const { nodeIds } = msg;
