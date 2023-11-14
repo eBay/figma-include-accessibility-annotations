@@ -66,6 +66,7 @@ function Dropdown({ align, data, index, isOpened, onOpen, onSelect, type }) {
       </ul>
 
       <div
+        aria-hidden
         className="dropdown-overlay-close"
         onClick={() => onOpen(toggledValue)}
         onKeyDown={({ key }) => {
