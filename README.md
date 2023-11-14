@@ -21,7 +21,8 @@ The plugin was developed by members of the accessibility and design teams at eBa
 
 **Near term bug fixes & improvements**
 
-- [ ] Updates for keyboard navigation
+- [X] Updates for keyboard navigation (v10)
+- [ ] Generate Responsive Designs from a single design
 - [ ] Add ability to edit landmarks
 - [ ] Add ability to multi-select for headings
 - [ ] Scan for svg (alternative text)
@@ -30,7 +31,6 @@ The plugin was developed by members of the accessibility and design teams at eBa
 - [ ] Synchronize copy/paste, undo/redo between the plugin and Figma layers
 - [ ] Allow designer to annotate a section of a design
 - [ ] Add delete in multiple steps
-- [ ] Bug fixes
 
 **Future explorations**
 
