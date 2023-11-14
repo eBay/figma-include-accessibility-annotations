@@ -1,6 +1,9 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 
+// styles
+import './styles.scss';
+
 function BannerAlert({ icon, text }) {
   return (
     <div className="flex-row align-start">

@@ -5,7 +5,6 @@ import { utils } from '../constants';
 import {
   Alert,
   AnnotationStepPage,
-  scrollToBottomOfAnnotationStep,
   EmptyStepSelection,
   HeadingStep
 } from '../components';
@@ -48,7 +47,7 @@ function Landmarks() {
     const { bounds, id } = page;
 
     // scroll to bottom of main
-    scrollToBottomOfAnnotationStep();
+    utils.scrollToBottomOfAnnotationStep();
 
     // let figma side know, time to place that rectangle
     sendToFigma('add-landmark', {

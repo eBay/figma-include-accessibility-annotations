@@ -1,9 +1,12 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import { utils } from '../constants';
+import { utils } from '../../constants';
 
 // icons
-import { SvgCheckSm, SvgDownCarrot } from '../icons';
+import { SvgCheckSm, SvgDownCarrot } from '../../icons';
+
+// styles
+import './styles.scss';
 
 function Dropdown({ align, data, index, isOpened, onOpen, onSelect, type }) {
   // ui state
@@ -63,6 +66,7 @@ function Dropdown({ align, data, index, isOpened, onOpen, onSelect, type }) {
       </ul>
 
       <div
+        aria-hidden
         className="dropdown-overlay-close"
         onClick={() => onOpen(toggledValue)}
         onKeyDown={({ key }) => {

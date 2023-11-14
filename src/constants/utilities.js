@@ -223,9 +223,34 @@ const showAllLayers = (a11ySuffix) => {
   }
 };
 
-// sleep function
+/**
+ * Sleep/Wait for X milliseconds
+ *
+ * @param {number} ms - milliseconds to wait
+ *
+ * @return null
+ */
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
+export const scrollToBottomOfAnnotationStep = () => {
+  // scroll to bottom of main
+  setTimeout(() => {
+    const mainTag = document.getElementById('main');
+    mainTag.scrollTo({
+      top: mainTag.scrollHeight,
+      left: 0,
+      behavior: 'smooth'
+    });
+  }, 400);
+};
+
+/**
+ * Load images from hash
+ *
+ * @param {array} imagesScanned - array of images for current design
+ *
+ * @return {array} newImagesScanned - array of images with base64 data
+ */
 const getBase64FromHash = async (imagesScanned) => {
   const newImagesScanned = [];
 
@@ -260,5 +285,6 @@ export default {
   nameBeforePipe,
   sanitizeName,
   showAllLayers,
-  sleep
+  sleep,
+  scrollToBottomOfAnnotationStep
 };

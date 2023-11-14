@@ -5,7 +5,6 @@ import { utils } from '../constants';
 import {
   Alert,
   AnnotationStepPage,
-  scrollToBottomOfAnnotationStep,
   EmptyStepSelection,
   HeadingStep
 } from '../components';
@@ -91,7 +90,7 @@ function ComplexGestures() {
     });
 
     // scroll to bottom of main
-    scrollToBottomOfAnnotationStep();
+    utils.scrollToBottomOfAnnotationStep();
   };
 
   const onSelect = (value) => {

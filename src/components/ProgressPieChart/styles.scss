@@ -1,0 +1,27 @@
+.progress-chart {
+  border: 1px solid var(--figma-color-text);
+  border-radius: 50%;
+  margin-right: var(--spacing-xs);
+  min-height: 16px;
+  position: relative;
+  width: 16px;
+
+  .collapsed & {
+    display: none;
+  }
+}
+
+.progress {
+  font-size: 12px;
+  line-height: 16px;
+}
+
+.progress-check {
+  left: 1px;
+  position: absolute;
+  top: 1px;
+
+  .collapsed & {
+    display: none;
+  }
+}

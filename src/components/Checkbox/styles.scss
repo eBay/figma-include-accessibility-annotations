@@ -1,0 +1,45 @@
+.container-checkbox {
+  align-items: center;
+  border-radius: 2px;
+  cursor: pointer;
+  display: flex;
+  flex-shrink: 0;
+  width: 100%;
+
+  label {
+    cursor: pointer;
+    font-size: 13px;
+  }
+
+  &.no-events {
+    cursor: default;
+    pointer-events: none;
+
+    label {
+      cursor: default;
+      pointer-events: none;
+    }
+  }
+}
+
+.checkbox {
+  align-items: center;
+  border: 1px solid var(--figma-color-icon);
+  border-radius: 3px;
+  display: flex;
+  height: 18px;
+  justify-content: center;
+  padding-right: 1px;
+  width: 18px;
+
+  &.checked {
+    background-color: var(--figma-color-text);
+    border-color: var(--figma-color-text);
+
+    svg {
+      path {
+        fill: var(--figma-color-bg);
+      }
+    }
+  }
+}

@@ -2,7 +2,10 @@ import * as React from 'react';
 import PropTypes from 'prop-types';
 
 // icons
-import { SvgCheck } from '../icons';
+import { SvgCheck } from '../../icons';
+
+// styles
+import './styles.scss';
 
 function ProgressPieChart({ progress }) {
   const percentCss = {

@@ -2,11 +2,7 @@ import * as React from 'react';
 import { utils } from '../constants';
 
 // components
-import {
-  AnnotationStepPage,
-  scrollToBottomOfAnnotationStep,
-  HeadingStep
-} from '../components';
+import { AnnotationStepPage, HeadingStep } from '../components';
 
 // icons
 import { SvgCheck } from '../icons';
@@ -69,7 +65,7 @@ function ReadingOrder() {
 
     // update ui to show step 2
     setHasArrows(true);
-    scrollToBottomOfAnnotationStep();
+    utils.scrollToBottomOfAnnotationStep();
   };
 
   const onDoneWithReadingOrder = () => {

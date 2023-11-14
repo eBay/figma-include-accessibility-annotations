@@ -1,0 +1,10 @@
+.alert {
+  align-items: center;
+  color: var(--figma-color-text);
+  display: flex;
+  padding: var(--spacing-sm);
+
+  &.warning {
+    color: var(--figma-color-bg-danger);
+  }
+}

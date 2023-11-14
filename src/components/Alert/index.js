@@ -1,6 +1,9 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 
+// styles
+import './styles.scss';
+
 function Alert({ icon, style, text, type }) {
   return (
     <div className={`alert ${type}`} style={style}>

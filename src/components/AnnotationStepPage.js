@@ -42,18 +42,6 @@ function AnnotationStepPage({
   );
 }
 
-export const scrollToBottomOfAnnotationStep = () => {
-  // scroll to bottom of main
-  setTimeout(() => {
-    const mainTag = document.getElementById('main');
-    mainTag.scrollTo({
-      top: mainTag.scrollHeight,
-      left: 0,
-      behavior: 'smooth'
-    });
-  }, 400);
-};
-
 AnnotationStepPage.defaultProps = {
   footerProps: {}
 };

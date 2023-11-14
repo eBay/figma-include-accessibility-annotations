@@ -11,20 +11,17 @@
 
 .select-page-type {
   align-items: center;
+  background-color: var(--background-warning);
   border-radius: 8px;
+  color: var(--foreground-on-warning);
   display: flex;
   height: 60px;
   justify-content: center;
   width: 60px;
 
-  @include themed {
-    background-color: t($bg-warning);
-    color: t($on-warning);
-
-    svg {
-      path {
-        fill: t($on-warning);
-      }
+  svg {
+    path {
+      fill: var(--foreground-on-warning);
     }
   }
 }
@@ -92,9 +89,7 @@
   }
 
   &.selected {
-    @include themed {
-      border-color: t($bg-brand);
-    }
+    border-color: var(--border-accent);
   }
 }
 
@@ -130,6 +125,63 @@
   width: 100%;
 }
 
+.container-modal {
+  align-items: center;
+  display: flex;
+  height: 100vh;
+  justify-content: center;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100vw;
+  z-index: 100;
+}
+
+.modal {
+  background-color: var(--figma-color-bg);
+  border: 1px solid var(--figma-color-border);
+  border-radius: 6px;
+  color: var(--figma-color-text);
+  outline: 0;
+  padding: $spacing-sm;
+  position: absolute;
+  width: 344px;
+  z-index: 300;
+
+  h2 {
+    font-size: 13px;
+    font-weight: bold;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 280px;
+  }
+
+  .container-close {
+    border-radius: 4px;
+    cursor: pointer;
+    padding: $spacing-xs;
+    position: absolute;
+    right: -4px;
+  }
+
+  p {
+    font-size: 11px;
+    line-height: 14px;
+  }
+}
+
+.modal-overlay {
+  background-color: var(--figma-color-text-tertiary);
+  height: 100vh;
+  left: 0;
+  opacity: 0.2;
+  position: absolute;
+  top: 0;
+  width: 100vw;
+  z-index: 200;
+}
+
 // Feedback
 // /////////////////////////////////////////////////////////////////////////////
 .feedback {
@@ -157,9 +209,7 @@
     width: 100%;
 
     &:focus {
-      @include themed {
-        box-shadow: 0 0 2px 1px t($bg-brand);
-      }
+      box-shadow: 0 0 2px 1px var(--border-accent);
     }
   }
 
@@ -221,10 +271,8 @@ $selection-button-width: 72px;
   width: $selection-button-width;
 
   &:active {
-    @include themed {
-      background-color: #8f8f8f;
-      border-color: t($bg-brand);
-    }
+    background-color: #8f8f8f;
+    border-color: var(--border-accent);
   }
 
   &.no-events {
@@ -275,48 +323,6 @@ $selection-button-width: 72px;
   max-width: 194px;
 }
 
-// Alt Text
-// /////////////////////////////////////////////////////////////////////////////
-.alt-text-row {
-  align-items: center;
-  column-gap: $spacing-xs;
-  display: flex;
-  margin-bottom: $spacing-xs;
-}
-
-.container-image-preview {
-  position: relative;
-
-  .scroll-to {
-    background-color: var(--figma-color-bg-inverse);
-    border-bottom-left-radius: 5px;
-    border-bottom-right-radius: 5px;
-    bottom: 0;
-    color: var(--figma-color-text-oninverse);
-    font-size: 10px;
-    left: 0;
-    opacity: 0;
-    padding-bottom: 2px;
-    position: absolute;
-    text-align: center;
-    transition: all 200ms ease;
-    width: 100%;
-  }
-
-  &:hover .scroll-to {
-    opacity: 1;
-  }
-}
-
-.image-preview {
-  background-color: var(--figma-color-bg-disabled);
-  border-radius: 6px;
-  height: 48px;
-  min-width: 48px;
-  object-fit: contain;
-  width: 48px;
-}
-
 // Color Contrast
 // /////////////////////////////////////////////////////////////////////////////
 .contrast-row {
@@ -326,6 +332,10 @@ $selection-button-width: 72px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+
+  .contrast-goto {
+    display: none;
+  }
 
   &:hover .contrast-goto {
     display: block;
@@ -337,130 +347,6 @@ $selection-button-width: 72px;
   text-overflow: ellipsis;
   white-space: nowrap;
   width: 348px;
-}
-
-.contrast-goto {
-  display: none;
-}
-
-.contrast-preview {
-  border: 1px solid var(--figma-color-border);
-  overflow: hidden;
-  user-select: none;
-}
-
-.contrast-preview-content {
-  display: flex;
-  position: relative;
-
-  & img {
-    height: auto;
-    width: 100%;
-  }
-}
-
-.text-node-hotspot {
-  cursor: pointer;
-  display: flex;
-  position: absolute;
-
-  &:hover {
-    outline: 1px solid transparent;
-
-    & span {
-      display: block;
-    }
-  }
-
-  &:focus-visible {
-    outline: 1px solid transparent;
-
-    @include themed {
-      &.status-fail {
-        outline-color: t($bg-danger);
-      }
-
-      &.status-mixed,
-      &.status-unknown {
-        outline-color: t($bg-warning);
-      }
-    }
-
-    &.status-pass {
-      outline-color: var(--figma-color-bg-success);
-    }
-
-    & span {
-      display: block;
-    }
-  }
-
-  & span {
-    border-radius: 4px;
-    color: #fff;
-    display: none;
-    font-family: sans-serif;
-    font-size: 10px;
-    font-weight: bold;
-    line-height: 16px;
-    padding: 0 4px;
-    pointer-events: none;
-    position: absolute;
-    white-space: nowrap;
-    z-index: 10;
-  }
-
-  &.status-fail span {
-    align-items: center;
-    display: flex;
-
-    svg {
-      margin-right: 4px;
-    }
-
-    @include themed {
-      background-color: t($bg-danger);
-      color: t($on-danger);
-    }
-  }
-
-  &.status-mixed span,
-  &.status-unknown span {
-    @include themed {
-      background-color: t($bg-warning);
-      color: t($on-warning);
-    }
-  }
-
-  &.status-pass span {
-    background-color: var(--figma-color-bg-success);
-    color: var(--figma-color-text-onsuccess);
-  }
-}
-
-.text-node-hotspot-bg {
-  height: 100%;
-  opacity: 0.6;
-  position: absolute;
-  width: 100%;
-  z-index: 5;
-
-  .status-fail & {
-    @include themed {
-      background-color: t($bg-danger);
-    }
-  }
-
-  .status-mixed &,
-  .status-unknown & {
-    @include themed {
-      background-color: t($bg-warning);
-    }
-  }
-
-  .status-pass & {
-    background-color: var(--figma-color-bg-success);
-  }
 }
 
 // Color Blindness
@@ -496,9 +382,7 @@ $selection-button-width: 72px;
   }
 
   & .cb-pop {
-    @include themed {
-      color: t($muted);
-    }
+    color: var(--foreground-muted);
   }
 }
 

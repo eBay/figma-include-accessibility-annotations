@@ -9,7 +9,7 @@ import Context from '../context';
 
 function ChooseYourOwnAdventure() {
   // main app state
-  const { updateState, version } = React.useContext(Context);
+  const { hasDashboard, updateState, version } = React.useContext(Context);
 
   const onClick = (selectedType) => {
     updateState('pageType', selectedType);
@@ -59,23 +59,25 @@ function ChooseYourOwnAdventure() {
         </div>
       </div>
 
-      <div className="absolute-bottom-left">
-        <div
-          className="flex-row-center border-radius-2 link cursor-pointer"
-          onClick={backToDashboard}
-          onKeyDown={({ key }) => {
-            if (utils.isEnterKey(key)) backToDashboard();
-          }}
-          role="button"
-          tabIndex="0"
-        >
-          <div className="svg-theme-stroke_link rotate-180">
-            <SvgArrowRight />
+      {hasDashboard && (
+        <div className="absolute-bottom-left">
+          <div
+            className="flex-row-center border-radius-2 link cursor-pointer"
+            onClick={backToDashboard}
+            onKeyDown={({ key }) => {
+              if (utils.isEnterKey(key)) backToDashboard();
+            }}
+            role="button"
+            tabIndex="0"
+          >
+            <div className="svg-theme-stroke_link rotate-180">
+              <SvgArrowRight />
+            </div>
+            <div className="spacer1w" />
+            Back
           </div>
-          <div className="spacer1w" />
-          Back
         </div>
-      </div>
+      )}
 
       <div className="absolute-bottom-right muted">{`v.${version}`}</div>
     </div>
