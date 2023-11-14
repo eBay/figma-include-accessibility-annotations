@@ -123,6 +123,9 @@ const frameExistsOrCreate = (parentFrameId, layerName, page) => {
     frame = figma.getNodeById(accessExists);
   }
 
+  // collapsed frame
+  frame.expanded = false;
+
   return frame;
 };
 
