@@ -47,6 +47,7 @@ function NavLeft({ progress }) {
   };
 
   const rotateClass = leftNavVisible ? 'rotate-right' : 'rotate-left';
+  const ariaLabel = leftNavVisible ? 'close' : 'open';
 
   // handle encouragement
   let encouragement = 'Welcome';
@@ -75,6 +76,7 @@ function NavLeft({ progress }) {
 
       {colorBlindnessView === false && (
         <div
+          aria-label={`${ariaLabel} navigation`}
           className="toggle-nav"
           onClick={toggleLeftNav}
           onKeyDown={({ key }) => {
