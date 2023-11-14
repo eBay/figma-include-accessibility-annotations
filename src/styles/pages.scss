@@ -125,6 +125,63 @@
   width: 100%;
 }
 
+.container-modal {
+  align-items: center;
+  display: flex;
+  height: 100vh;
+  justify-content: center;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100vw;
+  z-index: 100;
+}
+
+.modal {
+  background-color: var(--figma-color-bg);
+  border: 1px solid var(--figma-color-border);
+  border-radius: 6px;
+  color: var(--figma-color-text);
+  outline: 0;
+  padding: $spacing-sm;
+  position: absolute;
+  width: 344px;
+  z-index: 300;
+
+  h2 {
+    font-size: 13px;
+    font-weight: bold;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 280px;
+  }
+
+  .container-close {
+    border-radius: 4px;
+    cursor: pointer;
+    padding: $spacing-xs;
+    position: absolute;
+    right: -4px;
+  }
+
+  p {
+    font-size: 11px;
+    line-height: 14px;
+  }
+}
+
+.modal-overlay {
+  background-color: var(--figma-color-text-tertiary);
+  height: 100vh;
+  left: 0;
+  opacity: 0.2;
+  position: absolute;
+  top: 0;
+  width: 100vw;
+  z-index: 200;
+}
+
 // Feedback
 // /////////////////////////////////////////////////////////////////////////////
 .feedback {
