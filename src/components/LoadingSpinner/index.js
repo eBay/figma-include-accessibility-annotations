@@ -2,7 +2,10 @@ import * as React from 'react';
 import PropTypes from 'prop-types';
 
 // icons
-import { SvgLoadingSpinner } from '../icons';
+import { SvgLoadingSpinner } from '../../icons';
+
+// styles
+import './styles.scss';
 
 function LoadingSpinner({ fill, size }) {
   return (
