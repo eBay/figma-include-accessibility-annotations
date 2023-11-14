@@ -1,31 +1,3 @@
-// Heading Step
-// /////////////////////////////////////////////////////////////////////////////
-.heading-step {
-  display: flex;
-  margin-bottom: $spacing-sm;
-
-  p {
-    display: flex;
-    flex: 1;
-    font-size: 12px;
-  }
-}
-
-.circle-step {
-  align-items: center;
-  background-color: var(--figma-color-bg-inverse);
-  border-radius: 4px;
-  color: var(--figma-color-text-oninverse);
-  display: flex;
-  font-size: 10px;
-  font-weight: bold;
-  height: 18px;
-  justify-content: center;
-  margin-right: $spacing-xs;
-  padding: 0 6px;
-  text-transform: uppercase;
-}
-
 // Loading Spinner
 // /////////////////////////////////////////////////////////////////////////////
 .loading-spinner {
