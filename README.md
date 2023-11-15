@@ -1,5 +1,5 @@
 <div align="center">
-<img alt="include logo" height="64" width="64" src="previews/v9/include_logo.png" />
+<img alt="include logo" height="64" width="64" src="previews/include_logo.png" />
 
 # Include
 
@@ -11,7 +11,7 @@ an accessibility annotation Figma plugin
 
 ## Intro
 
-<img alt="plugin version 9" src="previews/v9/include_banner.png" />
+<img alt="plugin version 9" src="previews/v10/include_banner.png" />
 
 The eBay Include accessibility annotation Figma plugin is a tool to make annotating for accessibility (a11y) easier — easier for designers to spec and easier for developers to understand what is required.
 
