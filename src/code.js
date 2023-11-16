@@ -367,6 +367,27 @@ figma.ui.onmessage = async (msg) => {
     await setAsync('prefCondensedUI', condensed);
   }
 
+  // set user preference for new feature(s) info seen
+  // session update
+  if (type === 'experience-seen') {
+    const { view } = msg;
+    const { getAsync, setAsync } = figma.clientStorage;
+
+    // first get any previous data of features seen
+    const prefNewFeaturesInfo = await getAsync('prefNewFeaturesInfo');
+    const newFeaturesIntro =
+      prefNewFeaturesInfo === undefined ? [] : JSON.parse(prefNewFeaturesInfo);
+
+    // make sure it's not already accounted for
+    if (newFeaturesIntro.includes(view) === false) {
+      // add view to array
+      newFeaturesIntro.push(view);
+    }
+
+    // update features seen
+    await setAsync('prefNewFeaturesInfo', JSON.stringify(newFeaturesIntro));
+  }
+
   // close plugin
   if (type === 'close-plugin') {
     // https://www.figma.com/plugin-docs/api/figma-ui/#close
