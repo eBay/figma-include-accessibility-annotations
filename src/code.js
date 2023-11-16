@@ -388,6 +388,29 @@ figma.ui.onmessage = async (msg) => {
     await setAsync('prefNewFeaturesInfo', JSON.stringify(newFeaturesIntro));
   }
 
+  // reset local storage
+  // ///////////////////////////////////////////////////////////////////////////
+  if (type === 'reset-local-storage') {
+    // https://www.figma.com/plugin-docs/api/figma-clientStorage
+    const { deleteAsync, keysAsync } = figma.clientStorage;
+
+    const keysStored = await keysAsync();
+    await Promise.all(
+      keysStored.map(async (key) => {
+        await deleteAsync(key);
+      })
+    );
+
+    const notifyMsg =
+      keysStored.length > 0
+        ? 'Local storage cleared'
+        : 'Nothing in local storage';
+
+    figma.notify(notifyMsg, {
+      timeout: config.notifyTime
+    });
+  }
+
   // close plugin
   if (type === 'close-plugin') {
     // https://www.figma.com/plugin-docs/api/figma-ui/#close
