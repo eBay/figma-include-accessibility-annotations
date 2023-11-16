@@ -1,0 +1,22 @@
+[
+  {
+    "name": "Min",
+    "width": 320
+  },
+  {
+    "name": "Small",
+    "width": 375
+  },
+  {
+    "name": "Medium",
+    "width": 768
+  },
+  {
+    "name": "Large",
+    "width": 1280
+  },
+  {
+    "name": "X-Large",
+    "width": 1680
+  }
+]

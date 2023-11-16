@@ -446,10 +446,17 @@ export const getUserPreferences = async () => {
   const prefCondensedUI = await getAsync('prefCondensedUI');
   const condensedUI = prefCondensedUI === undefined ? false : prefCondensedUI;
 
+  // check for any feature flags
+  // when a new feature is added, the UI might have a onboarding message/experience
+  const prefNewFeaturesInfo = await getAsync('prefNewFeaturesInfo');
+  const newFeaturesIntro =
+    prefNewFeaturesInfo === undefined ? [] : JSON.parse(prefNewFeaturesInfo);
+
   figma.ui.postMessage({
     type: 'load-user-preferences',
     data: {
-      prefCondensedUI: condensedUI
+      prefCondensedUI: condensedUI,
+      newFeaturesIntro
     }
   });
 };
