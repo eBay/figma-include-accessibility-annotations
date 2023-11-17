@@ -154,7 +154,8 @@ function ResponsiveReflow() {
 
     // let figma side know to create responsive designs
     sendToFigma('create-responsive-designs', {
-      page
+      page,
+      breakpoints
     });
   };
 
