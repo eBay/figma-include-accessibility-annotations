@@ -259,7 +259,7 @@ figma.ui.onmessage = async (msg) => {
 
       // prevent memory leak (if not found, can't be removed)
       if (nodeToRemove !== null) {
-        // check if Text Zoom layer exists
+        // get layer name
         const layerName = utils.nameBeforePipe(nodeToRemove.name);
 
         // get current page user is on when opening plugin
@@ -267,13 +267,17 @@ figma.ui.onmessage = async (msg) => {
         const { children } = currentPage;
 
         children.map(({ id, name }) => {
-          if (name === `${layerName} Text Zoom`) {
-            // get text zoom node if still exists
-            const textZoomNode = figma.getNodeById(id);
+          // check if Text Zoom or Responsive reflow layers exists
+          if (
+            name === `${layerName} Text Zoom` ||
+            name.startsWith(`${layerName} | Responsive |`)
+          ) {
+            // get node if still there
+            const nodeToDelete = figma.getNodeById(id);
 
-            // prevent memory leak (if not found, can't be removed)
-            if (textZoomNode !== null) {
-              textZoomNode.remove();
+            // prevent memory leak (if not found, can't be deleted)
+            if (nodeToDelete !== null) {
+              nodeToDelete.remove();
             }
           }
 
