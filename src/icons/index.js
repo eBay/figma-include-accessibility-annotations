@@ -1,5 +1,6 @@
 // icons
 export { default as SvgArrowRight } from './SvgArrowRight';
+export { default as SvgArrowWidth } from './SvgArrowWidth';
 export { default as SvgCarrot } from './SvgCarrot';
 export { default as SvgCheck } from './SvgCheck';
 export { default as SvgCheckSm } from './SvgCheckSm';
@@ -17,6 +18,8 @@ export { default as SvgInfo } from './SvgInfo';
 export { default as SvgInfoFill } from './SvgInfoFill';
 export { default as SvgLoadingSpinner } from './SvgLoadingSpinner';
 export { default as SvgMobile } from './SvgMobile';
+export { default as SvgPlus } from './SvgPlus';
+export { default as SvgSettings } from './SvgSettings';
 export { default as SvgText } from './SvgText';
 export { default as SvgWarning } from './SvgWarning';
 export { default as SvgWavy } from './SvgWavy';

@@ -7,6 +7,7 @@ import focusGrouping from './focus-grouping';
 import headings from './headings';
 import landmarks from './landmarks';
 import readingOrder from './reading-order';
+import responsiveReflow from './responsive-reflow';
 import textZoom from './text-zoom';
 
 export default {
@@ -19,5 +20,6 @@ export default {
   headings,
   landmarks,
   readingOrder,
+  responsiveReflow,
   textZoom
 };

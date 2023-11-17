@@ -224,6 +224,7 @@ figma.ui.onmessage = async (msg) => {
     step.focusGrouping.add(msg);
   }
 
+  // remove a focus group
   if (type === 'remove-focus-group') {
     step.focusGrouping.remove(msg);
   }
@@ -238,6 +239,16 @@ figma.ui.onmessage = async (msg) => {
     step.colorBlindness.getDesignFile(msg);
   }
 
+  // responsive reflow (create designs)
+  if (type === 'create-responsive-designs') {
+    step.responsiveReflow.createResponsiveDesigns(msg);
+  }
+
+  // responsive reflow (save breakpoints)
+  if (type === 'save-breakpoints') {
+    step.responsiveReflow.saveBreakpoints(msg);
+  }
+
   // remove node(s) by array of IDs
   if (type === 'remove-nodes') {
     const { nodeIds } = msg;
@@ -248,7 +259,7 @@ figma.ui.onmessage = async (msg) => {
 
       // prevent memory leak (if not found, can't be removed)
       if (nodeToRemove !== null) {
-        // check if Text Zoom layer exists
+        // get layer name
         const layerName = utils.nameBeforePipe(nodeToRemove.name);
 
         // get current page user is on when opening plugin
@@ -256,13 +267,17 @@ figma.ui.onmessage = async (msg) => {
         const { children } = currentPage;
 
         children.map(({ id, name }) => {
-          if (name === `${layerName} Text Zoom`) {
-            // get text zoom node if still exists
-            const textZoomNode = figma.getNodeById(id);
+          // check if Text Zoom or Responsive reflow layers exists
+          if (
+            name === `${layerName} Text Zoom` ||
+            name.startsWith(`${layerName} | Responsive |`)
+          ) {
+            // get node if still there
+            const nodeToDelete = figma.getNodeById(id);
 
-            // prevent memory leak (if not found, can't be removed)
-            if (textZoomNode !== null) {
-              textZoomNode.remove();
+            // prevent memory leak (if not found, can't be deleted)
+            if (nodeToDelete !== null) {
+              nodeToDelete.remove();
             }
           }
 
@@ -360,6 +375,50 @@ figma.ui.onmessage = async (msg) => {
     // https://www.figma.com/plugin-docs/api/figma-clientStorage
     const { setAsync } = figma.clientStorage;
     await setAsync('prefCondensedUI', condensed);
+  }
+
+  // set user preference for new feature(s) info seen
+  // session update
+  if (type === 'experience-seen') {
+    const { view } = msg;
+    const { getAsync, setAsync } = figma.clientStorage;
+
+    // first get any previous data of features seen
+    const prefNewFeaturesInfo = await getAsync('prefNewFeaturesInfo');
+    const newFeaturesIntro =
+      prefNewFeaturesInfo === undefined ? [] : JSON.parse(prefNewFeaturesInfo);
+
+    // make sure it's not already accounted for
+    if (newFeaturesIntro.includes(view) === false) {
+      // add view to array
+      newFeaturesIntro.push(view);
+    }
+
+    // update features seen
+    await setAsync('prefNewFeaturesInfo', JSON.stringify(newFeaturesIntro));
+  }
+
+  // reset local storage
+  // ///////////////////////////////////////////////////////////////////////////
+  if (type === 'reset-local-storage') {
+    // https://www.figma.com/plugin-docs/api/figma-clientStorage
+    const { deleteAsync, keysAsync } = figma.clientStorage;
+
+    const keysStored = await keysAsync();
+    await Promise.all(
+      keysStored.map(async (key) => {
+        await deleteAsync(key);
+      })
+    );
+
+    const notifyMsg =
+      keysStored.length > 0
+        ? 'Local storage cleared'
+        : 'Nothing in local storage';
+
+    figma.notify(notifyMsg, {
+      timeout: config.notifyTime
+    });
   }
 
   // close plugin

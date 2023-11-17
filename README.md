@@ -1,5 +1,5 @@
 <div align="center">
-<img alt="include logo" height="64" width="64" src="previews/v9/include_logo.png" />
+<img alt="include logo" height="64" width="64" src="previews/include_logo.png" />
 
 # Include
 
@@ -11,7 +11,7 @@ an accessibility annotation Figma plugin
 
 ## Intro
 
-<img alt="plugin version 9" src="previews/v9/include_banner.png" />
+<img alt="plugin version 9" src="previews/v10/include_banner.png" />
 
 The eBay Include accessibility annotation Figma plugin is a tool to make annotating for accessibility (a11y) easier — easier for designers to spec and easier for developers to understand what is required.
 
@@ -21,8 +21,6 @@ The plugin was developed by members of the accessibility and design teams at eBa
 
 **Near term bug fixes & improvements**
 
-- [X] Updates for keyboard navigation (v10)
-- [ ] Generate Responsive Designs from a single design
 - [ ] Add ability to edit landmarks
 - [ ] Add ability to multi-select for headings
 - [ ] Scan for svg (alternative text)
@@ -31,6 +29,8 @@ The plugin was developed by members of the accessibility and design teams at eBa
 - [ ] Synchronize copy/paste, undo/redo between the plugin and Figma layers
 - [ ] Allow designer to annotate a section of a design
 - [ ] Add delete in multiple steps
+- [X] Updates for keyboard navigation (v10)
+- [X] Generate Responsive Designs from a single design (v10)
 
 **Future explorations**
 

@@ -11,6 +11,7 @@ export default React.createContext({
   hasDashboard: false,
   showDashboard: false,
   showPageChange: false,
+  showSettings: false,
 
   // global accessibility data
   pages: [],
@@ -48,5 +49,6 @@ export default React.createContext({
 
   // user data
   currentUser: null,
+  newFeaturesIntro: [],
   sessionId: 0
 });

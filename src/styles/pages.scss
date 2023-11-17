@@ -457,3 +457,59 @@ $selection-button-width: 72px;
 .achromatomaly {
   filter: url("#achromatomaly");
 }
+
+// Settings
+// /////////////////////////////////////////////////////////////////////////////
+.settings {
+  padding: $spacing-sm;
+
+  footer {
+    bottom: 0;
+    left: 0;
+    position: absolute;
+    width: 100%;
+  }
+}
+
+// Breakpoints
+// /////////////////////////////////////////////////////////////////////////////
+.container-breakpoints {
+  width: 100%;
+}
+
+.breakpoint-row {
+  height: 36px;
+}
+
+.breakpoint-label {
+  align-items: center;
+  color: var(--foreground-muted);
+  display: flex;
+  flex-direction: row;
+  padding-right: 4px;
+
+  svg {
+    margin-right: 4px;
+  }
+}
+
+.input-name {
+  width: 96px;
+}
+
+.input-width {
+  text-align: right;
+  width: 64px;
+}
+
+.add-breakpoint-row {
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 16px 0;
+  padding: 8px 0;
+  width: fit-content;
+  
+  svg {
+    margin-right: 4px;
+  }
+}

@@ -1,0 +1,27 @@
+[
+  {
+    "id": "1",
+    "name": "Min",
+    "width": 320
+  },
+  {
+    "id": "2",
+    "name": "Small",
+    "width": 375
+  },
+  {
+    "id": "3",
+    "name": "Medium",
+    "width": 768
+  },
+  {
+    "id": "4",
+    "name": "Large",
+    "width": 1280
+  },
+  {
+    "id": "5",
+    "name": "X-Large",
+    "width": 1680
+  }
+]

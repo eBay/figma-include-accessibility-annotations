@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { utils } from '../constants';
 
 // data
+import responsiveDefaultBreakpoints from '../data/responsive-reflow-default-breakpoints.json';
 import routes from '../data/routes.json';
 import routesNative from '../data/routes-native.json';
 
@@ -41,6 +42,7 @@ class AppState extends React.Component {
       hasDashboard: false,
       showDashboard: false,
       showPageChange: false,
+      showSettings: false,
 
       // global accessibility data
       pages: [],
@@ -76,8 +78,12 @@ class AppState extends React.Component {
       // color blindness
       colorBlindnessView: false,
 
+      // responsive reflow
+      responsiveBreakpoints: responsiveDefaultBreakpoints,
+
       // user data
       currentUser: null,
+      newFeaturesIntro: [],
       sessionId: 0
     };
 
@@ -117,7 +123,7 @@ class AppState extends React.Component {
         break;
 
       case 'load-user-preferences':
-        const { prefCondensedUI } = data;
+        const { breakpoints, newFeaturesIntro, prefCondensedUI } = data;
 
         // resize plugin onload if user pref is set
         if (prefCondensedUI === true) {
@@ -128,9 +134,15 @@ class AppState extends React.Component {
           });
         }
 
+        // if custom breakpoints are set, use those
+        const newBreakpoints =
+          breakpoints !== null ? breakpoints : responsiveDefaultBreakpoints;
+
         this.setState({
+          responsiveBreakpoints: newBreakpoints,
           condensedUI: prefCondensedUI,
-          leftNavVisible: !prefCondensedUI
+          leftNavVisible: !prefCondensedUI,
+          newFeaturesIntro
         });
 
         break;
@@ -312,6 +324,7 @@ class AppState extends React.Component {
 
     // page changes
     const { hasDashboard, showDashboard, showPageChange } = this.state;
+    const { showSettings } = this.state;
 
     // global accessibility data
     const { pages, page, pageSelected, pageType } = this.state;
@@ -338,8 +351,11 @@ class AppState extends React.Component {
     // color blindness
     const { colorBlindnessView } = this.state;
 
+    // responsive reflow
+    const { responsiveBreakpoints } = this.state;
+
     // user data
-    const { currentUser, sessionId } = this.state;
+    const { currentUser, newFeaturesIntro, sessionId } = this.state;
 
     return (
       <Context.Provider
@@ -354,6 +370,7 @@ class AppState extends React.Component {
           hasDashboard,
           showDashboard,
           showPageChange,
+          showSettings,
 
           // global accessibility data
           pages,
@@ -389,6 +406,9 @@ class AppState extends React.Component {
           // color blindness
           colorBlindnessView,
 
+          // responsive reflow
+          responsiveBreakpoints,
+
           // global helpers
           imageScan: this.imageScan,
           removeNodes,
@@ -398,6 +418,7 @@ class AppState extends React.Component {
 
           // user data
           currentUser,
+          newFeaturesIntro,
           sessionId,
 
           // environment and project

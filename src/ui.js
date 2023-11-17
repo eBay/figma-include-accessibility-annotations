@@ -22,6 +22,7 @@ import ResponsiveReflow from './pages/ResponsiveReflow';
 import FocusGrouping from './pages/FocusGrouping';
 import ComplexGestures from './pages/ComplexGestures';
 import ColorBlindness from './pages/ColorBlindness';
+import Settings from './pages/Settings';
 
 // components
 import { NavLeft } from './components';
@@ -42,7 +43,7 @@ function App() {
   const { alertMsg, condensedUI, isLoading, leftNavVisible } = cnxt;
   const { colorBlindnessView, page, pageSelected, pageType } = cnxt;
   const { steps, stepsNative, stepsCompleted, stepsData } = cnxt;
-  const { showDashboard, showPageChange, sendToFigma } = cnxt;
+  const { showDashboard, showPageChange, showSettings, sendToFigma } = cnxt;
 
   // local state
   const [progressPercent, setPercentage] = React.useState(null);
@@ -120,6 +121,11 @@ function App() {
   // show page change alert
   if (showPageChange) {
     return <PageChange />;
+  }
+
+  // show settings
+  if (showSettings) {
+    return <Settings />;
   }
 
   // if there is previous progress data, show dashboard
