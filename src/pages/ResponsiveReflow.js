@@ -21,14 +21,7 @@ function ResponsiveReflow() {
   const isCompleted = stepsCompleted.includes(routeName);
   const [breakpoints, setBreakpoints] = React.useState(responsiveBreakpoints);
   const [canSave, setCanSave] = React.useState(true);
-  const [isLoading, setLoading] = React.useState(false);
-
-  // check if empty or contains anything but numbers
-  const isNumber = (value) => {
-    if (value === '') return false;
-
-    return !isNaN(value);
-  };
+  const [reflowCreated, setReflowCreated] = React.useState(false);
 
   // ui state
   const showOnboarding =
@@ -36,6 +29,13 @@ function ResponsiveReflow() {
   const firstStepText = showOnboarding
     ? 'Check the widths of representative screens for each responsive breakpoint. We will keep these breakpoint(s) in "Settings" on your dashboard if you want to change it in the future.'
     : 'Mock up a variety of viewport sizes to show how the content reflows.';
+
+  // check if empty or contains anything but numbers
+  const isNumber = (value) => {
+    if (value === '') return false;
+
+    return !isNaN(value);
+  };
 
   const onBreakpointChange = (e, index, key) => {
     const newValue = e.target.value;
@@ -145,10 +145,7 @@ function ResponsiveReflow() {
     }
   };
 
-  const onCreateClones = async () => {
-    // show loading state
-    setLoading(true);
-
+  const onCreateDesigns = async () => {
     // let thread catch up
     await utils.sleep(100);
 
@@ -157,6 +154,8 @@ function ResponsiveReflow() {
       page,
       breakpoints
     });
+
+    setReflowCreated(true);
   };
 
   const confirmResponsiveReflowCheck = () => {
@@ -169,33 +168,6 @@ function ResponsiveReflow() {
     });
   };
 
-  const getPrimaryAction = () => {
-    if (isLoading) return null;
-
-    // first time seeing this page? show onboarding/breakpoints
-    if (showOnboarding) {
-      return {
-        buttonText: 'Save breakpoints',
-        completesStep: false,
-        isDisabled: canSave === false,
-        onClick: saveBreakpoints
-      };
-    }
-
-    if (isCompleted) {
-      return {
-        completesStep: true,
-        onClick: confirmResponsiveReflowCheck
-      };
-    }
-
-    return {
-      buttonText: 'Copy design in different viewports',
-      completesStep: false,
-      onClick: onCreateClones
-    };
-  };
-
   React.useEffect(() => {
     // mount
     checkCanSave();
@@ -205,13 +177,34 @@ function ResponsiveReflow() {
     };
   }, [breakpoints]);
 
+  // break this out so it updates
+  const primaryAction =
+    isCompleted || reflowCreated
+      ? {
+          buttonText: 'Responsive reflow documented',
+          completesStep: true,
+          onClick: confirmResponsiveReflowCheck
+        }
+      : {
+          buttonText: 'Copy design in different viewports',
+          completesStep: false,
+          onClick: onCreateDesigns
+        };
+
   return (
     <AnnotationStepPage
       bannerTipProps={{ pageType, routeName }}
       title="Responsive reflow"
       routeName={routeName}
       footerProps={{
-        primaryAction: getPrimaryAction(),
+        primaryAction: showOnboarding
+          ? {
+              buttonText: 'Save breakpoints',
+              completesStep: false,
+              isDisabled: canSave === false,
+              onClick: saveBreakpoints
+            }
+          : primaryAction,
         secondaryAction: null
       }}
     >
@@ -288,7 +281,7 @@ function ResponsiveReflow() {
           </div>
         )}
 
-        {isCompleted && (
+        {(isCompleted || reflowCreated) && (
           <HeadingStep
             number={2}
             text="Adjust the layouts to ensure that there is no horizontal scrolling when the page is viewed on smaller devices."
