@@ -12,7 +12,7 @@ function SvgSlashNone({ bgFill, fill }) {
 
 SvgSlashNone.defaultProps = {
   bgFill: '#e5e5e5',
-  fill: '#000000'
+  fill: '#111820'
 };
 
 SvgSlashNone.propTypes = {
