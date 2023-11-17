@@ -8,4 +8,13 @@ export const createResponsiveDesigns = (msg) => {
   console.log('pageNode', pageNode);
 };
 
-export default { createResponsiveDesigns };
+export const saveBreakpoints = async (msg) => {
+  const { breakpoints } = msg;
+
+  // session update
+  const { setAsync } = figma.clientStorage;
+  const breakpointsStr = JSON.stringify(breakpoints);
+  await setAsync('prefBreakpoints', breakpointsStr);
+};
+
+export default { createResponsiveDesigns, saveBreakpoints };

@@ -224,6 +224,7 @@ figma.ui.onmessage = async (msg) => {
     step.focusGrouping.add(msg);
   }
 
+  // remove a focus group
   if (type === 'remove-focus-group') {
     step.focusGrouping.remove(msg);
   }
@@ -241,6 +242,11 @@ figma.ui.onmessage = async (msg) => {
   // responsive reflow (create designs)
   if (type === 'create-responsive-designs') {
     step.responsiveReflow.createResponsiveDesigns(msg);
+  }
+
+  // responsive reflow (save breakpoints)
+  if (type === 'save-breakpoints') {
+    step.responsiveReflow.saveBreakpoints(msg);
   }
 
   // remove node(s) by array of IDs
