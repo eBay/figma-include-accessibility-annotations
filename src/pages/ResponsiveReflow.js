@@ -54,7 +54,7 @@ function ResponsiveReflow() {
   };
 
   const checkCanSave = () => {
-    let newCanSave = true;
+    let newCanSave = breakpoints.length > 0;
 
     // sanitize data and check if we can save
     breakpoints.forEach(({ name, width }) => {

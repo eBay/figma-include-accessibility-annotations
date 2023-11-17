@@ -44,7 +44,7 @@ function Settings() {
   };
 
   const checkCanSave = () => {
-    let newCanSave = false;
+    let newCanSave = breakpoints.length > 0;
 
     // sanitize data and check if we can save
     breakpoints.forEach(({ name, width }) => {
