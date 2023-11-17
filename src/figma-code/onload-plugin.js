@@ -457,6 +457,11 @@ export const getUserPreferences = async () => {
   const newFeaturesIntro =
     prefNewFeaturesInfo === undefined ? [] : JSON.parse(prefNewFeaturesInfo);
 
+  // reset for development testing
+  // const { deleteAsync } = figma.clientStorage;
+  // await deleteAsync('prefBreakpoints');
+  // await deleteAsync('prefNewFeaturesInfo');
+
   figma.ui.postMessage({
     type: 'load-user-preferences',
     data: {
