@@ -34,7 +34,8 @@ $margins-b: (
 $margins-r: (
   'mr1': $spacing-xs,
   'mr2': $spacing-sm,
-  'mr3': $spacing-md
+  'mr3': $spacing-md,
+  'mr4': $spacing-lg
 );
 
 @each $margin, $value in $margins-r {
