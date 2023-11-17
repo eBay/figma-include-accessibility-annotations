@@ -42,6 +42,7 @@ class AppState extends React.Component {
       hasDashboard: false,
       showDashboard: false,
       showPageChange: false,
+      showSettings: false,
 
       // global accessibility data
       pages: [],
@@ -323,6 +324,7 @@ class AppState extends React.Component {
 
     // page changes
     const { hasDashboard, showDashboard, showPageChange } = this.state;
+    const { showSettings } = this.state;
 
     // global accessibility data
     const { pages, page, pageSelected, pageType } = this.state;
@@ -368,6 +370,7 @@ class AppState extends React.Component {
           hasDashboard,
           showDashboard,
           showPageChange,
+          showSettings,
 
           // global accessibility data
           pages,

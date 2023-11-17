@@ -51,6 +51,7 @@ function Footer({ primaryAction, secondaryAction, routeName }) {
 
     // reset main state and return to dashboard
     updateState('showDashboard', true);
+    updateState('showSettings', false);
 
     updateState('page', null);
     updateState('pageType', null);

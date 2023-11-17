@@ -11,6 +11,7 @@ export default React.createContext({
   hasDashboard: false,
   showDashboard: false,
   showPageChange: false,
+  showSettings: false,
 
   // global accessibility data
   pages: [],

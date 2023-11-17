@@ -7,7 +7,13 @@ import ProgressLine from '../components/ProgressLine';
 import ProgressPieChart from '../components/ProgressPieChart';
 
 // icons
-import { SvgArrowRight, SvgClose, SvgMobile, SvgWeb } from '../icons';
+import {
+  SvgArrowRight,
+  SvgClose,
+  SvgMobile,
+  SvgSettings,
+  SvgWeb
+} from '../icons';
 
 // app state
 import Context from '../context';
@@ -223,6 +229,11 @@ function Dashboard() {
     }
   };
 
+  // goto Settings
+  const gotoSettings = () => {
+    updateState('showSettings', true);
+  };
+
   React.useEffect(() => {
     // check for pages progress state, for different emojis to display
     let emojiState = 'green-100s';
@@ -268,16 +279,31 @@ function Dashboard() {
     <div className={`dashboard ${condensedClass}`}>
       <div className="flex-row-space-between">
         <h1>Checks in this Figma</h1>
-        {feedbackFormUrl?.length > 0 && (
-          <a
-            href={feedbackFormUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="link border-radius-2 font-12 no-underline"
+        <div className="flex-row-center">
+          <div
+            className="flex-row-center border-radius-2 link mr2 no-underline cursor-pointer"
+            onClick={gotoSettings}
+            onKeyDown={({ key }) => {
+              if (utils.isEnterKey(key)) gotoSettings();
+            }}
+            role="button"
+            tabIndex="0"
           >
-            Leave feedback
-          </a>
-        )}
+            <SvgSettings />
+            Settings
+          </div>
+
+          {feedbackFormUrl?.length > 0 && (
+            <a
+              href={feedbackFormUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="link border-radius-2 font-12 no-underline"
+            >
+              Leave feedback
+            </a>
+          )}
+        </div>
       </div>
 
       {progressType !== null && <ProgressLine progressType={progressType} />}
