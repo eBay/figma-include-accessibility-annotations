@@ -214,11 +214,15 @@ function ResponsiveReflow() {
         {showOnboarding && (
           <div className="container-breakpoints">
             {breakpoints.map(({ id, name, width }, index) => {
+              const key = `breakpoint-${id}-${index}`;
               const nameClass = name === '' ? ' warning' : '';
               const widthClass = isNumber(width) === false ? ' warning' : '';
 
               return (
-                <div key={id} className="breakpoint-row flex-row-space-between">
+                <div
+                  key={key}
+                  className="breakpoint-row flex-row-space-between"
+                >
                   <div className="flex-row-center">
                     <div className="flex-row-center mr2">
                       <div className="breakpoint-label">Name:</div>
