@@ -216,9 +216,10 @@ function Dashboard() {
     // no longer have any pages on the dashboard?
     if (newPagesArray.length === 0) {
       // reset main state and display select frame screen
+      updateState('hasDashboard', false);
       updateState('page', null);
-      updateState('stepsCompleted', []);
       updateState('showDashboard', false);
+      updateState('stepsCompleted', []);
     }
   };
 
