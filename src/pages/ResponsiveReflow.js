@@ -14,7 +14,7 @@ function ResponsiveReflow() {
   // main app state
   const cnxt = React.useContext(Context);
   const { newFeaturesIntro, responsiveBreakpoints } = cnxt;
-  const { page, pageType, sendToFigma, stepsCompleted } = cnxt;
+  const { page, pageType, sendToFigma, stepsCompleted, updateState } = cnxt;
 
   // local state
   const routeName = 'Responsive reflow';
@@ -55,14 +55,22 @@ function ResponsiveReflow() {
 
   const checkCanSave = () => {
     let newCanSave = true;
-    const newBreakpoints = [...breakpoints];
 
     // sanitize data and check if we can save
-    breakpoints.forEach(({ name, width }, index) => {
+    breakpoints.forEach(({ name, width }) => {
       if (name === '' || width === '') {
         newCanSave = false;
       }
+    });
 
+    setCanSave(newCanSave);
+  };
+
+  const sanitizeBreakpoints = () => {
+    const newBreakpoints = [...breakpoints];
+
+    // sanitize data and check if we can save
+    breakpoints.forEach(({ width }, index) => {
       // check if width is a number
       if (isNumber(width) === false || width < 320) {
         newBreakpoints[index].width = 320;
@@ -74,7 +82,6 @@ function ResponsiveReflow() {
     // sort breakpoints by width
     newBreakpoints.sort((a, b) => a.width - b.width);
 
-    setCanSave(newCanSave);
     setBreakpoints(newBreakpoints);
   };
 
@@ -90,7 +97,6 @@ function ResponsiveReflow() {
     });
 
     setBreakpoints(newBreakpoints);
-    setCanSave(false);
   };
 
   const removeBreakpoint = (index) => {
@@ -99,23 +105,43 @@ function ResponsiveReflow() {
     // remove breakpoint
     newBreakpoints.splice(index, 1);
 
+    // re-index ids
+    newBreakpoints.forEach((item, i) => {
+      newBreakpoints[i].id = i.toString();
+    });
+
     setBreakpoints(newBreakpoints);
   };
 
   const saveBreakpoints = () => {
     let newCanSave = true;
 
-    // sanitize data and check if we can save
+    // double check we have valid data
     breakpoints.forEach(({ name, width }) => {
       if (name === '' || width === '') {
         newCanSave = false;
       }
     });
 
+    // if we can't save, show warning
     if (newCanSave === false) {
       setCanSave(false);
     } else {
       // save breakpoints
+      sendToFigma('save-breakpoints', {
+        breakpoints
+      });
+
+      // user has now seen the new features intro for responsive design
+      sendToFigma('experience-seen', { view: 'responsive-reflow-breakpoints' });
+
+      // update local state for this new feature that has been seen
+      const featuresUpdated = [...newFeaturesIntro];
+      featuresUpdated.push('responsive-reflow-breakpoints');
+
+      // update main app state
+      updateState('newFeaturesIntro', featuresUpdated);
+      updateState('responsiveBreakpoints', breakpoints);
     }
   };
 
@@ -169,6 +195,15 @@ function ResponsiveReflow() {
     };
   };
 
+  React.useEffect(() => {
+    // mount
+    checkCanSave();
+
+    return () => {
+      // unmount
+    };
+  }, [breakpoints]);
+
   return (
     <AnnotationStepPage
       bannerTipProps={{ pageType, routeName }}
@@ -197,7 +232,7 @@ function ResponsiveReflow() {
                       <input
                         className={`input-name${nameClass}`}
                         type="text"
-                        onBlur={checkCanSave}
+                        onBlur={sanitizeBreakpoints}
                         onChange={(e) => onBreakpointChange(e, index, 'name')}
                         value={name}
                       />
@@ -211,7 +246,7 @@ function ResponsiveReflow() {
                       <input
                         className={`input-width${widthClass}`}
                         type="text"
-                        onBlur={checkCanSave}
+                        onBlur={sanitizeBreakpoints}
                         onChange={(e) => onBreakpointChange(e, index, 'width')}
                         value={width}
                       />
@@ -249,8 +284,6 @@ function ResponsiveReflow() {
               <SvgPlus />
               Add breakpoint
             </div>
-
-            <div className="divider" />
           </div>
         )}
 
