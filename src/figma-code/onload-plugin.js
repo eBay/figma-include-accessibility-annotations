@@ -446,6 +446,11 @@ export const getUserPreferences = async () => {
   const prefCondensedUI = await getAsync('prefCondensedUI');
   const condensedUI = prefCondensedUI === undefined ? false : prefCondensedUI;
 
+  // check for custom breakpoints
+  const prefBreakpoints = await getAsync('prefBreakpoints');
+  const breakpoints =
+    prefBreakpoints === undefined ? null : JSON.parse(prefBreakpoints);
+
   // check for any feature flags
   // when a new feature is added, the UI might have a onboarding message/experience
   const prefNewFeaturesInfo = await getAsync('prefNewFeaturesInfo');
@@ -455,8 +460,9 @@ export const getUserPreferences = async () => {
   figma.ui.postMessage({
     type: 'load-user-preferences',
     data: {
-      prefCondensedUI: condensedUI,
-      newFeaturesIntro
+      breakpoints,
+      newFeaturesIntro,
+      prefCondensedUI: condensedUI
     }
   });
 };

@@ -122,7 +122,7 @@ class AppState extends React.Component {
         break;
 
       case 'load-user-preferences':
-        const { newFeaturesIntro, prefCondensedUI } = data;
+        const { breakpoints, newFeaturesIntro, prefCondensedUI } = data;
 
         // resize plugin onload if user pref is set
         if (prefCondensedUI === true) {
@@ -133,7 +133,12 @@ class AppState extends React.Component {
           });
         }
 
+        // if custom breakpoints are set, use those
+        const newBreakpoints =
+          breakpoints !== null ? breakpoints : responsiveDefaultBreakpoints;
+
         this.setState({
+          responsiveBreakpoints: newBreakpoints,
           condensedUI: prefCondensedUI,
           leftNavVisible: !prefCondensedUI,
           newFeaturesIntro
