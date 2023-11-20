@@ -230,6 +230,7 @@ function Headings() {
                     <div className="spacer1w" />
 
                     <div
+                      aria-label="remove heading"
                       className="btn-remove"
                       onClick={() => onRemoveHeading(id)}
                       onKeyDown={(e) => {

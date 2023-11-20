@@ -260,6 +260,7 @@ function ComplexGestures() {
                     </div>
 
                     <div
+                      aria-label="remove gesture"
                       className="btn-remove"
                       onClick={() => onRemoveGesture(id)}
                       onKeyDown={(e) => {

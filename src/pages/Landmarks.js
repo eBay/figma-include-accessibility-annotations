@@ -256,6 +256,7 @@ function Landmarks() {
                   </div>
 
                   <div
+                    aria-label="remove landmark"
                     className="btn-remove"
                     onClick={() => onRemoveLandmark(id)}
                     onKeyDown={(e) => {

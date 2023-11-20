@@ -140,6 +140,7 @@ function FocusGrouping() {
               >
                 <div>{`group ${idx + 1}`}</div>
                 <div
+                  aria-label="remove group"
                   className="btn-remove"
                   onClick={() => onRemoveGroup(idx)}
                   onKeyDown={({ key }) => {
@@ -173,6 +174,7 @@ function FocusGrouping() {
           <div className="button-group">
             <div className="container-selection-button">
               <div
+                aria-label="add focus group"
                 className="selection-button"
                 onClick={onClick}
                 onKeyDown={({ key }) => {

@@ -414,6 +414,7 @@ function Dashboard() {
               </h2>
 
               <div
+                aria-label="close modal"
                 className="container-close svg-theme"
                 onClick={onCloseModal}
                 onKeyDown={({ key }) => {
