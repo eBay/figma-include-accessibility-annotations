@@ -35,6 +35,18 @@ const isA11yLayer = (children, childNode, name) => {
       utils.nameBeforePipe(child.name) === 'Accessibility annotations Layer'
   );
 
+  // old landmarks mapper (legacy)
+  const marksLegacy = {
+    banner: 'header',
+    search: 'search',
+    navigation: 'nav',
+    main: 'main',
+    'content-info': 'footer',
+    complimentary: 'aside',
+    form: 'form',
+    region: 'section'
+  };
+
   // loop through a11y layer steps
   for (let j = 0; j < frameChildren.length; j += 1) {
     const frameChild = frameChildren[j];
@@ -79,12 +91,15 @@ const isA11yLayer = (children, childNode, name) => {
 
           // if we have a label, grab it
           const [type, label = null] = typeName.split(':');
+          const typeTrim = type.trim();
+          const newType =
+            typeTrim in marksLegacy ? marksLegacy[typeTrim] : typeTrim;
 
           landmarks[landmarkObj.id] = {
             id: landmarkObj.id,
             label: label !== null ? label.trim() : label,
             name: landmarkObj.name,
-            type: type.trim()
+            type: newType
           };
         }
       }
