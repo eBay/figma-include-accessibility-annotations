@@ -3,6 +3,9 @@ import { createTransparentFrame } from '../../constants/figma-layer';
 import config from '../config';
 import { getOrCreateMainA11yFrame } from '../frame-helpers';
 
+// data
+import landmarksTypesObj from '../../data/landmark-types';
+
 const landmarkLayerName = 'Landmarks Layer';
 
 export const noLandmarks = (msg) => {
@@ -75,6 +78,7 @@ export const noLandmarks = (msg) => {
 
 export const add = (msg) => {
   const { bounds, landmark, page, pageId, pageType } = msg;
+  const { label } = landmarksTypesObj[landmark];
 
   const mainPageNode = figma.getNodeById(pageId);
 
@@ -119,7 +123,7 @@ export const add = (msg) => {
   const landmarkBlockName = `Landmark: ${landmark} | ${landmarkBlock.id}`;
   landmarkBlock.name = landmarkBlockName;
 
-  // Create rectangle / background
+  // create rectangle / background
   const rectNode = figmaLayer.createRectangle({
     name: `Landmark Area: ${landmark}`,
     height: 100,
@@ -136,9 +140,6 @@ export const add = (msg) => {
   // add rectangle within Landmark layer
   landmarkBlock.appendChild(rectNode);
 
-  // create annotation label
-  const landmarkDisplay = utils.capitalize(landmark).replace(/-/g, ' ');
-
   // Create label background with auto-layout
   const labelFrame = figmaLayer.createFrame({
     name: 'Label Background',
@@ -153,7 +154,8 @@ export const add = (msg) => {
   labelFrame.verticalPadding = 8;
   labelFrame.counterAxisSizingMode = 'AUTO';
   labelFrame.cornerRadius = 8;
-  // Do NOT have it scale with the surrounding frame
+
+  // do NOT have it scale with the surrounding frame
   labelFrame.constraints = {
     horizontal: 'MIN',
     vertical: 'MIN'
@@ -161,9 +163,9 @@ export const add = (msg) => {
 
   // create annotation name for label
   const labelNode = figma.createText();
-  labelNode.name = `Landmark Name: ${landmarkDisplay}`;
+  labelNode.name = `Landmark Name: ${label}`;
   labelNode.fontSize = 15;
-  labelNode.characters = landmarkDisplay;
+  labelNode.characters = label;
   labelNode.fills = [{ type: 'SOLID', color: colors.white }];
   labelNode.fontName = { family: 'Roboto', style: 'Bold' };
 
@@ -199,6 +201,11 @@ export const add = (msg) => {
       name: landmarkBlockName
     }
   });
+
+  // collapse all frames
+  landmarksFrame.expanded = false;
+  labelFrame.expanded = false;
+  landmarkBlock.expanded = false;
 };
 
 export const completed = (msg) => {
@@ -280,6 +287,7 @@ export const completed = (msg) => {
 
 export const updateWithLabel = (msg) => {
   const { id, value, landmarkType } = msg;
+  const { label } = landmarksTypesObj[landmarkType];
 
   // get landmark
   const landmarkNode = figma.getNodeById(id);
@@ -295,12 +303,9 @@ export const updateWithLabel = (msg) => {
     return;
   }
 
-  // format some values
-  const landmarkTypeCap = utils.capitalize(landmarkType);
-
   // set width of label background to account for new length
   const newValue = utils.capitalize(value.toLowerCase());
-  const newLabel = `${landmarkTypeCap}: ${newValue}`;
+  const newLabel = `${label} ${newValue}`;
   const widthMin = 52;
   const labelWidth = Math.floor(newLabel.length * 9.5);
   const newLabelWidth = labelWidth < widthMin ? widthMin : labelWidth;

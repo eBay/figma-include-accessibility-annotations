@@ -5,36 +5,36 @@ import SvgLandmarks from '../icons/landmarks';
 
 // setup landmark options
 export default {
-  banner: {
+  header: {
     icon: <SvgLandmarks.SvgBanner />,
-    label: 'banner'
+    label: '<header>'
   },
   search: {
     icon: <SvgLandmarks.SvgSearch />,
     label: 'search'
   },
-  navigation: {
+  nav: {
     icon: <SvgLandmarks.SvgNavigation />,
-    label: 'navigation'
+    label: '<nav>'
   },
   main: {
     icon: <SvgLandmarks.SvgMain />,
-    label: 'main'
+    label: '<main>'
   },
-  'content-info': {
+  footer: {
     icon: <SvgLandmarks.SvgContentInfo />,
-    label: 'content info'
+    label: '<footer>'
   },
-  complimentary: {
+  aside: {
     icon: <SvgLandmarks.SvgComplimentary />,
-    label: 'complimentary'
+    label: '<aside>'
   },
   form: {
     icon: <SvgLandmarks.SvgForm />,
-    label: 'form'
+    label: '<form>'
   },
-  region: {
+  section: {
     icon: <SvgLandmarks.SvgRegion />,
-    label: 'region'
+    label: '<section>'
   }
 };

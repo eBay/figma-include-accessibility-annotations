@@ -31,6 +31,7 @@ The plugin was developed by members of the accessibility and design teams at eBa
 - [ ] Add delete in multiple steps
 - [X] Updates for keyboard navigation (v10)
 - [X] Generate Responsive Designs from a single design (v10)
+- [X] Rename landmarks to use the HTML names (e.g. footer) and not aria roles (e.g. contentinfo).
 
 **Future explorations**
 
