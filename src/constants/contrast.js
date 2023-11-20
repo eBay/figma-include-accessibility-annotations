@@ -189,9 +189,9 @@ const mapNodeIds = (original, dup) => {
     return map;
   }
 
-  for (const [idx, id] of toIds.entries()) {
+  toIds.forEach((id, idx) => {
     map.set(id, fromIds[idx]);
-  }
+  });
 
   return map;
 };

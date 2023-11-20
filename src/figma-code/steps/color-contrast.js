@@ -83,9 +83,11 @@ export const scan = async (msg) => {
         const samples = new Set();
 
         for (let i = textNode.characters.length - 1; i >= 0; i -= 1) {
-          for (const color of textNode
-            .getRangeFills(i, i + 1)
-            .flatMap((paint) => colorsForPaint(paint))) {
+          const colors = Array.from(textNode.getRangeFills(i, i + 1)).flatMap(
+            (paint) => colorsForPaint(paint)
+          );
+
+          colors.forEach((color) => {
             samples.add(
               JSON.stringify({
                 isBold: isBold(textNode.getRangeFontName(i, i + 1)),
@@ -93,7 +95,7 @@ export const scan = async (msg) => {
                 color
               })
             );
-          }
+          });
         }
 
         textStyleSamples = [...samples].map((s) => JSON.parse(s));
