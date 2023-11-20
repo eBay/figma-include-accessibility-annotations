@@ -19,7 +19,7 @@ import Context from '../context';
 import landmarksTypesObj from '../data/landmark-types';
 
 const landmarksTypesArray = Object.keys(landmarksTypesObj);
-const landmarksOnlyOnce = ['main', 'banner', 'content-info'];
+const landmarksOnlyOnce = ['main', 'header', 'footer'];
 
 function Landmarks() {
   // main app state
@@ -218,6 +218,7 @@ function Landmarks() {
           <React.Fragment>
             {landmarksArray.map((key) => {
               const { id, label, type } = landmarks[key];
+              const { label: labelType } = landmarksTypesObj[type];
 
               const showLabel = label !== null || needsLabel.includes(id);
               const hasTempLabel = labelsTemp[id]?.value || label;
@@ -231,7 +232,7 @@ function Landmarks() {
               return (
                 <div key={key} className="row-landmark flex-row-space-between">
                   <div className="flex-row-center">
-                    <div className="landmark-type">{`${type} Landmark`}</div>
+                    <div className="landmark-type">{`${labelType} Landmark`}</div>
 
                     {showLabel && (
                       <React.Fragment>
