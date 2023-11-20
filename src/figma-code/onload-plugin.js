@@ -54,6 +54,7 @@ const isA11yLayer = (children, childNode, name) => {
         console.error(`no steps found in "${stepName}"`);
       }
 
+      // eslint-disable-next-line
       continue;
     }
 
@@ -283,6 +284,7 @@ const isA11yLayer = (children, childNode, name) => {
       };
       a11yCompletedLayers.push(stepName);
     } else {
+      // eslint-disable-next-line
       console.error(`step "${stepName}" is not accounted for yet`);
     }
   }

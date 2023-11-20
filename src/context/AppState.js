@@ -297,6 +297,7 @@ class AppState extends React.Component {
 
       // handle any new messages we've yet to setup
       default:
+        // eslint-disable-next-line
         console.warn(`unknown type "${type}" message from Figma`);
         break;
     }

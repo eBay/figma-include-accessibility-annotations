@@ -13,8 +13,8 @@ import Context from '../context';
 function Settings() {
   // main app state
   const cnxt = React.useContext(Context);
-  const { newFeaturesIntro, responsiveBreakpoints } = cnxt;
-  const { page, pageType, sendToFigma, updateState } = cnxt;
+  const { responsiveBreakpoints } = cnxt;
+  const { sendToFigma, updateState } = cnxt;
 
   // local state
   const [breakpoints, setBreakpoints] = React.useState(responsiveBreakpoints);
