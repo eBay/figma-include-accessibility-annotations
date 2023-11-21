@@ -359,3 +359,10 @@ input {
   border-radius: 16px;
   color: var(--figma-color-text-success);
 }
+
+.loading-message {
+  color: var(--figma-color-text-disabled);
+  max-width: 380px;
+  padding-top: var(--spacing-sm);
+  text-align: center;
+}

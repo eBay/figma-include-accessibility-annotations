@@ -47,9 +47,40 @@ function App() {
 
   // local state
   const [progressPercent, setPercentage] = React.useState(null);
+  const [loadingMsg, setLoadingMsg] = React.useState(
+    'Scanning for Accessibility layers in Figma document'
+  );
+  const [showLoadingWarning, setLoadingWarning] = React.useState(false);
 
   // hook for route changes
   const location = useLocation();
+
+  // on load, start timers for 15 seconds and 60 seconds using a useEffect
+  // if isLoading state changes, cancel timers
+  React.useEffect(() => {
+    let timer15;
+    let timer60;
+
+    if (isLoading === true) {
+      timer15 = setTimeout(() => {
+        setLoadingMsg(
+          'If you have a lot of pages with annotations, and high-res images, try moving them to their own Figma page to get it to load faster.'
+        );
+      }, 15000);
+
+      timer60 = setTimeout(() => {
+        setLoadingMsg(
+          "We couldn't load the annotations. If you have a lot of pages with annotations, and high-res images, try moving them to their own Figma page to get it to load faster."
+        );
+        setLoadingWarning(true);
+      }, 60000);
+    }
+
+    return () => {
+      clearTimeout(timer15);
+      clearTimeout(timer60);
+    };
+  }, [isLoading]);
 
   // listen for route change, adjust show/hide layers in Figma document
   React.useEffect(() => {
@@ -115,7 +146,9 @@ function App() {
 
   // loading/scanning for a11y progress on current Figma document
   if (isLoading) {
-    return <ProgressLoading />;
+    return (
+      <ProgressLoading message={loadingMsg} showWarning={showLoadingWarning} />
+    );
   }
 
   // show page change alert
