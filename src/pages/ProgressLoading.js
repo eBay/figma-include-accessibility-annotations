@@ -4,23 +4,29 @@ import PropTypes from 'prop-types';
 // components
 import { LoadingSpinner } from '../components';
 
-function ProgressLoading({ message }) {
+// icons
+import { SvgWarning } from '../icons';
+
+function ProgressLoading({ message, showWarning }) {
   return (
     <div className="h-100 w-100 flex-center">
-      <LoadingSpinner size={24} />
+      {showWarning === false && <LoadingSpinner size={24} />}
+      {showWarning === true && <SvgWarning size={24} />}
 
-      <div className="muted pt2">{message}</div>
+      <div className="loading-message">{message}</div>
     </div>
   );
 }
 
 ProgressLoading.defaultProps = {
-  message: 'Scanning for Accessibility layers in Figma document'
+  message: 'Scanning for Accessibility layers in Figma document',
+  showWarning: false
 };
 
 ProgressLoading.propTypes = {
   // optional
-  message: PropTypes.string
+  message: PropTypes.string,
+  showWarning: PropTypes.bool
 };
 
 export default React.memo(ProgressLoading);
