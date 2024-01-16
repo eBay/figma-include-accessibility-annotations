@@ -47,14 +47,6 @@
     "shouldHide": false,
     "percent": 10
   },
-  "Touch target": {
-    "id": "Touch target",
-    "label": "Touch target",
-    "designerCheck": "Sufficient click target sizes",
-    "path": "touch-target",
-    "shouldHide": false,
-    "percent": 8
-  },
   "Text zoom": {
     "id": "Text zoom",
     "label": "Text resizing",
@@ -70,5 +62,13 @@
     "path": "responsive-reflow",
     "shouldHide": false,
     "percent": 10
+  },
+  "Touch target": {
+    "id": "Touch target",
+    "label": "Touch target",
+    "designerCheck": "Sufficient click target sizes",
+    "path": "touch-target",
+    "shouldHide": false,
+    "percent": 8
   }
 }
