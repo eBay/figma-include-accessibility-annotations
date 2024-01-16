@@ -270,9 +270,10 @@ function Headings() {
 
         {!headingsAreSet && (
           <EmptyStepSelection
+            id="no-headings"
             isSelected={noHeadings}
             onClick={onEmptySelected}
-            stepName="headings"
+            text="no headings"
           />
         )}
 
