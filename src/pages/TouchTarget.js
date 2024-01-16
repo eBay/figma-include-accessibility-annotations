@@ -3,8 +3,33 @@ import * as React from 'react';
 // components
 import { AnnotationStepPage, HeadingStep } from '../components';
 
+// icons: touch target
+import SvgTouchTarget from '../icons/touch-target';
+
 // app state
 import Context from '../context';
+
+const customFooter = (
+  <React.Fragment>
+    <div className="spacer2" />
+
+    <div className="flex-row justify-center">
+      <SvgTouchTarget.SvgHelp1 />
+      <div className="spacer1w" />
+      <SvgTouchTarget.SvgHelp2 />
+    </div>
+
+    <div className="flex-row justify-center">
+      <div className="reading-order-text font-10">
+        ex. touch targets for icons don&apos;t overlap
+      </div>
+      <div className="spacer1w" />
+      <div className="reading-order-text font-10">
+        ex. touch target for a group of elements
+      </div>
+    </div>
+  </React.Fragment>
+);
 
 function TouchTarget() {
   // main app state
@@ -27,7 +52,7 @@ function TouchTarget() {
   return (
     <AnnotationStepPage
       title="Touch target checks"
-      bannerTipProps={{ pageType, routeName }}
+      bannerTipProps={{ pageType, routeName, footer: customFooter }}
       routeName={routeName}
       footerProps={{
         primaryAction: {
@@ -41,12 +66,12 @@ function TouchTarget() {
       <React.Fragment>
         <HeadingStep
           number={1}
-          text="Look at the interactive elements (like links, icon buttons). Is their visual footprint meeting the minimum size requirements?"
+          text="Check if there are any small elements that need to have the touch target marked up (e.g. an icon without background)."
         />
 
         <HeadingStep
           number={2}
-          text="For the interactive elements that are too small visually, draw a touch target area and include in dev hand-off documentation"
+          text="Add any additional annotation for elements to be regarded as one area (e.g. an image + CTA tile)."
         />
       </React.Fragment>
     </AnnotationStepPage>
