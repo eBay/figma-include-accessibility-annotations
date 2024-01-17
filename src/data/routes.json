@@ -68,7 +68,7 @@
     "label": "Touch target",
     "designerCheck": "Sufficient click target sizes",
     "path": "touch-target",
-    "shouldHide": false,
+    "shouldHide": true,
     "percent": 8
   }
 }
