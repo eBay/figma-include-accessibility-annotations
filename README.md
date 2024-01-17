@@ -22,13 +22,12 @@ The plugin was developed by members of the accessibility and design teams at eBa
 **Near term bug fixes & improvements**
 
 - [ ] Add ability to edit landmarks
-- [ ] Add ability to multi-select for headings
 - [ ] Scan for svg (alternative text)
 - [ ] Add images manually (alternative text)
-- [ ] Placing new annotation below previously inserted (e.g. arrows)
 - [ ] Synchronize copy/paste, undo/redo between the plugin and Figma layers
 - [ ] Allow designer to annotate a section of a design
 - [ ] Add delete in multiple steps
+- [X] Placing new arrow annotation below at end of previously placed arrow (v11)
 - [X] Touch target (v11)
 - [X] Updates for keyboard navigation (v10)
 - [X] Generate Responsive Designs from a single design (v10)
