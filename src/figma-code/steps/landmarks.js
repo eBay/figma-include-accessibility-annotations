@@ -140,7 +140,7 @@ export const add = (msg) => {
   // add rectangle within Landmark layer
   landmarkBlock.appendChild(rectNode);
 
-  // Create label background with auto-layout
+  // create label background with auto-layout
   const labelFrame = figmaLayer.createFrame({
     name: 'Label Background',
     height: 1,
@@ -169,7 +169,7 @@ export const add = (msg) => {
   labelNode.fills = [{ type: 'SOLID', color: colors.white }];
   labelNode.fontName = { family: 'Roboto', style: 'Bold' };
 
-  // Add label node to frame
+  // add label node to frame
   labelFrame.appendChild(labelNode);
 
   // Add label frame to landmark block

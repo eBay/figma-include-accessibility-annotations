@@ -249,18 +249,17 @@ class AppState extends React.Component {
       // landmark confirmed (landmarks)
       case 'landmark-confirmed':
         const { landmarks } = this.state;
+        const { id: landmarkId } = data;
 
-        const { id, landmarkType, name } = data;
         const newEntry = {
-          id,
+          id: landmarkId,
           label: null,
-          name,
-          type: landmarkType
+          name: data.name,
+          type: data.landmarkType
         };
-        const newLandmarksObj = { ...landmarks, [id]: newEntry };
 
         this.setState({
-          landmarks: newLandmarksObj
+          landmarks: { ...landmarks, [landmarkId]: newEntry }
         });
         break;
 
@@ -278,6 +277,23 @@ class AppState extends React.Component {
 
         this.setState({
           gestures: { ...gestures, [gestureId]: newGesture }
+        });
+        break;
+
+      // touch target confirmed (touch targets)
+      case 'touch-target-confirmed':
+        const { touchTargets } = this.state;
+        const { id: targetId } = data;
+
+        const newTargetEntry = {
+          id: targetId,
+          label: data.label,
+          name: data.name,
+          type: data.touchTargetType
+        };
+
+        this.setState({
+          touchTargets: { ...touchTargets, [targetId]: newTargetEntry }
         });
         break;
 

@@ -229,6 +229,16 @@ figma.ui.onmessage = async (msg) => {
     step.focusGrouping.remove(msg);
   }
 
+  // add touch target
+  if (type === 'add-touch-target') {
+    step.touchTarget.add(msg);
+  }
+
+  // check touch targets are valid
+  if (type === 'check-touch-targets') {
+    step.touchTarget.checkTouchTargets(msg);
+  }
+
   // create layer for "checkmark" steps
   if (type === 'add-checkmark-layer') {
     step.checkmark.add(msg);

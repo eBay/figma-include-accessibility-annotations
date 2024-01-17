@@ -9,6 +9,7 @@ import landmarks from './landmarks';
 import readingOrder from './reading-order';
 import responsiveReflow from './responsive-reflow';
 import textZoom from './text-zoom';
+import touchTarget from './touch-target';
 
 export default {
   altText,
@@ -21,5 +22,6 @@ export default {
   landmarks,
   readingOrder,
   responsiveReflow,
-  textZoom
+  textZoom,
+  touchTarget
 };

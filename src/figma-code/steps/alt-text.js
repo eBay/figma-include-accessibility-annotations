@@ -166,7 +166,7 @@ const createAltTextAnnotationInfoFrame = ({ roleType, altText }) => {
     placeholder: 'Placeholder'
   };
 
-  // Create gesture info frame with vertical auto layout
+  // create gesture info frame with vertical auto layout
   const altTextInfoFrame = createAnnotationInfoFrame({
     name: 'Alt text info'
   });
@@ -193,7 +193,7 @@ const createAltTextAnnotationInfoFrame = ({ roleType, altText }) => {
 };
 
 const createAltTextAnnotation = ({ number, id, roleType, altText }) => {
-  // Create alt text annotation with horizontal autolayout
+  // create alt text annotation with horizontal autolayout
   const altTextAnnotationBlock = createInnerAnnotationFrame({
     annotationBlockName: 'Alt text',
     number,
@@ -220,7 +220,7 @@ const createAltTextAnnotation = ({ number, id, roleType, altText }) => {
 };
 
 const createAltTextAnnotationFrame = ({ name }) => {
-  // Create an annotation frame
+  // create an annotation frame
   const frame = createAnnotationFrame({ name });
 
   // and add the Annotation frame title
@@ -359,7 +359,7 @@ export const add = (msg) => {
     nodes.push(imageLayer);
   }
 
-  // Create alt text annotation frame
+  // create alt text annotation frame
   const annotationFrame = createAltTextAnnotationFrame({
     name: altTextAnnotationLayerName
   });
@@ -369,7 +369,7 @@ export const add = (msg) => {
     const { altText, type: roleType, id } = images[i];
     const number = i + 1;
 
-    // Create an alt text annotation child
+    // create an alt text annotation child
     annotationFrame.appendChild(
       createAltTextAnnotation({
         number,

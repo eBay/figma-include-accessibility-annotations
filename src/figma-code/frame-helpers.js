@@ -102,7 +102,7 @@ function createAnnotationFrameTitleText({ title }) {
 }
 
 function createAnnotationNumberFrame({ number, fillColor }) {
-  // Create annotation number frame
+  // create annotation number frame
   const annotationNumberFrame = figmaLayer.createTransparentFrame({
     width: 20,
     height: 20,

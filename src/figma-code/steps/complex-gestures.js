@@ -57,7 +57,7 @@ export const noComplexGestures = (msg) => {
   // add within main Accessibility layer
   mainFrame.appendChild(complexGesturesFrame);
 
-  // In case gestures were annotated then removed, remove the complex gesture
+  // in case gestures were annotated then removed, remove the complex gesture
   // annotations layer if it exists
   const mainAnnotationsFrame = getOrCreateMainAnnotationsFrame({
     mainFrame,
@@ -288,10 +288,10 @@ export const completed = (msg) => {
 };
 
 const createGestureAnnotationInfoFrame = ({ type, label }) => {
-  // Create gesture info frame with vertical auto layout
+  // create gesture info frame with vertical auto layout
   const gestureInfoFrame = createAnnotationInfoFrame({ name: 'Gesture info' });
 
-  // Add the type annotation
+  // add the type annotation
   gestureInfoFrame.appendChild(
     createAnnotationLabelValueRow({
       rowName: 'Gesture type',
@@ -300,7 +300,7 @@ const createGestureAnnotationInfoFrame = ({ type, label }) => {
     })
   );
 
-  // Add the action annotation
+  // add the action annotation
   gestureInfoFrame.appendChild(
     createAnnotationLabelValueRow({
       rowName: 'Gesture action',
@@ -313,21 +313,21 @@ const createGestureAnnotationInfoFrame = ({ type, label }) => {
 };
 
 const createGestureAnnotation = ({ number, id, label, type }) => {
-  // Create gesture annotation frame with horizontal auto-layout
+  // create gesture annotation frame with horizontal auto-layout
   const gestureAnnotationFrame = createInnerAnnotationFrame({
     annotationBlockName: 'Complex gesture',
     number,
     id
   });
 
-  // Create number label frame
+  // create number label frame
   const gestureNumberFrame = createAnnotationNumberFrame({
     number,
     fillColor: colors.purple
   });
   gestureAnnotationFrame.appendChild(gestureNumberFrame);
 
-  // Create info frame
+  // create info frame
   const gestureInfoFrame = createGestureAnnotationInfoFrame({ type, label });
   gestureAnnotationFrame.appendChild(gestureInfoFrame);
 
@@ -351,20 +351,20 @@ export const annotateComplexGestures = (msg) => {
 
   const mainFrame = getOrCreateMainA11yFrame({ page, pageType });
 
-  // Get current complex gestures frame (it should exist)
+  // get current complex gestures frame (it should exist)
   const complexGesturesFrameId = utils.checkIfChildNameExists(
     mainFrame.id,
     complexGesturesLayerName
   );
   const complexGesturesFrame = figma.getNodeById(complexGesturesFrameId);
 
-  // Get or create main annotations frame
+  // get or create main annotations frame
   const mainAnnotationsFrame = getOrCreateMainAnnotationsFrame({
     mainFrame,
     page
   });
 
-  // Check for existing annotation frame and remove if found
+  // check for existing annotation frame and remove if found
   const oldAnnotationFrameId = findAndRemovePreviousAnnotationFrame({
     mainAnnotationsFrame,
     layerName: complexGesturesAnnotationLayerName
@@ -372,12 +372,12 @@ export const annotateComplexGestures = (msg) => {
 
   const annotationFrame = createComplexGesturesAnnotationFrame();
 
-  // For each gesture...
+  // for each gesture...
   for (let i = 0; i < gestures.length; i += 1) {
     const { label, type, id } = gestures[i];
     const number = i + 1;
 
-    // Update the label on the gesture block to match the number
+    // update the label on the gesture block to match the number
     // that will be added to the annotation block. This is in
     // case gestures were removed since creation
     const gestureBlock = complexGesturesFrame.children.find(
@@ -390,7 +390,7 @@ export const annotateComplexGestures = (msg) => {
       labelNode.characters = `${number}`;
     }
 
-    // Create and add gesture annotation to annotation frame
+    // create and add gesture annotation to annotation frame
     annotationFrame.appendChild(
       createGestureAnnotation({
         number,
