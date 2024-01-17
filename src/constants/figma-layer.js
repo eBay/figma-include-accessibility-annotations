@@ -149,8 +149,11 @@ export function createCircle(props) {
   // details, dimensions, and placement
   const { name, x = 0, y = 0, size = 32, stroke = 2 } = props;
 
-  // fills and strokes
-  const { fillColor = colors.pink, strokeColor = colors.white } = props;
+  // fills
+  const { fillColor = colors.pink, opacity = 1 } = props;
+
+  // strokes
+  const { strokeColor = colors.white } = props;
 
   const radius = Math.floor(size / 2);
 
@@ -159,7 +162,7 @@ export function createCircle(props) {
   circle.x = x;
   circle.y = y;
   circle.cornerRadius = radius;
-  circle.fills = [{ type: 'SOLID', color: fillColor }];
+  circle.fills = [{ type: 'SOLID', color: fillColor, opacity }];
   circle.strokes = [{ type: 'SOLID', color: strokeColor }];
   circle.strokeWeight = stroke;
   circle.resizeWithoutConstraints(size, size); // w, h
