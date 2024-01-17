@@ -325,6 +325,7 @@ export function createTransparentFrame({ name, x = 0, y = 0, height, width }) {
 }
 
 export default {
+  arrowSize: ARROW_SIZE,
   createArrow,
   createCircle,
   createFrame,

@@ -3,7 +3,7 @@ import config from '../config';
 import { getOrCreateMainA11yFrame } from '../frame-helpers';
 
 export const addArrow = (msg) => {
-  const { bounds, firstArrow, arrowType, name, pageId, pageType } = msg;
+  const { bounds, arrowType, name, pageId, pageType } = msg;
 
   const mainPageNode = figma.getNodeById(pageId);
 
@@ -44,14 +44,49 @@ export const addArrow = (msg) => {
   // update with id (for future scanning)
   readingOrderFrame.name = `${readingOrderLayerName} | ${readingOrderFrame.id}`;
 
-  const arrowNumber = readingOrderFrame.children.length + 1;
-  const arrowName = firstArrow ? 'Start Arrow' : `Arrow ${arrowNumber}`;
-  const yStart = firstArrow ? 50 : 100;
+  const arrowsLength = readingOrderFrame.children.length;
+  const arrowNumber = arrowsLength + 1;
+  const isFirst = arrowNumber === 1;
+  const arrowName = isFirst ? 'Start Arrow' : `Arrow ${arrowNumber}`;
+
+  let xStart = 50;
+  let yStart = 50;
+
+  // if not first arrow, get last arrow's x/y
+  if (isFirst === false) {
+    const lastChild = readingOrderFrame.children[arrowsLength - 1];
+    const { absoluteBoundingBox } = lastChild;
+
+    let xDiff = 0;
+    let yDiff = 0;
+
+    switch (arrowType) {
+      case 'downLeft':
+        xDiff = figmaLayer.arrowSize;
+        break;
+      case 'downRight':
+        xDiff = absoluteBoundingBox.width;
+        break;
+      case 'left':
+        xDiff = absoluteBoundingBox.width * 2;
+        break;
+      case 'up':
+        xDiff = absoluteBoundingBox.width * 2;
+        yDiff = absoluteBoundingBox.height * 2;
+        break;
+      default:
+        break;
+    }
+
+    xStart = lastChild.x + absoluteBoundingBox.width + 4 - xDiff;
+    yStart = lastChild.y + absoluteBoundingBox.height + 4 - yDiff;
+  }
 
   // Could be cool to find the most recently placed arrow, and make the yStart based on that
   const arrow = figmaLayer.createArrow({
     arrowType,
     name: arrowName,
+    x: xStart,
     y: yStart
   });
 

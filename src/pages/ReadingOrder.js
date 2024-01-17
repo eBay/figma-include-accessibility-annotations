@@ -55,7 +55,6 @@ function ReadingOrder() {
     // let figma side know, time to place that new arrow
     sendToFigma('add-reading-order-arrow', {
       bounds,
-      firstArrow: !hasArrows,
       arrowType,
       name,
       page,
