@@ -289,9 +289,10 @@ function ComplexGestures() {
           />
           {!gesturesAreSet && (
             <EmptyStepSelection
+              id="no-gestures"
               isSelected={noGestures}
               onClick={onEmptySelected}
-              stepName="gestures"
+              text="no gestures"
             />
           )}
 

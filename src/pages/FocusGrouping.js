@@ -164,9 +164,10 @@ function FocusGrouping() {
 
         {!groupsAreSet && (
           <EmptyStepSelection
+            id="no-groups"
             isSelected={noGroups}
             onClick={onEmptySelected}
-            stepName="groups"
+            text="no groups"
           />
         )}
 

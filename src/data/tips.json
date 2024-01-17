@@ -16,7 +16,7 @@
       "text": "Text must have a contrast ratio of 4.5:1. Large text must have a contrast ratio of 3:1. Interactive and meaningful graphical elements must have a contrast ratio of 3:1.<br />Large text is 24px or greater, or 19px bold or greater. In CSS, bold text typically has font-weight:bold, or font-weight:700 or greater."
     },
     "Touch target": {
-      "text": "Click or touch areas should  be a minimum of 48px x 48px unless the target is in a sentence or block of text."
+      "text": "Click or touch areas should be a minimum of 24px x 24px but many teams adhere to the standard native sizes: 44px x 44px for iOS and 48px x 48px for Android."
     },
     "Text zoom": {
       "text": "Mobile devices allow users to customize text sizes. Ensure the layout will adapt to respect these user preferences."
@@ -45,7 +45,7 @@
       "text": "Text must have a contrast ratio of 4.5:1. Large text must have a contrast ratio of 3:1. Interactive and meaningful graphical elements must have a contrast ratio of 3:1.<br />Large text is 24px or greater, or 19px bold or greater. In CSS, bold text typically has font-weight:bold, or font-weight:700 or greater."
     },
     "Touch target": {
-      "text": "Click or touch areas should  be a minimum of 48px x 48px unless the target is in a sentence or block of text."
+      "text": "Click or touch areas should be a minimum of 24px x 24px but many teams adhere to the standard native sizes: 44px x 44px for iOS and 48px x 48px for Android."
     },
     "Text zoom": {
       "text": "Users must be able to resize text at least 200% without loss of information. Enlarge the text in your design and consider how the content and layout is impacted.<br /><br />This step aligns with WCAG SC 1.4.4 Resize text"

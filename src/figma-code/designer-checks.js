@@ -149,7 +149,7 @@ function createDesignerChecksFrame({
   stepsNative,
   stepsCompleted
 }) {
-  // Create designer checks frame
+  // create designer checks frame
   const designerChecksAnnotation = createAnnotationFrame({
     name: DESIGNER_CHECKS_LAYER_NAME
   });

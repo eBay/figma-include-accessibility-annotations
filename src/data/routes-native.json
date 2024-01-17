@@ -31,14 +31,6 @@
     "shouldHide": true,
     "percent": 20
   },
-  "Touch target": {
-    "id": "Touch target",
-    "label": "Touch target",
-    "designerCheck": "Sufficient touch target sizes",
-    "path": "touch-target",
-    "shouldHide": false,
-    "percent": 8
-  },
   "Contrast": {
     "id": "Contrast",
     "label": "Contrast",
@@ -70,5 +62,13 @@
     "path": "complex-gestures",
     "shouldHide": true,
     "percent": 10
+  },
+  "Touch target": {
+    "id": "Touch target",
+    "label": "Touch target",
+    "designerCheck": "Sufficient touch target sizes",
+    "path": "touch-target",
+    "shouldHide": true,
+    "percent": 8
   }
 }

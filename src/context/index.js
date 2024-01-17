@@ -44,6 +44,9 @@ export default React.createContext({
   // complex gestures
   gestures: {},
 
+  // touch targets
+  touchTargets: {},
+
   // color blindness
   colorBlindnessView: false,
 

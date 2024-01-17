@@ -29,6 +29,7 @@ The plugin was developed by members of the accessibility and design teams at eBa
 - [ ] Synchronize copy/paste, undo/redo between the plugin and Figma layers
 - [ ] Allow designer to annotate a section of a design
 - [ ] Add delete in multiple steps
+- [X] Touch target (v11)
 - [X] Updates for keyboard navigation (v10)
 - [X] Generate Responsive Designs from a single design (v10)
 - [X] Rename landmarks to use the HTML names (e.g. footer) and not aria roles (e.g. contentinfo).

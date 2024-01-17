@@ -93,13 +93,13 @@ export const listener = (msg) => {
   figma.currentPage.selection = [];
 
   if (shouldListen) {
-    // Create and select a text node to make text selection easier
+    // create and select a text node to make text selection easier
     const textNode = figma.createText();
     textNode.name = 'cursor-focus-node';
     figma.currentPage.appendChild(textNode);
     figma.currentPage.selectedTextRange = { node: textNode, start: 0, end: 0 };
   } else {
-    // Remove temporary text node if found
+    // remove temporary text node if found
     const textNode = utils.checkIfChildNameExists(
       figma.currentPage.id,
       'cursor-focus-node'
@@ -175,7 +175,7 @@ const createHeadingFrameInFigma = ({
     numberNode.name = `Heading Type: ${headingType}`;
     numberNode.characters = headingDisplay;
   } else {
-    // Mobile headings are not numbered
+    // mobile headings are not numbered
     numberNode.name = 'Heading';
     numberNode.characters = 'H';
   }

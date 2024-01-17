@@ -283,9 +283,10 @@ function Landmarks() {
 
         {!landmarksAreSet && (
           <EmptyStepSelection
+            id="no-landmarks"
             isSelected={noLandmarks}
             onClick={onEmptySelected}
-            stepName="landmarks"
+            text="no landmarks"
           />
         )}
 

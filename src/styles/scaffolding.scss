@@ -13,7 +13,7 @@
 main {
   height: calc(100% - $footer-height);
   overflow: hidden scroll;
-  padding: $spacing-sm;
+  padding: $spacing-sm $spacing-sm 0 $spacing-sm;
   transition: width 500ms ease-in-out;
   width: 475px;
 
