@@ -75,6 +75,9 @@ class AppState extends React.Component {
       // complex gestures
       gestures: {},
 
+      // touch targets
+      touchTargets: {},
+
       // color blindness
       colorBlindnessView: false,
 
@@ -349,6 +352,9 @@ class AppState extends React.Component {
     // complex gestures
     const { gestures } = this.state;
 
+    // touch targets
+    const { touchTargets } = this.state;
+
     // color blindness
     const { colorBlindnessView } = this.state;
 
@@ -403,6 +409,9 @@ class AppState extends React.Component {
 
           // complex gestures
           gestures,
+
+          // touch targets
+          touchTargets,
 
           // color blindness
           colorBlindnessView,
