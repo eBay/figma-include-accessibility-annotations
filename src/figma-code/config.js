@@ -22,7 +22,7 @@ export default {
   ],
   a11yCheckboxLayers: [
     'Contrast Layer',
-    'Touch target Layer',
+    // 'Touch target Layer',
     'Text zoom Layer',
     'Responsive reflow Layer',
     'Color blindness Layer'

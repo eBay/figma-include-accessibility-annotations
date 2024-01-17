@@ -298,6 +298,36 @@ const isA11yLayer = (children, childNode, name) => {
         visible: frameChild.visible
       };
       a11yCompletedLayers.push(stepName);
+    } else if (stepName === 'Touch target') {
+      // get touch target nodes and format
+      const touchTargets = {};
+      for (let l = 0; l < frameChild.children.length; l += 1) {
+        const touchTargetObj = frameChild.children[l];
+
+        // make sure it's a frame node
+        if (touchTargetObj.type === 'RECTANGLE') {
+          const [nameArray] = touchTargetObj.name.split('|');
+          const typeName = nameArray.replace('Touch Target: ', '');
+
+          // if we have a label, grab it
+          const [type] = typeName.split(':');
+          const typeTrim = type.trim();
+
+          touchTargets[touchTargetObj.id] = {
+            id: touchTargetObj.id,
+            name: touchTargetObj.name,
+            type: typeTrim
+          };
+        }
+      }
+
+      stepsData[stepName] = {
+        id: frameChild.id,
+        existingData: touchTargets,
+        stateKey: 'touchTargets',
+        visible: frameChild.visible
+      };
+      a11yCompletedLayers.push(stepName);
     } else {
       // eslint-disable-next-line
       console.error(`step "${stepName}" is not accounted for yet`);
