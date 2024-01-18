@@ -134,6 +134,14 @@ export const checkTouchTargets = (msg) => {
     return overlapX && overlapY;
   };
 
+  const tooSmall = (nodeId) => {
+    const node = figma.getNodeById(nodeId);
+
+    const isTooSmall = node.width < 24 || node.height < 24;
+
+    return isTooSmall;
+  };
+
   const checkOverlap = (nodes) => {
     const overlappingNodes = [];
 
@@ -157,13 +165,31 @@ export const checkTouchTargets = (msg) => {
     return overlappingNodes;
   };
 
+  const checkMinSize = (nodes) => {
+    const tooSmallNodes = [];
+
+    // check if any nodes are too small
+    for (let i = 0; i < nodes.length; i += 1) {
+      const node = nodes[i];
+
+      // check if nodes overlap
+      if (tooSmall(node)) {
+        tooSmallNodes.push(node);
+      }
+    }
+
+    return tooSmallNodes;
+  };
+
   const overlaps = checkOverlap(Object.keys(touchTargets));
+  const tooSmallNodes = checkMinSize(Object.keys(touchTargets));
 
   // send message response back to plugin frontend (ui.js)
   figma.ui.postMessage({
     type: 'touch-targets-checked',
     data: {
-      overlapsFound: overlaps
+      overlapsFound: overlaps,
+      tooSmallFound: tooSmallNodes
     }
   });
 };

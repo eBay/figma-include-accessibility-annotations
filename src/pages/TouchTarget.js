@@ -62,7 +62,7 @@ function TouchTarget() {
 
   // local state
   const [checkedOverlap, setCheckedOverlap] = React.useState(false);
-  const [overlaps, setOverlaps] = React.useState([]);
+  const [errors, setErrorsFound] = React.useState({});
   const [noTargets, setNoTargets] = React.useState(defaultNoTargets);
 
   const onEmptySelected = () => {
@@ -134,12 +134,21 @@ function TouchTarget() {
 
     // only listen for this response type on this step
     if (type === 'touch-targets-checked') {
-      const { overlapsFound } = data;
+      const { overlapsFound, tooSmallFound } = data;
 
-      setOverlaps(overlapsFound);
+      const newErrors = {};
+      overlapsFound.forEach((id) => {
+        newErrors[id] = { id, type: 'overlap' };
+      });
+
+      tooSmallFound.forEach((id) => {
+        newErrors[id] = { id, type: 'too-small' };
+      });
+
+      setErrorsFound(newErrors);
 
       // no issues found
-      if (overlapsFound.length === 0) {
+      if (Object.keys(newErrors).length === 0) {
         setCheckedOverlap(true);
       } else {
         // scroll to bottom
@@ -158,7 +167,7 @@ function TouchTarget() {
     };
   }, []);
 
-  const checkText = overlaps.length > 0 ? 'Re-check' : 'Check';
+  const checkText = Object.keys(errors).length > 0 ? 'Re-check' : 'Check';
 
   return (
     <AnnotationStepPage
@@ -236,11 +245,11 @@ function TouchTarget() {
           </React.Fragment>
         )}
 
-        {checkedOverlap === true && overlaps.length === 0 && (
+        {checkedOverlap === true && Object.keys(errors).length === 0 && (
           <BannerSuccess text="All touch points meet accessibility criteria" />
         )}
 
-        {overlaps.length > 0 && (
+        {Object.keys(errors).length > 0 && (
           <React.Fragment>
             <Alert
               icon={<SvgWarning />}
@@ -258,10 +267,16 @@ function TouchTarget() {
               const num = index + 1;
 
               // only show issues
-              if (overlaps.includes(key) === false) {
+              if (Object.keys(errors).includes(key) === false) {
                 return null;
               }
 
+              const { type } = errors[key];
+
+              const Icon =
+                type === 'overlap'
+                  ? SvgTouchTarget.SvgOverlap
+                  : SvgTouchTarget.SvgResize;
               const onClick = () => zoomTo([key], true);
 
               return (
@@ -275,7 +290,7 @@ function TouchTarget() {
                     role="button"
                     tabIndex="0"
                   >
-                    <SvgTouchTarget.SvgOverlap />
+                    <Icon />
                     <div className="ml1">{`${num} Touch target`}</div>
                   </div>
 
