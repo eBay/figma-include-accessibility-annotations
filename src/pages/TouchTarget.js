@@ -5,6 +5,7 @@ import { utils } from '../constants';
 import {
   Alert,
   AnnotationStepPage,
+  BannerSuccess,
   EmptyStepSelection,
   HeadingStep
 } from '../components';
@@ -140,6 +141,9 @@ function TouchTarget() {
       // no issues found
       if (overlapsFound.length === 0) {
         setCheckedOverlap(true);
+      } else {
+        // scroll to bottom
+        utils.scrollToBottomOfAnnotationStep();
       }
     }
   };
@@ -180,12 +184,7 @@ function TouchTarget() {
       <React.Fragment>
         <HeadingStep
           number={1}
-          text="Check if there are any small elements that need to have the touch target marked up (e.g. an icon without background)."
-        />
-
-        <HeadingStep
-          number={2}
-          text="Add any additional annotation for elements to be regarded as one area (e.g. an image + CTA tile)."
+          text="Identify areas that need touch target annotations."
         />
 
         {!targetsAreSet && (
@@ -195,6 +194,47 @@ function TouchTarget() {
             onClick={onEmptySelected}
             text="All touch areas are clearly visible from the component shapes"
           />
+        )}
+
+        {noTargets === false && (
+          <div className="button-group" role="radiogroup">
+            {targetTypesArray.map((type) => {
+              const { label, icon } = touchTargetsTypes[type];
+
+              const onClick = () => {
+                onAddTouchTarget(type);
+              };
+
+              return (
+                <div key={label} className="container-selection-button">
+                  <div
+                    className="selection-button"
+                    onClick={onClick}
+                    onKeyDown={(e) => {
+                      if (utils.isEnterKey(e.key)) onClick();
+                    }}
+                    role="button"
+                    tabIndex={0}
+                  >
+                    <div>{icon}</div>
+                  </div>
+
+                  <div className="selection-button-label">{label}</div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        {targetsArray.length > 1 && (
+          <React.Fragment>
+            <div className="spacer1" />
+            <HeadingStep number={2} text="Check the touch points" />
+          </React.Fragment>
+        )}
+
+        {checkedOverlap === true && overlaps.length === 0 && (
+          <BannerSuccess text="All touch points meet accessibility criteria" />
         )}
 
         {overlaps.length > 0 && (
@@ -210,9 +250,9 @@ function TouchTarget() {
 
             <HeadingStep number={3} text="Fix the issues" />
 
-            {targetsArray.map((key) => {
-              const { id, type } = touchTargets[key];
-              const { label: labelType } = touchTargetsTypes[type];
+            {targetsArray.map((key, index) => {
+              const { id } = touchTargets[key];
+              const num = index + 1;
 
               // only show issues
               if (overlaps.includes(key) === false) {
@@ -233,7 +273,7 @@ function TouchTarget() {
                     tabIndex="0"
                   >
                     <SvgTouchTarget.SvgOverlap />
-                    <div className="touch-target-type">{`Touch target (${labelType})`}</div>
+                    <div className="ml1">{`${num} Touch target`}</div>
                   </div>
 
                   <div
@@ -255,40 +295,6 @@ function TouchTarget() {
             <div className="spacer1" />
 
             <div className="divider" />
-          </React.Fragment>
-        )}
-
-        {noTargets === false && (
-          <React.Fragment>
-            <div className="spacer2" />
-
-            <div className="button-group" role="radiogroup">
-              {targetTypesArray.map((type) => {
-                const { label, icon } = touchTargetsTypes[type];
-
-                const onClick = () => {
-                  onAddTouchTarget(type);
-                };
-
-                return (
-                  <div key={label} className="container-selection-button">
-                    <div
-                      className="selection-button"
-                      onClick={onClick}
-                      onKeyDown={(e) => {
-                        if (utils.isEnterKey(e.key)) onClick();
-                      }}
-                      role="button"
-                      tabIndex={0}
-                    >
-                      <div>{icon}</div>
-                    </div>
-
-                    <div className="selection-button-label">{label}</div>
-                  </div>
-                );
-              })}
-            </div>
           </React.Fragment>
         )}
       </React.Fragment>
