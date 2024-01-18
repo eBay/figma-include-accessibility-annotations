@@ -47,7 +47,9 @@ export const addArrow = (msg) => {
   const arrowsLength = readingOrderFrame.children.length;
   const arrowNumber = arrowsLength + 1;
   const isFirst = arrowNumber === 1;
-  const arrowName = isFirst ? 'Start Arrow' : `Arrow ${arrowNumber}`;
+  const arrowName = isFirst
+    ? `Start Arrow | ${arrowType}`
+    : `Arrow ${arrowNumber} | ${arrowType}`;
 
   let xStart = 50;
   let yStart = 50;
@@ -57,10 +59,16 @@ export const addArrow = (msg) => {
     const lastChild = readingOrderFrame.children[arrowsLength - 1];
     const { absoluteBoundingBox } = lastChild;
 
+    // if | is found, get the prevType
+    const hasPipe = lastChild.name.includes('|');
+    const prevType = hasPipe
+      ? lastChild.name.split('|')[1].trim()
+      : 'downRight';
+
     let xDiff = 0;
     let yDiff = 0;
 
-    switch (arrowType) {
+    switch (prevType) {
       case 'downLeft':
         xDiff = figmaLayer.arrowSize;
         break;
