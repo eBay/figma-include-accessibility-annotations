@@ -219,7 +219,10 @@ function TouchTarget() {
                     <div>{icon}</div>
                   </div>
 
-                  <div className="selection-button-label">{label}</div>
+                  <div
+                    className="selection-button-label"
+                    dangerouslySetInnerHTML={{ __html: label }}
+                  />
                 </div>
               );
             })}

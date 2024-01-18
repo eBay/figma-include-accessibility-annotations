@@ -95,8 +95,10 @@ export const add = (msg) => {
   // set selection of new touch target layer
   figma.currentPage.selection = [targetNode];
 
+  const labelFormatted = label.replace(/<br \/>/g, ' ');
+
   // let the user know rectangle has been added
-  figma.notify(`${label} overlay added successfully!`, {
+  figma.notify(`${labelFormatted} overlay added successfully!`, {
     timeout: config.notifyTime
   });
 
