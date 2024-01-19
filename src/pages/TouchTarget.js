@@ -291,7 +291,7 @@ function TouchTarget() {
                     tabIndex="0"
                   >
                     <Icon />
-                    <div className="ml1">{`${num} Touch target`}</div>
+                    <div className="ml1">{`Touch target ${num}`}</div>
                   </div>
 
                   <div
