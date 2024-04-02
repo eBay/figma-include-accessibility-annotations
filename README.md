@@ -35,7 +35,7 @@ The plugin was developed by members of the accessibility and design teams at eBa
 
 **Future explorations**
 
-- [ ] Touch target revision (we are waiting for the WCAG updates to make the step aligned with the latest recommendations)
+- [X] Touch target revision 
 - [ ] Pointer gestures
 - [ ] Split between focus & reading order
 - [ ] Interactive elements step

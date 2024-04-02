@@ -70,6 +70,8 @@ function Footer({ primaryAction, secondaryAction, routeName }) {
     updateState('gestures', {});
     updateState('gesturesTemp', null);
 
+    updateState('touchTargets', {});
+
     // make all layers visible
     sendToFigma('show-all-layers');
   };

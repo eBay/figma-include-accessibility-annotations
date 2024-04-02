@@ -59,7 +59,8 @@ export const noLandmarks = (msg) => {
       status: 'add',
       stepKey: 'Landmarks',
       Landmarks: {
-        id: landmarksFrame.id
+        id: landmarksFrame.id,
+        existingData: {}
       },
       main: {
         id: mainFrame.id,
@@ -209,7 +210,7 @@ export const add = (msg) => {
 };
 
 export const completed = (msg) => {
-  const { page, pageType } = msg;
+  const { page, pageType, landmarks = {} } = msg;
 
   // main data and setup
   const { bounds, mainPageId, name } = page;
@@ -268,7 +269,8 @@ export const completed = (msg) => {
       status: 'add',
       stepKey: 'Landmarks',
       Landmarks: {
-        id: landmarksFrame.id
+        id: landmarksFrame.id,
+        existingData: landmarks
       },
       main: {
         id: mainFrame.id,

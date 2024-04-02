@@ -1,4 +1,5 @@
 import * as React from 'react';
+import propTypes from 'prop-types';
 import { utils } from '../constants';
 
 // components
@@ -19,61 +20,39 @@ import SvgTouchTarget from '../icons/touch-target';
 // app state
 import Context from '../context';
 
-// data
-import touchTargetsTypes from '../data/touch-target-types';
-
-const customFooter = (
-  <React.Fragment>
-    <div className="spacer2" />
-
-    <div className="flex-row justify-center">
-      <SvgTouchTarget.SvgHelp1 />
-      <div className="spacer1w" />
-      <SvgTouchTarget.SvgHelp2 />
-    </div>
-
-    <div className="flex-row justify-center">
-      <div className="reading-order-text font-10">
-        ex. touch targets for icons don&apos;t overlap
-      </div>
-      <div className="spacer1w" />
-      <div className="reading-order-text font-10">
-        ex. touch target for a group of elements
-      </div>
-    </div>
-  </React.Fragment>
-);
 
 function TouchTarget() {
   // main app state
   const cnxt = React.useContext(Context);
-  const { page, pageType, removeNodes, stepsCompleted, sendToFigma } = cnxt;
+  const { page, pageType, stepsCompleted, sendToFigma } = cnxt;
   const { touchTargets, updateState, zoomTo } = cnxt;
 
   // ui state
   const targetsArray = Object.keys(touchTargets);
-  const targetTypesArray = Object.keys(touchTargetsTypes);
-  const targetsAreSet = targetsArray.length !== 0;
 
   // state defaults
   const routeName = 'Touch target';
   const isCompleted = stepsCompleted.includes(routeName);
-  const defaultNoTargets = isCompleted && targetsArray.length === 0;
+  const numTargets = targetsArray.length;
+  const defaultNoTargets = isCompleted && numTargets === 0;
 
   // local state
-  const [checkedOverlap, setCheckedOverlap] = React.useState(false);
-  const [errors, setErrorsFound] = React.useState({});
-  const [noTargets, setNoTargets] = React.useState(defaultNoTargets);
+  const [hasCheckedTouchTargets, setHasCheckedTouchTargets] =
+    React.useState(false);
+  const [errors, setErrorsFound] = React.useState([]);
+  const [hasSelectedNoTargets, setHasSelectedNoTargets] =
+    React.useState(defaultNoTargets);
 
   const onEmptySelected = () => {
-    setNoTargets(!noTargets);
+    setHasSelectedNoTargets(!hasSelectedNoTargets);
   };
 
-  const onAddTouchTarget = (targetType) => {
+  const onAddTouchTarget = () => {
     const { bounds, id } = page;
 
     // re-start checker
-    setCheckedOverlap(false);
+    setHasCheckedTouchTargets(false);
+    setHasSelectedNoTargets(false);
 
     // scroll to bottom of main
     utils.scrollToBottomOfAnnotationStep();
@@ -82,34 +61,12 @@ function TouchTarget() {
       bounds,
       page,
       pageId: id,
-      targetType,
-      pageType
+      pageType,
+      targetIndex: numTargets + 1
     });
   };
 
-  const onRemoveTouchTarget = (idToRemove) => {
-    // remove from main state
-    const newTouchTargetsObj = { ...touchTargets };
-    delete newTouchTargetsObj[idToRemove];
-
-    // update main state
-    updateState('touchTargets', newTouchTargetsObj);
-
-    // remove node on Figma Document (array of IDs)
-    removeNodes([idToRemove]);
-
-    // check if already completed step
-    const indexFound = stepsCompleted.indexOf(routeName);
-    if (indexFound >= 0) {
-      const newStepsCompleted = [...stepsCompleted];
-      newStepsCompleted.splice(indexFound, 1);
-
-      // update main state
-      updateState('stepsCompleted', newStepsCompleted);
-    }
-  };
-
-  const checkForOverlap = () => {
+  const checkTouchTargets = () => {
     // check for overlapping or min size of touch target
     sendToFigma('check-touch-targets', {
       page,
@@ -120,12 +77,13 @@ function TouchTarget() {
   };
 
   const confirmTouchTargetCheck = () => {
-    // let figma side know the state of this step
     sendToFigma('add-checkmark-layer', {
       layerName: 'Touch target Layer',
       create: true,
       page,
-      pageType
+      pageType,
+      stateKey: 'touchTargets',
+      existingData: touchTargets
     });
   };
 
@@ -134,24 +92,17 @@ function TouchTarget() {
 
     // only listen for this response type on this step
     if (type === 'touch-targets-checked') {
-      const { overlapsFound, tooSmallFound } = data;
-
-      const newErrors = {};
-      overlapsFound.forEach((id) => {
-        newErrors[id] = { id, type: 'overlap' };
+      const { issues, targets } = data;
+      const targetObj = {};
+      targets.forEach((target) => {
+        targetObj[target.id] = target;
       });
-
-      tooSmallFound.forEach((id) => {
-        newErrors[id] = { id, type: 'too-small' };
-      });
-
-      setErrorsFound(newErrors);
-
-      // no issues found
-      if (Object.keys(newErrors).length === 0) {
-        setCheckedOverlap(true);
+      updateState('touchTargets', targetObj);
+      if (targets.length === 0) {
+        setHasCheckedTouchTargets(false);
       } else {
-        // scroll to bottom
+        setErrorsFound(issues);
+        setHasCheckedTouchTargets(true);
         utils.scrollToBottomOfAnnotationStep();
       }
     }
@@ -167,157 +118,167 @@ function TouchTarget() {
     };
   }, []);
 
-  const checkText = Object.keys(errors).length > 0 ? 'Re-check' : 'Check';
+  const checkText =
+    errors.length > 0 && hasCheckedTouchTargets ? 'Re-check' : 'Check';
+
+  const getPrimaryAction = () => {
+    if (!numTargets && !hasSelectedNoTargets) return null;
+    if (numTargets && (errors.length > 0 || !hasCheckedTouchTargets)) {
+      return {
+        completesStep: false,
+        onClick: checkTouchTargets,
+        buttonText: `${checkText} touch targets`
+      };
+    }
+    return {
+      completesStep: true,
+      onClick: confirmTouchTargetCheck,
+      buttonText: 'Save and continue'
+    };
+  };
+
+  const getSecondaryAction = () => {
+    if (!numTargets || (numTargets && !hasCheckedTouchTargets)) return null;
+    if (errors.length > 0) {
+      return {
+        buttonText: 'Mark as fixed',
+        completesStep: true,
+        onClick: confirmTouchTargetCheck
+      };
+    }
+    return {
+      completesStep: false,
+      onClick: checkTouchTargets,
+      buttonText: `Re-check touch targets`
+    };
+  };
 
   return (
     <AnnotationStepPage
       title="Touch target checks"
-      bannerTipProps={{ pageType, routeName, footer: customFooter }}
+      bannerTipProps={{ pageType, routeName }}
       routeName={routeName}
       footerProps={{
-        primaryAction:
-          checkedOverlap === false && targetsAreSet
-            ? {
-                completesStep: false,
-                onClick: checkForOverlap,
-                buttonText: `${checkText} touch targets`
-              }
-            : {
-                completesStep: true,
-                onClick: confirmTouchTargetCheck,
-                buttonText: 'Save and continue'
-              },
-        secondaryAction: null
+        primaryAction: getPrimaryAction(),
+        secondaryAction: getSecondaryAction()
       }}
     >
       <React.Fragment>
         <HeadingStep
           number={1}
-          text="Identify areas that need touch target annotations."
+          text={`<p style="display: inline">Place annotations for targets. <span style="font-style: italic;">Include</span> will flag where these overlap or have insufficient spacing.</p>`}
         />
 
-        {!targetsAreSet && (
+        {!numTargets && (
           <EmptyStepSelection
             id="all-touch-targets-clear"
-            isSelected={noTargets}
+            isSelected={hasSelectedNoTargets}
             onClick={onEmptySelected}
-            text="All touch areas are clearly visible from the component shapes"
+            stepName="targets to check"
           />
         )}
 
-        {noTargets === false && (
+        {hasSelectedNoTargets === false && (
           <div className="button-group" role="radiogroup">
-            {targetTypesArray.map((type) => {
-              const { label, icon } = touchTargetsTypes[type];
-
-              const onClick = () => {
-                onAddTouchTarget(type);
-              };
-
-              return (
-                <div key={label} className="container-selection-button">
-                  <div
-                    className="selection-button"
-                    onClick={onClick}
-                    onKeyDown={(e) => {
-                      if (utils.isEnterKey(e.key)) onClick();
-                    }}
-                    role="button"
-                    tabIndex={0}
-                  >
-                    <div>{icon}</div>
-                  </div>
-
-                  <div
-                    className="selection-button-label"
-                    dangerouslySetInnerHTML={{ __html: label }}
-                  />
+            <div key="Add target" className="container-selection-button">
+              <div
+                className="selection-button"
+                onClick={onAddTouchTarget}
+                onKeyDown={(e) => {
+                  if (utils.isEnterKey(e.key)) onAddTouchTarget();
+                }}
+                role="button"
+                tabIndex={0}
+              >
+                <div>
+                  <SvgTouchTarget.SvgCustom />
                 </div>
-              );
-            })}
+              </div>
+
+              <div className="selection-button-label">add target</div>
+            </div>
           </div>
         )}
 
-        {targetsArray.length > 1 && (
+        {numTargets > 0 && (
           <React.Fragment>
             <div className="spacer1" />
-            <HeadingStep number={2} text="Check the touch points" />
+            <HeadingStep number={2} text="Check the touch targets" />
           </React.Fragment>
         )}
 
-        {checkedOverlap === true && Object.keys(errors).length === 0 && (
-          <BannerSuccess text="All touch points meet accessibility criteria" />
+        {hasCheckedTouchTargets === true && errors.length === 0 && (
+          <BannerSuccess text="All touch targets meet minimum size and spacing requirements" />
         )}
 
-        {Object.keys(errors).length > 0 && (
+        {errors.length > 0 && (
           <React.Fragment>
             <Alert
-              icon={<SvgWarning />}
+              icon={<SvgWarning fill="var(--foreground-attention)" />}
               style={{ padding: 0 }}
-              text="Some of your touch targets are overlapping or not meeting minimum size."
+              text="Some of your touch targets are overlapping or do not meet the minimum size or spacing requirements."
               type="warning"
             />
 
-            <div className="spacer1" />
+            <div className="spacer2" />
 
-            <HeadingStep number={3} text="Fix the issues" />
-
-            {targetsArray.map((key, index) => {
-              const { id } = touchTargets[key];
-              const num = index + 1;
-
-              // only show issues
-              if (Object.keys(errors).includes(key) === false) {
-                return null;
-              }
-
-              const { type } = errors[key];
-
-              const Icon =
-                type === 'overlap'
-                  ? SvgTouchTarget.SvgOverlap
-                  : SvgTouchTarget.SvgResize;
-              const onClick = () => zoomTo([key], true);
-
-              return (
-                <div key={key} className="row-line-item flex-row-space-between">
-                  <div
-                    className="flex-row-center cursor-pointer"
-                    onClick={onClick}
-                    onKeyDown={(e) => {
-                      if (utils.isEnterKey(e.key)) onClick();
-                    }}
-                    role="button"
-                    tabIndex="0"
-                  >
-                    <Icon />
-                    <div className="ml1">{`Touch target ${num}`}</div>
-                  </div>
-
-                  <div
-                    aria-label="remove touch target"
-                    className="btn-remove"
-                    onClick={() => onRemoveTouchTarget(id)}
-                    onKeyDown={(e) => {
-                      if (utils.isEnterKey(e.key)) onRemoveTouchTarget(id);
-                    }}
-                    role="button"
-                    tabIndex="0"
-                  >
-                    <div className="remove-dash" />
-                  </div>
-                </div>
-              );
-            })}
-
-            <div className="spacer1" />
+            {errors.length > 0 && (
+              <>
+                <HeadingStep
+                  number={3}
+                  text="Increase the size of the target or the spacing from other targets (24px by 24px minimum requirement)"
+                />
+                {errors.map((error) => (
+                  <TouchTargetError
+                    zoomTo={zoomTo}
+                    key={`error-${error.nodeIds.join(',')}`}
+                    error={error}
+                  />
+                ))}
+              </>
+            )}
 
             <div className="divider" />
           </React.Fragment>
         )}
+        <div className="spacer3" />
       </React.Fragment>
     </AnnotationStepPage>
   );
 }
+
+function TouchTargetError({ error, zoomTo }) {
+  const Icon =
+    error.type === 'overlap'
+      ? SvgTouchTarget.SvgOverlap
+      : SvgTouchTarget.SvgResize;
+  const onClick = () => zoomTo(error.nodeIds, true);
+
+  return (
+    <div className="row-line-item flex-row-space-between error-line-item">
+      <div
+        className="flex-row-center cursor-pointer"
+        onClick={onClick}
+        onKeyDown={(e) => {
+          if (utils.isEnterKey(e.key)) onClick();
+        }}
+        role="button"
+        tabIndex="0"
+      >
+        <Icon />
+        <div className="ml1">{error.label}</div>
+      </div>
+    </div>
+  );
+}
+
+TouchTargetError.propTypes = {
+  error: propTypes.shape({
+    type: propTypes.string.isRequired,
+    label: propTypes.string.isRequired,
+    nodeIds: propTypes.arrayOf(propTypes.string)
+  }).isRequired,
+  zoomTo: propTypes.func.isRequired
+};
 
 export default TouchTarget;

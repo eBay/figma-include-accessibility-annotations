@@ -278,13 +278,13 @@ const getBase64FromHash = async (imagesScanned) => {
 };
 
 export default {
-  isEnterKey,
   capitalize,
   checkIfChildNameExists,
   checkTypeOfA11yLayer,
   frameExistsOrCreate,
   getBase64FromHash,
   hasNoImageFills,
+  isEnterKey,
   nameBeforePipe,
   sanitizeName,
   showAllLayers,

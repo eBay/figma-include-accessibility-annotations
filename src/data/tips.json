@@ -13,10 +13,10 @@
       "text": "Alternative text is announced by screen readers and describes the purpose, function, or content of an image.<br/><br/>Images that convey meaning are <em>informative</em> and require alt text. Images that do not convey meaning, or are non-functional and beside text that conveys their meaning are considered <em>decorative.</em>"
     },
     "Contrast": {
-      "text": "Text must have a contrast ratio of 4.5:1. Large text must have a contrast ratio of 3:1. Interactive and meaningful graphical elements must have a contrast ratio of 3:1.<br />Large text is 24px or greater, or 19px bold or greater. In CSS, bold text typically has font-weight:bold, or font-weight:700 or greater."
+      "text": "Text must have a contrast ratio of 4.5:1. Large text must have a contrast ratio of 3:1. Interactive and meaningful graphical elements must have a contrast ratio of 3:1."
     },
     "Touch target": {
-      "text": "Click or touch areas should be a minimum of 24px x 24px but many teams adhere to the standard native sizes: 44px x 44px for iOS and 48px x 48px for Android."
+      "text": "WCAG SC 2.5.8 Target Size defines the minimum area as 24px by 24px. Some teams prefer to use 44px x 44px for iOS and 48px x 48px for Android.<br/><br/>There are exceptions for undersize targets with sufficient spacing, links within sentences or blocks of text, or targets like pins on a map, or dots on a chart.<br/><br/>Use this step of <span style=\"font-style: italic;\">Include</span> as a tool to check where needed; it may not be necessary to annotate every target in every design."
     },
     "Text zoom": {
       "text": "Mobile devices allow users to customize text sizes. Ensure the layout will adapt to respect these user preferences."
@@ -42,10 +42,10 @@
       "text": "Alternative text is announced by screen readers and describes the purpose, function, or content of an image.<br/><br/>Images that convey meaning are <em>informative</em> and require alt text. Images that do not convey meaning, or are non-functional and beside text that conveys their meaning are considered <em>decorative.</em>"
     },
     "Contrast": {
-      "text": "Text must have a contrast ratio of 4.5:1. Large text must have a contrast ratio of 3:1. Interactive and meaningful graphical elements must have a contrast ratio of 3:1.<br />Large text is 24px or greater, or 19px bold or greater. In CSS, bold text typically has font-weight:bold, or font-weight:700 or greater."
+      "text": "Text must have a contrast ratio of 4.5:1. Large text must have a contrast ratio of 3:1. Interactive and meaningful graphical elements must have a contrast ratio of 3:1.<br /><br />Large text is 24px or greater, or 19px bold or greater. In CSS, bold text typically has font-weight:bold, or font-weight:700 or greater."
     },
     "Touch target": {
-      "text": "Click or touch areas should be a minimum of 24px x 24px but many teams adhere to the standard native sizes: 44px x 44px for iOS and 48px x 48px for Android."
+      "text": "WCAG SC 2.5.8 Target Size defines the minimum area as 24px by 24px, but allows exceptions for undersize targets with sufficient spacing, links within sentences or blocks of text, or targets like pins on a map, or dots on a chart.<br/><br/>Use this step of <span style=\"font-style: italic;\">Include</span> as a tool to check where needed; it may not be necessary to annotate every target in every design."
     },
     "Text zoom": {
       "text": "Users must be able to resize text at least 200% without loss of information. Enlarge the text in your design and consider how the content and layout is impacted.<br /><br />This step aligns with WCAG SC 1.4.4 Resize text"

@@ -72,6 +72,7 @@ function Dashboard() {
     // reset specific data
     updateState('landmarks', {});
     updateState('headings', {});
+    updateState('touchTargets', {});
     updateState('imagesData', []);
     updateState('imagesScanned', imagesScanned);
 
