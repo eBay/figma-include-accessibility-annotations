@@ -69,7 +69,8 @@ export const noHeadings = (msg) => {
       status: 'add',
       stepKey: 'Headings',
       Headings: {
-        id: headingsFrame.id
+        id: headingsFrame.id,
+        existingData: {}
       },
       main: {
         id: mainFrame.id,
@@ -354,7 +355,8 @@ export const confirm = (msg) => {
       status: 'add',
       stepKey: 'Headings',
       Headings: {
-        id: headingsFrame.id
+        id: headingsFrame.id,
+        existingData: headings
       },
       main: {
         id: mainFrame.id,

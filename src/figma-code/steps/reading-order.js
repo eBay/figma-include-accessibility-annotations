@@ -1,9 +1,12 @@
 import { figmaLayer, utils } from '../../constants';
 import config from '../config';
-import { getOrCreateMainA11yFrame } from '../frame-helpers';
+import {
+  getOrCreateMainA11yFrame,
+  getOrCreateMainAnnotationsFrame
+} from '../frame-helpers';
 
 export const addArrow = (msg) => {
-  const { bounds, arrowType, name, pageId, pageType } = msg;
+  const { bounds, arrowType, name, page, pageId, pageType } = msg;
 
   const mainPageNode = figma.getNodeById(pageId);
 
@@ -33,6 +36,10 @@ export const addArrow = (msg) => {
   const { parent } = mainPageNode;
   const dims = { x, y, height, width };
   const mainFrame = utils.frameExistsOrCreate(parent.id, mainLayerName, dims);
+  const mainAnnotationsFrame = getOrCreateMainAnnotationsFrame({
+    mainFrame,
+    page
+  });
 
   // does Reading order exists already?
   const readingOrderFrame = utils.frameExistsOrCreate(
@@ -70,27 +77,68 @@ export const addArrow = (msg) => {
 
     switch (prevType) {
       case 'downLeft':
-        xDiff = figmaLayer.arrowSize;
+        yDiff = absoluteBoundingBox.height;
+        break;
+      case 'left':
+        break;
+      case 'upRight':
+        xDiff = absoluteBoundingBox.width;
+        break;
+      case 'upLeft':
+        break;
+      case 'up':
+        break;
+      case 'down':
+        yDiff = absoluteBoundingBox.height;
+        break;
+      case 'right':
+        xDiff = absoluteBoundingBox.width;
         break;
       case 'downRight':
         xDiff = absoluteBoundingBox.width;
-        break;
-      case 'left':
-        xDiff = absoluteBoundingBox.width * 2;
-        break;
-      case 'up':
-        xDiff = absoluteBoundingBox.width * 2;
-        yDiff = absoluteBoundingBox.height * 2;
+        yDiff = absoluteBoundingBox.height;
         break;
       default:
         break;
     }
 
-    xStart = lastChild.x + absoluteBoundingBox.width + 4 - xDiff;
-    yStart = lastChild.y + absoluteBoundingBox.height + 4 - yDiff;
+    switch (arrowType) {
+      case 'downLeft':
+        xDiff -= figmaLayer.arrowSize + 4;
+        yDiff += 4;
+        break;
+      case 'left':
+        xDiff -= figmaLayer.arrowSize + 4;
+        break;
+      case 'upLeft':
+        xDiff -= figmaLayer.arrowSize + 2;
+        yDiff -= figmaLayer.arrowSize + 2;
+        break;
+      case 'upRight':
+        yDiff -= figmaLayer.arrowSize + 2;
+        xDiff -= 2;
+        break;
+      case 'right':
+        xDiff += 4;
+        break;
+      case 'downRight':
+        xDiff += 2;
+        yDiff += 2;
+        break;
+      case 'up':
+        yDiff -= figmaLayer.arrowSize + 4;
+        break;
+      case 'down':
+        yDiff += 4;
+        break;
+      default:
+        break;
+    }
+
+    xStart = lastChild.x + xDiff;
+    yStart = lastChild.y + yDiff;
   }
 
-  // Could be cool to find the most recently placed arrow, and make the yStart based on that
   const arrow = figmaLayer.createArrow({
     arrowType,
     name: arrowName,

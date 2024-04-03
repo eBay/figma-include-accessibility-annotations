@@ -211,10 +211,10 @@ class AppState extends React.Component {
         const newPages = [...pages];
         const newStepsData = { ...stepsData };
 
-        if (status === 'add') {
-          const indexFound = pages.findIndex((p) => p.id === main.id);
-          const newPage = newPages[indexFound];
+        const indexFound = pages.findIndex((p) => p.id === main.id);
+        const newPage = newPages[indexFound];
 
+        if (status === 'add') {
           // make sure it's not already present
           if (newPage.stepsCompleted.includes(stepKey) === false) {
             newPage.stepsCompleted.push(stepKey);
@@ -224,6 +224,12 @@ class AppState extends React.Component {
               visible: true
             };
           }
+
+          newPage.stepsData[stepKey] = {
+            ...(newPage.stepsData[stepKey] || {}),
+            ...data[stepKey],
+            visible: true
+          };
         }
 
         // check if we have previous steps data
@@ -287,9 +293,7 @@ class AppState extends React.Component {
 
         const newTargetEntry = {
           id: targetId,
-          label: data.label,
-          name: data.name,
-          type: data.touchTargetType
+          name: data.name
         };
 
         this.setState({
@@ -382,6 +386,7 @@ class AppState extends React.Component {
 
     return (
       <Context.Provider
+        // eslint-disable-next-line react/jsx-no-constructed-context-values
         value={{
           // global ui
           alertMsg,

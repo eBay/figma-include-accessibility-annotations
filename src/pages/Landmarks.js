@@ -103,7 +103,8 @@ function Landmarks() {
     } else {
       sendToFigma('completed-landmark', {
         page,
-        pageType
+        pageType,
+        landmarks
       });
     }
   };

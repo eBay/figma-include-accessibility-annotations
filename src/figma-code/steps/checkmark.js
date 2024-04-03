@@ -3,7 +3,7 @@ import { figmaLayer, utils } from '../../constants';
 import { getOrCreateMainA11yFrame } from '../frame-helpers';
 
 export const add = (msg) => {
-  const { create, layerName, page, pageType } = msg;
+  const { create, layerName, page, pageType, existingData, stateKey } = msg;
 
   // main data and setup
   const { bounds, mainPageId, name } = page;
@@ -31,23 +31,27 @@ export const add = (msg) => {
     // if (mainFrame.children.length === 0) {
     //   mainFrame.remove();
     // }
-  } else if (layerExists === null && create === true) {
-    // create the layer frame
-    const layerFrame = figmaLayer.createTransparentFrame({
-      name: layerName,
-      height: 10,
-      width: 10
-    });
+  } else if (create) {
+    if (layerExists === null) {
+      // create the layer frame
+      const layerFrame = figmaLayer.createTransparentFrame({
+        name: layerName,
+        height: 10,
+        width: 10
+      });
 
-    // update with id (for future scanning)
-    layerFrame.name = `${layerName} | ${layerFrame.id}`;
-    layerFrame.expanded = false;
-    layerFrame.visible = false;
+      // update with id (for future scanning)
+      layerFrame.name = `${layerName} | ${layerFrame.id}`;
+      layerFrame.expanded = false;
+      layerFrame.visible = false;
 
-    layerId = layerFrame.id;
+      layerId = layerFrame.id;
 
-    // add within main Accessibility layer
-    mainFrame.appendChild(layerFrame);
+      // add within main Accessibility layer
+      mainFrame.appendChild(layerFrame);
+    } else {
+      layerId = layerExists;
+    }
   }
 
   // grab main page a11y scan was for
@@ -59,14 +63,18 @@ export const add = (msg) => {
   // update pagesData
   const stepKey = layerName.replace(/ Layer/g, '');
 
+  const updateData = { id: layerId };
+  if (existingData) {
+    updateData.existingData = existingData;
+  }
+
   figma.ui.postMessage({
     type: 'update-pages-data',
     data: {
       status,
       stepKey,
-      [stepKey]: {
-        id: layerId
-      },
+      stateKey,
+      [stepKey]: updateData,
       main: {
         id: mainFrame.id,
         name: saniName,
