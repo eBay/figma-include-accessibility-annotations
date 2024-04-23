@@ -33,44 +33,54 @@ export const createClone = (msg) => {
 
   // find all text nodes in the selected page
   const textNodes = clone.findAll((node) => node.type === 'TEXT');
-  const fontsLoaded = [];
+  const loadedFonts = {};
 
   // loop through text nodes and adjust
-  textNodes.map(async ({ id, fontSize, fontName }) => {
-    const { family, style } = fontName;
-    if (!fontsLoaded.includes(`${family}-${style}`)) {
-      await figma.loadFontAsync(fontName);
-      fontsLoaded.push(`${family}-${style}`);
-    }
+  textNodes.map(async (node) => {
+    const styledTextSegments = node.getStyledTextSegments([
+      'fontName',
+      'fontWeight',
+      'fontSize',
+      'lineHeight'
+    ]);
 
-    if (typeof fontSize === 'number') {
-      const adjustNode = figma.getNodeById(id);
+    // text node with mixed fonts require all fonts loaded before value can be set
+    await Promise.all(
+      styledTextSegments.map(({ fontName }) => {
+        const { family, style } = fontName;
+        const cacheKey = `${family}-${style}`;
+        if (!loadedFonts[cacheKey])
+          loadedFonts[cacheKey] = figma.loadFontAsync(fontName);
+        return loadedFonts[cacheKey];
+      })
+    );
 
-      // get current line height
-      const { lineHeight } = adjustNode;
-      const { unit, value } = lineHeight;
+    styledTextSegments.forEach(async ({ fontSize, lineHeight, start, end }) => {
+      if (typeof fontSize === 'number') {
+        const { unit, value } = lineHeight;
 
-      // Web: scale everything by 2
-      let scaleFactor = 2;
+        // Web: scale everything by 2
+        let scaleFactor = 2;
 
-      // Native: scale based on current fontSize
-      if (pageType === 'native') {
-        scaleFactor = 1.3;
-        if (fontSize < 32) scaleFactor = 1.4;
-        if (fontSize < 20) scaleFactor = 1.5;
+        // Native: scale based on current fontSize
+        if (pageType === 'native') {
+          scaleFactor = 1.3;
+          if (fontSize < 32) scaleFactor = 1.4;
+          if (fontSize < 20) scaleFactor = 1.5;
+        }
+
+        const newFontSize = fontSize * scaleFactor;
+        const newLineHeight = value * scaleFactor;
+
+        node.setRangeFontSize(start, end, newFontSize);
+        node.setRangeLineHeight(start, end, {
+          unit,
+          // set value if unit is Pixels or Percent
+          // https://www.figma.com/plugin-docs/api/LineHeight/
+          ...(unit !== 'AUTO' && { value: newLineHeight })
+        });
       }
-
-      const newFontSize = fontSize * scaleFactor;
-      const newLineHeight = value * scaleFactor;
-
-      adjustNode.fontSize = newFontSize;
-      adjustNode.lineHeight = {
-        unit,
-        // set value if unit is Pixels or Percent
-        // https://www.figma.com/plugin-docs/api/LineHeight/
-        ...(unit !== 'AUTO' && { value: newLineHeight })
-      };
-    }
+    });
 
     return null;
   });
