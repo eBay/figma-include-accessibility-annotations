@@ -5,6 +5,7 @@ import { utils } from '../constants';
 import {
   Alert,
   AnnotationStepPage,
+  Dropdown,
   EmptyStepSelection,
   HeadingStep
 } from '../components';
@@ -27,6 +28,11 @@ function Landmarks() {
   const { landmarks, page, pageType, stepsCompleted } = cnxt;
   const { removeNodes, sendToFigma, updateState, zoomTo } = cnxt;
 
+  const landmarksTypesArrayDropdown = landmarksTypesArray.map((id, index) => ({
+    id: index,
+    value: id
+  }));
+
   // ui state
   const routeName = 'Landmarks';
   const landmarksArray = Object.keys(landmarks);
@@ -42,6 +48,12 @@ function Landmarks() {
   const [noLandmarks, setNoLandmarks] = React.useState(defaultNoLandmarks);
   const [needsLabel, setNeedsLabel] = React.useState([]);
   const [labelsTemp, setLabelsTemp] = React.useState({});
+  const [openedDropdown, setOpenedDropdown] = React.useState(null);
+  const [maxUsageReached, setMaxUsageReached] = React.useState([]);
+
+  const showWarning =
+    needsLabel.length > 0 &&
+    Object.keys(labelsTemp).length !== needsLabel.length;
 
   const onAddLandmark = (landmarkType) => {
     const { bounds, id } = page;
@@ -57,6 +69,32 @@ function Landmarks() {
       landmark: landmarkType,
       pageType
     });
+  };
+
+  const onTypeDropdownOpen = (val) => {
+    utils.scrollToBottomOfAnnotationStep();
+    setOpenedDropdown(val);
+  };
+
+  const onTypeUpdate = (type, key) => {
+    // update landmark type
+    const newLandmarksObj = { ...landmarks };
+    const newLandmark = newLandmarksObj[key];
+    newLandmarksObj[key] = {
+      ...newLandmark,
+      name: newLandmark.name.replace(newLandmark.type, type),
+      type
+    };
+
+    // update figma layer
+    sendToFigma('update-landmark-type', {
+      id: key,
+      landmarkType: type,
+      prevLandmarkType: newLandmark.type
+    });
+
+    // update main state
+    updateState('landmarks', newLandmarksObj);
   };
 
   const onRemoveLandmark = (idToRemove) => {
@@ -86,10 +124,6 @@ function Landmarks() {
     setNoLandmarks(false);
     onAddLandmark(value);
   };
-
-  const showWarning =
-    needsLabel.length > 0 &&
-    Object.keys(labelsTemp).length !== needsLabel.length;
 
   const onDoneWithLandmarks = () => {
     if (noLandmarks) {
@@ -140,10 +174,19 @@ function Landmarks() {
       return null;
     });
 
-    // do we have landmarks that need labels?
-    if (rowsNeedLabelArray.length > 0) {
-      setNeedsLabel(rowsNeedLabelArray);
-    }
+    setNeedsLabel(rowsNeedLabelArray);
+  };
+
+  const checkForMaxUsage = () => {
+    const newMaxUsageReached = [];
+
+    landmarksValue.forEach((val) => {
+      if (landmarksOnlyOnce.includes(val.type)) {
+        newMaxUsageReached.push(val.type);
+      }
+    });
+
+    setMaxUsageReached(newMaxUsageReached);
   };
 
   const onChange = (e, id) => {
@@ -177,6 +220,7 @@ function Landmarks() {
   React.useEffect(() => {
     // mount
     checkForDuplicates();
+    checkForMaxUsage();
   }, [landmarks]);
 
   const getPrimaryAction = () => {
@@ -219,9 +263,10 @@ function Landmarks() {
           <React.Fragment>
             {landmarksArray.map((key) => {
               const { id, label, type } = landmarks[key];
-              const { label: labelType } = landmarksTypesObj[type];
+              const isOpened = openedDropdown === id;
 
               const showLabel = label !== null || needsLabel.includes(id);
+
               const hasTempLabel = labelsTemp[id]?.value || label;
 
               // is flagged for not having label
@@ -233,7 +278,15 @@ function Landmarks() {
               return (
                 <div key={key} className="row-landmark flex-row-space-between">
                   <div className="flex-row-center">
-                    <div className="landmark-type">{`${labelType} Landmark`}</div>
+                    <Dropdown
+                      data={landmarksTypesArrayDropdown}
+                      disabledValues={maxUsageReached}
+                      index={id}
+                      isOpened={isOpened}
+                      onOpen={onTypeDropdownOpen}
+                      onSelect={onTypeUpdate}
+                      type={type}
+                    />
 
                     {showLabel && (
                       <React.Fragment>
@@ -297,10 +350,7 @@ function Landmarks() {
               const { label, icon } = landmarksTypesObj[type];
 
               // check if limit usage has been reached
-              const maxUsageReached = landmarksValue.filter(
-                (l) => l.type === type && landmarksOnlyOnce.includes(type)
-              );
-              const maxReached = maxUsageReached.length > 0;
+              const maxReached = maxUsageReached.includes(type);
 
               // display / disabled state
               const fadedClass = maxReached ? 'faded' : '';
