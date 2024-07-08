@@ -1,7 +1,7 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 
-function SvgSettings({ fill }) {
+function SvgSettings({ fill = '#3665f3' }) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width="33" height="33" fill="none">
       <path
@@ -13,10 +13,6 @@ function SvgSettings({ fill }) {
     </svg>
   );
 }
-
-SvgSettings.defaultProps = {
-  fill: '#3665f3'
-};
 
 SvgSettings.propTypes = {
   // optional

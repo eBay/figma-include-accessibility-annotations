@@ -1,7 +1,7 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 
-function SvgLoadingSpinner({ fill, size }) {
+function SvgLoadingSpinner({ fill = '#18a0fb', size = 16 }) {
   return (
     <svg
       aria-hidden="true"
@@ -17,11 +17,6 @@ function SvgLoadingSpinner({ fill, size }) {
     </svg>
   );
 }
-
-SvgLoadingSpinner.defaultProps = {
-  fill: '#18a0fb',
-  size: 16
-};
 
 SvgLoadingSpinner.propTypes = {
   // optional

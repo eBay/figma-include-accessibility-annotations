@@ -1,7 +1,7 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 
-function SvgDownCarrot({ fill, width }) {
+function SvgDownCarrot({ fill = '#b3b3b3', width = 8 }) {
   // get height and keep aspect ratio
   const height = Math.ceil((5 / 8) * width);
 
@@ -22,11 +22,6 @@ function SvgDownCarrot({ fill, width }) {
     </svg>
   );
 }
-
-SvgDownCarrot.defaultProps = {
-  fill: '#b3b3b3',
-  width: 8
-};
 
 SvgDownCarrot.propTypes = {
   // optional

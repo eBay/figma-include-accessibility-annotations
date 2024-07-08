@@ -1,7 +1,7 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 
-function SvgClose({ fill, size }) {
+function SvgClose({ fill = '#111820', size = 12 }) {
   return (
     <svg
       width={size}
@@ -18,11 +18,6 @@ function SvgClose({ fill, size }) {
     </svg>
   );
 }
-
-SvgClose.defaultProps = {
-  fill: '#111820',
-  size: 12
-};
 
 SvgClose.propTypes = {
   // optional

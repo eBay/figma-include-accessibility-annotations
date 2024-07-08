@@ -11,25 +11,25 @@ function SvgFocusGroup() {
     >
       <path
         d="M14 1H1V14"
-        stroke="#111820"
+        stroke="#191919"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
         d="M19 32L32 32L32 19"
-        stroke="#111820"
+        stroke="#191919"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
         d="M32 14L32 1L19 0.999999"
-        stroke="#111820"
+        stroke="#191919"
         strokeLinecap="round"
         strokeLinejoin="round"
       />
       <path
         d="M1 19L1 32L14 32"
-        stroke="#111820"
+        stroke="#191919"
         strokeLinecap="round"
         strokeLinejoin="round"
       />

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 
-function SvgEyeOpened({ fill, size }) {
+function SvgEyeOpened({ fill = '#111820', size = 16 }) {
   return (
     <svg
       width={size}
@@ -18,11 +18,6 @@ function SvgEyeOpened({ fill, size }) {
     </svg>
   );
 }
-
-SvgEyeOpened.defaultProps = {
-  fill: '#111820',
-  size: 16
-};
 
 SvgEyeOpened.propTypes = {
   // optional
