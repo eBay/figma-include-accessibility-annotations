@@ -20,7 +20,6 @@ import SvgTouchTarget from '../icons/touch-target';
 // app state
 import Context from '../context';
 
-
 function TouchTarget() {
   // main app state
   const cnxt = React.useContext(Context);
@@ -182,6 +181,7 @@ function TouchTarget() {
           <div className="button-group" role="radiogroup">
             <div key="Add target" className="container-selection-button">
               <div
+                aria-label="add touch target"
                 className="selection-button"
                 onClick={onAddTouchTarget}
                 onKeyDown={(e) => {
