@@ -9,8 +9,8 @@ import { SvgCheckSm, SvgDownCarrot } from '../../icons';
 import './styles.scss';
 
 function Dropdown(props) {
-  const { align = 'left', data, index, isOpened = false, onOpen } = props;
-  const { onSelect, type } = props;
+  const { align = 'left', data, disabledValues = [], index } = props;
+  const { isOpened = false, onOpen, onSelect, type } = props;
 
   // ui state
   const toggledValue = isOpened ? null : index;
@@ -20,6 +20,7 @@ function Dropdown(props) {
   const didSelect = (selectedType) => {
     // set new selection
     onSelect(selectedType, index);
+
     // close dropdown
     onOpen(toggledValue);
   };
@@ -45,27 +46,42 @@ function Dropdown(props) {
       </div>
 
       <ul className={`dropdown-options${alignClass}`}>
-        {data.map(({ id, value }) => (
-          <li key={id} className="flex-row-center relative">
-            {type === value && (
-              <div className="dropdown-option-selected">
-                <SvgCheckSm />
-              </div>
-            )}
+        {data.map(({ id, value }) => {
+          const disabled = disabledValues.includes(value);
 
-            <div
-              className="dropdown-option"
-              onClick={() => didSelect(value)}
-              onKeyDown={({ key }) => {
-                if (utils.isEnterKey(key)) didSelect(value);
-              }}
-              role="button"
-              tabIndex={isOpened ? 0 : -1}
+          return (
+            <li
+              key={id}
+              className={`flex-row-center relative${
+                disabled === true ? ' dropdown-option-disabled' : ''
+              }`}
             >
-              {value}
-            </div>
-          </li>
-        ))}
+              {type === value && (
+                <div className="dropdown-option-selected">
+                  <SvgCheckSm />
+                </div>
+              )}
+
+              <div
+                className="dropdown-option"
+                onClick={() => {
+                  if (disabled === true) return;
+
+                  didSelect(value);
+                }}
+                onKeyDown={({ key }) => {
+                  if (disabled === true) return;
+
+                  if (utils.isEnterKey(key)) didSelect(value);
+                }}
+                role="button"
+                tabIndex={isOpened ? 0 : -1}
+              >
+                {value}
+              </div>
+            </li>
+          );
+        })}
       </ul>
 
       <div
@@ -88,8 +104,10 @@ Dropdown.propTypes = {
   // required
   data: PropTypes.arrayOf(
     PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      value: PropTypes.string.isRequired
+      id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
+      disabled: PropTypes.bool,
+      value: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
+        .isRequired
     })
   ).isRequired,
   index: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
@@ -99,6 +117,7 @@ Dropdown.propTypes = {
 
   // optional
   align: PropTypes.oneOf(['left', 'right']),
+  disabledValues: PropTypes.arrayOf(PropTypes.string),
   isOpened: PropTypes.bool
 };
 
