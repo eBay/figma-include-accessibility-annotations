@@ -1,7 +1,7 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 
-function SvgBanner({ fill, fillSecondary }) {
+function SvgBanner({ fill = '#000000', fillSecondary = '#ffffff' }) {
   return (
     <svg width="60" height="61" fill="none" xmlns="http://www.w3.org/2000/svg">
       <rect
@@ -55,11 +55,6 @@ function SvgBanner({ fill, fillSecondary }) {
     </svg>
   );
 }
-
-SvgBanner.defaultProps = {
-  fill: '#000000',
-  fillSecondary: '#ffffff'
-};
 
 SvgBanner.propTypes = {
   // optional

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 
-function SvgEmojiMonocle({ size }) {
+function SvgEmojiMonocle({ size = 16 }) {
   return (
     <svg
       width={size}
@@ -42,10 +42,6 @@ function SvgEmojiMonocle({ size }) {
     </svg>
   );
 }
-
-SvgEmojiMonocle.defaultProps = {
-  size: 16
-};
 
 SvgEmojiMonocle.propTypes = {
   // optional

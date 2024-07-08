@@ -1,7 +1,7 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 
-function SvgSearch({ fill, fillSecondary }) {
+function SvgSearch({ fill = '#000000', fillSecondary = '#ffffff' }) {
   return (
     <svg width="60" height="61" fill="none" xmlns="http://www.w3.org/2000/svg">
       <rect
@@ -63,11 +63,6 @@ function SvgSearch({ fill, fillSecondary }) {
     </svg>
   );
 }
-
-SvgSearch.defaultProps = {
-  fill: '#000000',
-  fillSecondary: '#ffffff'
-};
 
 SvgSearch.propTypes = {
   // optional

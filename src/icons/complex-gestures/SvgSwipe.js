@@ -1,10 +1,9 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 
-function SvgSwipe({ fill }) {
+function SvgSwipe({ fill = '#000000' }) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width="61" height="60" fill="none">
-      {/* <rect width="60" height="60" x=".4" fill={bgFill} rx="4" /> */}
       <path
         stroke={fill}
         strokeLinejoin="round"
@@ -27,10 +26,6 @@ function SvgSwipe({ fill }) {
     </svg>
   );
 }
-
-SvgSwipe.defaultProps = {
-  fill: '#000000'
-};
 
 SvgSwipe.propTypes = {
   // optional

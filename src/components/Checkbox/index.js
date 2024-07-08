@@ -8,10 +8,12 @@ import { SvgCheck } from '../../icons';
 // styles
 import './styles.scss';
 
-function Checkbox({ checked, id, isDisabled, label, onClick }) {
-  const checkedClass = checked ? ' checked' : '';
+function Checkbox(props) {
+  const { checked = false, id, isDisabled = false, label = null } = props;
+  const { onClick } = props;
 
-  // handle non-interactive state
+  // checked and disabled state
+  const checkedClass = checked ? ' checked' : '';
   const noEvents = isDisabled ? ' no-events' : '';
   const onSelect = isDisabled ? () => null : onClick;
 
@@ -39,12 +41,6 @@ function Checkbox({ checked, id, isDisabled, label, onClick }) {
     </div>
   );
 }
-
-Checkbox.defaultProps = {
-  checked: false,
-  isDisabled: false,
-  label: null
-};
 
 Checkbox.propTypes = {
   // required

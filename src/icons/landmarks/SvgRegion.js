@@ -1,7 +1,7 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 
-function SvgRegion({ fill, fillSecondary }) {
+function SvgRegion({ fill = '#000000', fillSecondary = '#ffffff' }) {
   return (
     <svg width="61" height="61" fill="none" xmlns="http://www.w3.org/2000/svg">
       <rect
@@ -63,11 +63,6 @@ function SvgRegion({ fill, fillSecondary }) {
     </svg>
   );
 }
-
-SvgRegion.defaultProps = {
-  fill: '#000000',
-  fillSecondary: '#ffffff'
-};
 
 SvgRegion.propTypes = {
   // optional

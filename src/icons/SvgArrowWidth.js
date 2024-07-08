@@ -1,7 +1,7 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 
-function SvgArrowWidth({ fill }) {
+function SvgArrowWidth({ fill = '#b3b3b3' }) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="none">
       <path
@@ -14,10 +14,6 @@ function SvgArrowWidth({ fill }) {
     </svg>
   );
 }
-
-SvgArrowWidth.defaultProps = {
-  fill: '#b3b3b3'
-};
 
 SvgArrowWidth.propTypes = {
   // optional

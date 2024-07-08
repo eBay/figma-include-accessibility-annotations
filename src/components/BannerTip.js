@@ -7,7 +7,7 @@ import BannerTipText from './BannerTipText';
 // data
 import tips from '../data/tips.json';
 
-function BannerTip({ footer, pageType, routeName }) {
+function BannerTip({ footer = null, pageType, routeName = 'Landmarks' }) {
   const tip = tips[pageType][routeName];
 
   return (
@@ -19,11 +19,6 @@ function BannerTip({ footer, pageType, routeName }) {
     />
   );
 }
-
-BannerTip.defaultProps = {
-  footer: null,
-  routeName: 'Landmarks'
-};
 
 BannerTip.propTypes = {
   footer: PropTypes.element,

@@ -16,7 +16,7 @@ import Context from '../context';
 import routes from '../data/routes.json';
 import routesNative from '../data/routes-native.json';
 
-function Footer({ primaryAction, secondaryAction, routeName }) {
+function Footer({ primaryAction = null, secondaryAction = null, routeName }) {
   // main app state
   const cnxt = React.useContext(Context);
   const { hasDashboard, isProd, page, pages, pageType } = cnxt;
@@ -230,11 +230,6 @@ function Footer({ primaryAction, secondaryAction, routeName }) {
     </footer>
   );
 }
-
-Footer.defaultProps = {
-  primaryAction: null,
-  secondaryAction: null
-};
 
 Footer.propTypes = {
   // required

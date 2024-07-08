@@ -1,7 +1,7 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 
-function SvgRotate({ fill }) {
+function SvgRotate({ fill = '#000000' }) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width="61" height="60" fill="none">
       <path
@@ -39,10 +39,6 @@ function SvgRotate({ fill }) {
     </svg>
   );
 }
-
-SvgRotate.defaultProps = {
-  fill: '#000000'
-};
 
 SvgRotate.propTypes = {
   // optional
