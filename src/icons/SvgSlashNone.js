@@ -1,7 +1,7 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 
-function SvgSlashNone({ bgFill, fill }) {
+function SvgSlashNone({ bgFill = '#e5e5e5', fill = '#000000' }) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="none">
       <rect width="60" height="60" fill={bgFill} rx="4" />
@@ -9,11 +9,6 @@ function SvgSlashNone({ bgFill, fill }) {
     </svg>
   );
 }
-
-SvgSlashNone.defaultProps = {
-  bgFill: '#e5e5e5',
-  fill: '#111820'
-};
 
 SvgSlashNone.propTypes = {
   // optional

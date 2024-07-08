@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 // styles
 import './styles.scss';
 
-function HeadingStep({ number, text }) {
+function HeadingStep({ number = null, text }) {
   return (
     <div className="heading-step">
       {number && <div className="circle-step">{`Step ${number}`}</div>}
@@ -13,10 +13,6 @@ function HeadingStep({ number, text }) {
     </div>
   );
 }
-
-HeadingStep.defaultProps = {
-  number: null
-};
 
 HeadingStep.propTypes = {
   // required

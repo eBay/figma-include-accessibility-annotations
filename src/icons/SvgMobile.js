@@ -1,7 +1,7 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 
-function SvgMobile({ fill, size }) {
+function SvgMobile({ fill = '#111820', size = 18 }) {
   return (
     <svg
       width={size}
@@ -18,11 +18,6 @@ function SvgMobile({ fill, size }) {
     </svg>
   );
 }
-
-SvgMobile.defaultProps = {
-  fill: '#111820',
-  size: 18
-};
 
 SvgMobile.propTypes = {
   // optional

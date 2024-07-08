@@ -1,7 +1,7 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 
-function SvgH5({ size }) {
+function SvgH5({ size = 16 }) {
   return (
     <svg
       width={size}
@@ -18,10 +18,6 @@ function SvgH5({ size }) {
     </svg>
   );
 }
-
-SvgH5.defaultProps = {
-  size: 16
-};
 
 SvgH5.propTypes = {
   size: PropTypes.number

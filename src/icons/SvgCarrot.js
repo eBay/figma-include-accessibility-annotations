@@ -1,7 +1,7 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 
-function SvgCarrot({ fill, size }) {
+function SvgCarrot({ fill = '#111820', size = 8 }) {
   return (
     <svg
       width={size}
@@ -13,11 +13,6 @@ function SvgCarrot({ fill, size }) {
     </svg>
   );
 }
-
-SvgCarrot.defaultProps = {
-  fill: '#111820',
-  size: 8
-};
 
 SvgCarrot.propTypes = {
   // optional

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 
-function SvgEmojiCelebrate({ size }) {
+function SvgEmojiCelebrate({ size = 16 }) {
   return (
     <svg
       width={size}
@@ -62,10 +62,6 @@ function SvgEmojiCelebrate({ size }) {
     </svg>
   );
 }
-
-SvgEmojiCelebrate.defaultProps = {
-  size: 16
-};
 
 SvgEmojiCelebrate.propTypes = {
   // optional

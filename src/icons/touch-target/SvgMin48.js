@@ -1,7 +1,7 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 
-function SvgMin48({ size }) {
+function SvgMin48({ size = 60 }) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -14,10 +14,6 @@ function SvgMin48({ size }) {
     </svg>
   );
 }
-
-SvgMin48.defaultProps = {
-  size: 60
-};
 
 SvgMin48.propTypes = {
   size: PropTypes.number

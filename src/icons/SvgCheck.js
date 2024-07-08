@@ -1,7 +1,7 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 
-function SvgCheck({ fill, size }) {
+function SvgCheck({ fill = '#111820', size = 24 }) {
   return (
     <svg
       width={size}
@@ -16,11 +16,6 @@ function SvgCheck({ fill, size }) {
     </svg>
   );
 }
-
-SvgCheck.defaultProps = {
-  fill: '#111820',
-  size: 24
-};
 
 SvgCheck.propTypes = {
   // optional

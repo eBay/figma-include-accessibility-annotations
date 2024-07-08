@@ -1,7 +1,7 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 
-function SvgForm({ fill, fillSecondary }) {
+function SvgForm({ fill = '#000000', fillSecondary = '#ffffff' }) {
   return (
     <svg width="61" height="61" fill="none" xmlns="http://www.w3.org/2000/svg">
       <rect
@@ -63,11 +63,6 @@ function SvgForm({ fill, fillSecondary }) {
     </svg>
   );
 }
-
-SvgForm.defaultProps = {
-  fill: '#000000',
-  fillSecondary: '#ffffff'
-};
 
 SvgForm.propTypes = {
   // optional

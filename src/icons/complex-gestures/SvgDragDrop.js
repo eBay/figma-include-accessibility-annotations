@@ -1,7 +1,7 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 
-function SvgDragDrop({ fill }) {
+function SvgDragDrop({ fill = '#000000' }) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width="61" height="60" fill="none">
       <path
@@ -27,10 +27,6 @@ function SvgDragDrop({ fill }) {
     </svg>
   );
 }
-
-SvgDragDrop.defaultProps = {
-  fill: '#000000'
-};
 
 SvgDragDrop.propTypes = {
   // optional

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 
-function SvgChevronLeft({ size }) {
+function SvgChevronLeft({ size = 16 }) {
   return (
     <svg
       width={size}
@@ -13,10 +13,6 @@ function SvgChevronLeft({ size }) {
     </svg>
   );
 }
-
-SvgChevronLeft.defaultProps = {
-  size: 16
-};
 
 SvgChevronLeft.propTypes = {
   // optional

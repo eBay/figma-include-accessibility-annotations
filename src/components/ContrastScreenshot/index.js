@@ -11,7 +11,7 @@ import Context from '../../context';
 // styles
 import './styles.scss';
 
-function ContrastScreenshot({ benchmark, report }) {
+function ContrastScreenshot({ benchmark = 'aa', report }) {
   // main app state
   const { condensedUI, zoomTo } = React.useContext(Context);
 
@@ -75,10 +75,6 @@ function ContrastScreenshot({ benchmark, report }) {
     </div>
   );
 }
-
-ContrastScreenshot.defaultProps = {
-  benchmark: 'aa'
-};
 
 ContrastScreenshot.propTypes = {
   // required

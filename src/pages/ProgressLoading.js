@@ -7,7 +7,10 @@ import { LoadingSpinner } from '../components';
 // icons
 import { SvgWarning } from '../icons';
 
-function ProgressLoading({ message, showWarning }) {
+function ProgressLoading({
+  message = 'Scanning for Accessibility layers in Figma document',
+  showWarning = false
+}) {
   return (
     <div className="h-100 w-100 flex-center">
       {showWarning === false && <LoadingSpinner size={24} />}
@@ -17,11 +20,6 @@ function ProgressLoading({ message, showWarning }) {
     </div>
   );
 }
-
-ProgressLoading.defaultProps = {
-  message: 'Scanning for Accessibility layers in Figma document',
-  showWarning: false
-};
 
 ProgressLoading.propTypes = {
   // optional

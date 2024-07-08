@@ -1,7 +1,7 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 
-function SvgWeb({ fill, size }) {
+function SvgWeb({ fill = '#111820', size = 16 }) {
   return (
     <svg
       width={size}
@@ -19,11 +19,6 @@ function SvgWeb({ fill, size }) {
     </svg>
   );
 }
-
-SvgWeb.defaultProps = {
-  fill: '#111820',
-  size: 16
-};
 
 SvgWeb.propTypes = {
   // optional

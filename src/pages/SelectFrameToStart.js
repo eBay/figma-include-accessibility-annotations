@@ -12,20 +12,12 @@ import { SvgArrowRight, SvgFrame, SvgWarning } from '../icons';
 // app state
 import Context from '../context';
 
-function SelectFrameToStart({ alertMsg, name }) {
+function SelectFrameToStart({ alertMsg = null, name = null }) {
   // main app state
   const cnxt = React.useContext(Context);
-  const {
-    pageSelected,
-    pages,
-    pageType,
-    version,
-    updateState,
-    sendToFigma,
-    steps,
-    stepsNative
-  } = cnxt;
-  const { currentUser, sessionId, isProd, zoomTo } = cnxt;
+  const { currentUser, isProd, pageSelected, pages, pageType } = cnxt;
+  const { sessionId, sendToFigma, steps, stepsNative, updateState } = cnxt;
+  const { version, zoomTo } = cnxt;
 
   // navigation hook
   const navigate = useNavigate();
@@ -149,11 +141,6 @@ function SelectFrameToStart({ alertMsg, name }) {
     </div>
   );
 }
-
-SelectFrameToStart.defaultProps = {
-  alertMsg: null,
-  name: null
-};
 
 SelectFrameToStart.propTypes = {
   // optional
