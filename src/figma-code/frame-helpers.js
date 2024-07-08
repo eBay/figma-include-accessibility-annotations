@@ -4,6 +4,7 @@ import config from './config';
 function getMainA11yLayerName({ pageName, pageType }) {
   const saniName = utils.sanitizeName(pageName);
   const pageTypeCap = utils.capitalize(pageType);
+
   return `${saniName} ${config.a11ySuffix} | ${pageTypeCap}`;
 }
 
