@@ -221,6 +221,13 @@ function Landmarks() {
       if (labelLower.includes('landmark')) {
         hasLandmarkInLabel.push(key);
       }
+
+      // also check if it's a landmark type
+      landmarksTypesArray.forEach((landmark) => {
+        if (labelLower.includes(landmark)) {
+          hasLandmarkInLabel.push(key);
+        }
+      });
     });
 
     setHasLandmarkWord(hasLandmarkInLabel);
@@ -320,7 +327,7 @@ function Landmarks() {
             <Alert
               icon={<SvgWarning />}
               style={{ padding: 0 }}
-              text={`Remove the word "landmark" as it is already included in the landmark type.`}
+              text={`Remove the word "landmark" or the landmark type name, as it is already included in the landmark label.`}
               type="warning"
             />
             <div className="spacer1" />
