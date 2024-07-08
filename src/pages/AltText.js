@@ -32,7 +32,7 @@ function AltText() {
   const hasImages = imagesData.length > 0;
 
   const onChange = (e, index) => {
-    const newImagesData = new Array(...imagesData);
+    const newImagesData = [...imagesData];
 
     // don't allow | or :
     newImagesData[index].altText = e.target.value.replace(/[|:]/g, '');
@@ -40,7 +40,7 @@ function AltText() {
   };
 
   const onTypeSelect = (type, index) => {
-    const newImagesData = new Array(...imagesData);
+    const newImagesData = [...imagesData];
     newImagesData[index].type = type;
 
     updateState('imagesData', newImagesData);

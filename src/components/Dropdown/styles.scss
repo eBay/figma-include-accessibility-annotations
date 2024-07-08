@@ -81,6 +81,17 @@
     }
   }
 
+  .dropdown-option-disabled {
+    & .dropdown-option {
+      cursor: default;
+      opacity: 0.5;
+
+      &:hover {
+        background-color: transparent;
+      }
+    }
+  }
+
   .dropdown-option-selected {
     left: 5px;
     position: absolute;

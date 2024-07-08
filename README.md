@@ -11,7 +11,7 @@ an accessibility annotation Figma plugin
 
 ## Intro
 
-<img alt="plugin version 11" src="previews/v11/include_banner.png" />
+<img alt="plugin version 12" src="previews/v12/include_banner.png" />
 
 The eBay Include accessibility annotation Figma plugin is a tool to make annotating for accessibility (a11y) easier — easier for designers to spec and easier for developers to understand what is required.
 
@@ -21,12 +21,12 @@ The plugin was developed by members of the accessibility and design teams at eBa
 
 **Near term bug fixes & improvements**
 
-- [ ] Add ability to edit landmarks
 - [ ] Scan for svg (alternative text)
 - [ ] Add images manually (alternative text)
 - [ ] Synchronize copy/paste, undo/redo between the plugin and Figma layers
 - [ ] Allow designer to annotate a section of a design
 - [ ] Add delete in multiple steps
+- [X] Add ability to edit landmarks (v12)
 - [X] Placing new arrow annotation below at end of previously placed arrow (v11)
 - [X] Touch target (v11)
 - [X] Updates for keyboard navigation (v10)

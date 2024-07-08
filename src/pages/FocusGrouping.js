@@ -100,7 +100,7 @@ function FocusGrouping() {
     });
 
     // update main state
-    const newGroupsArray = new Array(...groups);
+    const newGroupsArray = [...groups];
     newGroupsArray.pop();
     updateState('groups', newGroupsArray);
   };

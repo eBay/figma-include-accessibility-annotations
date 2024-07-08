@@ -111,9 +111,28 @@ export const add = (msg) => {
   // update with id (for future scanning)
   focusGroupFrame.name = `${focusGroupLayerName} | ${focusGroupFrame.id}`;
 
+  const focusGroupsLength = focusGroupFrame.children.length;
+  const currentGroupNum = focusGroupsLength + 1;
+  const isFirst = currentGroupNum === 1;
+
+  let xStart = 0;
+  let yStart = 0;
+
+  if (isFirst === false) {
+    // get last focus group
+    const lastLandmark = focusGroupFrame.children[focusGroupsLength - 1];
+    const { height, x, y } = lastLandmark;
+
+    // set new yStart below last landmark
+    xStart = x;
+    yStart = y + height;
+  }
+
   // create group overlay layer
   const rectNode = figmaLayer.createRectangle({
     name: focusGroupRectName,
+    x: xStart,
+    y: yStart,
     height: 100,
     width: 300,
     opacity: 0

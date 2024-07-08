@@ -5,6 +5,7 @@ import { utils } from '../constants';
 import {
   Alert,
   AnnotationStepPage,
+  Dropdown,
   EmptyStepSelection,
   HeadingStep
 } from '../components';
@@ -20,12 +21,18 @@ import landmarksTypesObj from '../data/landmark-types';
 
 const landmarksTypesArray = Object.keys(landmarksTypesObj);
 const landmarksOnlyOnce = ['main', 'header', 'footer'];
+const landmarksAlwaysNeedLabel = ['form', 'section'];
 
 function Landmarks() {
   // main app state
   const cnxt = React.useContext(Context);
   const { landmarks, page, pageType, stepsCompleted } = cnxt;
   const { removeNodes, sendToFigma, updateState, zoomTo } = cnxt;
+
+  const landmarksTypesArrayDropdown = landmarksTypesArray.map((id, index) => ({
+    id: index,
+    value: id
+  }));
 
   // ui state
   const routeName = 'Landmarks';
@@ -40,8 +47,22 @@ function Landmarks() {
   // local state
   const [selected, setSelected] = React.useState(null);
   const [noLandmarks, setNoLandmarks] = React.useState(defaultNoLandmarks);
-  const [needsLabel, setNeedsLabel] = React.useState([]);
+  const [openedDropdown, setOpenedDropdown] = React.useState(null);
+  const [maxUsageReached, setMaxUsageReached] = React.useState([]);
+
   const [labelsTemp, setLabelsTemp] = React.useState({});
+
+  const [needsLabel, setNeedsLabel] = React.useState([]);
+  const canContinue = needsLabel.length !== Object.keys(labelsTemp).length;
+
+  const [dupNeedLabel, setDupNeedLable] = React.useState([]);
+  const showDupWarning = dupNeedLabel.length > 0;
+
+  const [alwaysNeedLabel, setAlwaysNeedLabel] = React.useState([]);
+  const showAlwaysNeedLabel = alwaysNeedLabel.length > 0;
+
+  const [hasLandmarkWord, setHasLandmarkWord] = React.useState([]);
+  const showLandmarkWordWarning = hasLandmarkWord.length > 0;
 
   const onAddLandmark = (landmarkType) => {
     const { bounds, id } = page;
@@ -57,6 +78,32 @@ function Landmarks() {
       landmark: landmarkType,
       pageType
     });
+  };
+
+  const onTypeDropdownOpen = (val) => {
+    utils.scrollToBottomOfAnnotationStep();
+    setOpenedDropdown(val);
+  };
+
+  const onTypeUpdate = (type, key) => {
+    // update landmark type
+    const newLandmarksObj = { ...landmarks };
+    const newLandmark = newLandmarksObj[key];
+    newLandmarksObj[key] = {
+      ...newLandmark,
+      name: newLandmark.name.replace(newLandmark.type, type),
+      type
+    };
+
+    // update figma layer
+    sendToFigma('update-landmark-type', {
+      id: key,
+      landmarkType: type,
+      prevLandmarkType: newLandmark.type
+    });
+
+    // update main state
+    updateState('landmarks', newLandmarksObj);
   };
 
   const onRemoveLandmark = (idToRemove) => {
@@ -87,10 +134,6 @@ function Landmarks() {
     onAddLandmark(value);
   };
 
-  const showWarning =
-    needsLabel.length > 0 &&
-    Object.keys(labelsTemp).length !== needsLabel.length;
-
   const onDoneWithLandmarks = () => {
     if (noLandmarks) {
       sendToFigma('no-landmark', {
@@ -113,6 +156,8 @@ function Landmarks() {
     const typesArray = [];
     const typesDupArray = [];
     const rowsNeedLabelArray = [];
+    const rowsDupNeedLabelArray = [];
+    const rowsAlwaysNeedLabelArray = [];
 
     // get all types used and if it's a duplicate
     Object.values(landmarks).map((row) => {
@@ -133,17 +178,59 @@ function Landmarks() {
 
       // has duplicate row and no label?
       const noLabel = label === null || label === '';
+
       if (typesDupArray.includes(type) && noLabel) {
+        // has duplicate row and no label?
+        rowsDupNeedLabelArray.push(id);
+        rowsNeedLabelArray.push(id);
+      } else if (landmarksAlwaysNeedLabel.includes(type) && noLabel) {
+        // always need a label
+        rowsAlwaysNeedLabelArray.push(id);
         rowsNeedLabelArray.push(id);
       }
 
       return null;
     });
 
-    // do we have landmarks that need labels?
-    if (rowsNeedLabelArray.length > 0) {
-      setNeedsLabel(rowsNeedLabelArray);
-    }
+    setNeedsLabel(rowsNeedLabelArray);
+
+    setDupNeedLable(rowsDupNeedLabelArray);
+    setAlwaysNeedLabel(rowsAlwaysNeedLabelArray);
+  };
+
+  const checkForMaxUsage = () => {
+    const newMaxUsageReached = [];
+
+    landmarksValue.forEach((val) => {
+      if (landmarksOnlyOnce.includes(val.type)) {
+        newMaxUsageReached.push(val.type);
+      }
+    });
+
+    setMaxUsageReached(newMaxUsageReached);
+  };
+
+  const checkForLandmarkInLabel = () => {
+    const hasLandmarkInLabel = [];
+
+    Object.keys(labelsTemp).forEach((key) => {
+      const label = labelsTemp[key];
+      const labelLower = label.value.toLowerCase();
+
+      // "landmark" string exists?
+      if (labelLower.includes('landmark')) {
+        hasLandmarkInLabel.push(key);
+      }
+
+      // also check if it's a landmark type
+      landmarksTypesArray.forEach((landmark) => {
+        if (labelLower.includes(landmark)) {
+          hasLandmarkInLabel.push(key);
+        }
+      });
+    });
+
+    setHasLandmarkWord(hasLandmarkInLabel);
   };
 
   const onChange = (e, id) => {
@@ -177,13 +264,21 @@ function Landmarks() {
   React.useEffect(() => {
     // mount
     checkForDuplicates();
+    checkForMaxUsage();
   }, [landmarks]);
+
+  React.useEffect(() => {
+    // mount
+    checkForLandmarkInLabel();
+  }, [labelsTemp]);
 
   const getPrimaryAction = () => {
     if (landmarksAreSet || noLandmarks) {
       return {
         completesStep: true,
-        isDisabled: showWarning,
+        isDisabled:
+          (showDupWarning || showAlwaysNeedLabel || showLandmarkWordWarning) &&
+          canContinue === false,
         onClick: onDoneWithLandmarks
       };
     }
@@ -202,15 +297,39 @@ function Landmarks() {
       }}
     >
       <React.Fragment>
-        {showWarning && (
+        {showDupWarning && (
           <React.Fragment>
             <Alert
               icon={<SvgWarning />}
               style={{ padding: 0 }}
-              text="Multiple landmarks on a page need labeling for distinction."
+              text="Distinguish landmarks of the same type with a unique name."
+              type="warning"
+            />
+            <div className="spacer1" />
+          </React.Fragment>
+        )}
+
+        {showAlwaysNeedLabel && (
+          <React.Fragment>
+            <Alert
+              icon={<SvgWarning />}
+              style={{ padding: 0 }}
+              text="Add a label to landmarks that are too vague without one."
               type="warning"
             />
 
+            <div className="spacer1" />
+          </React.Fragment>
+        )}
+
+        {showLandmarkWordWarning && (
+          <React.Fragment>
+            <Alert
+              icon={<SvgWarning />}
+              style={{ padding: 0 }}
+              text={`Remove the word "landmark" or the landmark type name, as it is already included in the landmark label.`}
+              type="warning"
+            />
             <div className="spacer1" />
           </React.Fragment>
         )}
@@ -219,21 +338,31 @@ function Landmarks() {
           <React.Fragment>
             {landmarksArray.map((key) => {
               const { id, label, type } = landmarks[key];
-              const { label: labelType } = landmarksTypesObj[type];
+              const isOpened = openedDropdown === id;
 
               const showLabel = label !== null || needsLabel.includes(id);
+
               const hasTempLabel = labelsTemp[id]?.value || label;
 
-              // is flagged for not having label
+              // is flagged for not having label (or can't have "Landmark" in the label)
               const warnClass =
-                needsLabel.includes(id) && hasTempLabel === null
+                (needsLabel.includes(id) && hasTempLabel === null) ||
+                hasLandmarkWord.includes(id)
                   ? ' warning'
                   : '';
 
               return (
                 <div key={key} className="row-landmark flex-row-space-between">
                   <div className="flex-row-center">
-                    <div className="landmark-type">{`${labelType} Landmark`}</div>
+                    <Dropdown
+                      data={landmarksTypesArrayDropdown}
+                      disabledValues={maxUsageReached}
+                      index={id}
+                      isOpened={isOpened}
+                      onOpen={onTypeDropdownOpen}
+                      onSelect={onTypeUpdate}
+                      type={type}
+                    />
 
                     {showLabel && (
                       <React.Fragment>
@@ -297,10 +426,7 @@ function Landmarks() {
               const { label, icon } = landmarksTypesObj[type];
 
               // check if limit usage has been reached
-              const maxUsageReached = landmarksValue.filter(
-                (l) => l.type === type && landmarksOnlyOnce.includes(type)
-              );
-              const maxReached = maxUsageReached.length > 0;
+              const maxReached = maxUsageReached.includes(type);
 
               // display / disabled state
               const fadedClass = maxReached ? 'faded' : '';
