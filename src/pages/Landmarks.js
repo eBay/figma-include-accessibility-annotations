@@ -21,6 +21,7 @@ import landmarksTypesObj from '../data/landmark-types';
 
 const landmarksTypesArray = Object.keys(landmarksTypesObj);
 const landmarksOnlyOnce = ['main', 'header', 'footer'];
+const landmarksAlwaysNeedLabel = ['form', 'section'];
 
 function Landmarks() {
   // main app state
@@ -50,6 +51,17 @@ function Landmarks() {
   const [labelsTemp, setLabelsTemp] = React.useState({});
   const [openedDropdown, setOpenedDropdown] = React.useState(null);
   const [maxUsageReached, setMaxUsageReached] = React.useState([]);
+
+  const [labelsTemp, setLabelsTemp] = React.useState({});
+
+  const [needsLabel, setNeedsLabel] = React.useState([]);
+  const canContinue = needsLabel.length !== Object.keys(labelsTemp).length;
+
+  const [dupNeedLabel, setDupNeedLable] = React.useState([]);
+  const showDupWarning = dupNeedLabel.length > 0;
+
+  const [alwaysNeedLabel, setAlwaysNeedLabel] = React.useState([]);
+  const showAlwaysNeedLabel = alwaysNeedLabel.length > 0;
 
   const showWarning =
     needsLabel.length > 0 &&
@@ -147,6 +159,8 @@ function Landmarks() {
     const typesArray = [];
     const typesDupArray = [];
     const rowsNeedLabelArray = [];
+    const rowsDupNeedLabelArray = [];
+    const rowsAlwaysNeedLabelArray = [];
 
     // get all types used and if it's a duplicate
     Object.values(landmarks).map((row) => {
@@ -167,7 +181,14 @@ function Landmarks() {
 
       // has duplicate row and no label?
       const noLabel = label === null || label === '';
+
       if (typesDupArray.includes(type) && noLabel) {
+        // has duplicate row and no label?
+        rowsDupNeedLabelArray.push(id);
+        rowsNeedLabelArray.push(id);
+      } else if (landmarksAlwaysNeedLabel.includes(type) && noLabel) {
+        // always need a label
+        rowsAlwaysNeedLabelArray.push(id);
         rowsNeedLabelArray.push(id);
       }
 
@@ -175,6 +196,9 @@ function Landmarks() {
     });
 
     setNeedsLabel(rowsNeedLabelArray);
+
+    setDupNeedLable(rowsDupNeedLabelArray);
+    setAlwaysNeedLabel(rowsAlwaysNeedLabelArray);
   };
 
   const checkForMaxUsage = () => {
@@ -227,7 +251,8 @@ function Landmarks() {
     if (landmarksAreSet || noLandmarks) {
       return {
         completesStep: true,
-        isDisabled: showWarning,
+        isDisabled:
+          (showDupWarning || showAlwaysNeedLabel) && canContinue === false,
         onClick: onDoneWithLandmarks
       };
     }
@@ -246,12 +271,24 @@ function Landmarks() {
       }}
     >
       <React.Fragment>
-        {showWarning && (
+        {showDupWarning && (
           <React.Fragment>
             <Alert
               icon={<SvgWarning />}
               style={{ padding: 0 }}
-              text="Multiple landmarks on a page need labeling for distinction."
+              text="Distinguish landmarks of the same type with a unique name."
+              type="warning"
+            />
+            <div className="spacer1" />
+          </React.Fragment>
+        )}
+
+        {showAlwaysNeedLabel && (
+          <React.Fragment>
+            <Alert
+              icon={<SvgWarning />}
+              style={{ padding: 0 }}
+              text="Add a label to landmarks that are too vague without one."
               type="warning"
             />
 
