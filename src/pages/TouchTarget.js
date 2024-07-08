@@ -214,7 +214,7 @@ function TouchTarget() {
         {errors.length > 0 && (
           <React.Fragment>
             <Alert
-              icon={<SvgWarning fill="var(--foreground-attention)" />}
+              icon={<SvgWarning />}
               style={{ padding: 0 }}
               text="Some of your touch targets are overlapping or do not meet the minimum size or spacing requirements."
               type="warning"
