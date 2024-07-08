@@ -112,11 +112,28 @@ export const add = (msg) => {
   // update with id (for future scanning)
   landmarksFrame.name = `${landmarkLayerName} | ${landmarksFrame.id}`;
 
+  const landmarksLength = landmarksFrame.children.length;
+  const currentLandmarkNum = landmarksLength + 1;
+  const isFirst = currentLandmarkNum === 1;
+
+  let xStart = 0;
+  let yStart = 0;
+
+  if (isFirst === false) {
+    // get last landmark
+    const lastLandmark = landmarksFrame.children[landmarksLength - 1];
+    const { height, x, y } = lastLandmark;
+
+    // set new yStart below last landmark
+    xStart = x;
+    yStart = y + height;
+  }
+
   // create landmark layer
   const landmarkBlock = createTransparentFrame({
     name: `Landmark: ${landmark}`,
-    x: 0,
-    y: 0,
+    x: xStart,
+    y: yStart,
     width: 300,
     height: 100
   });
