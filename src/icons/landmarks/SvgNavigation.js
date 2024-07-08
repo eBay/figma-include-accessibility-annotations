@@ -1,7 +1,7 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 
-function SvgNavigation({ fill, fillSecondary }) {
+function SvgNavigation({ fill = '#000000', fillSecondary = '#ffffff' }) {
   return (
     <svg width="60" height="61" fill="none" xmlns="http://www.w3.org/2000/svg">
       <rect
@@ -55,11 +55,6 @@ function SvgNavigation({ fill, fillSecondary }) {
     </svg>
   );
 }
-
-SvgNavigation.defaultProps = {
-  fill: '#000000',
-  fillSecondary: '#ffffff'
-};
 
 SvgNavigation.propTypes = {
   // optional

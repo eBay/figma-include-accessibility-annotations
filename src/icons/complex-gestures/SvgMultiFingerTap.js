@@ -1,7 +1,7 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 
-function SvgMultiFingerTap({ fill }) {
+function SvgMultiFingerTap({ fill = '#000000' }) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="none">
       <path
@@ -20,10 +20,6 @@ function SvgMultiFingerTap({ fill }) {
     </svg>
   );
 }
-
-SvgMultiFingerTap.defaultProps = {
-  fill: '#000000'
-};
 
 SvgMultiFingerTap.propTypes = {
   // optional
