@@ -4,7 +4,10 @@ import PropTypes from 'prop-types';
 // styles
 import './styles.scss';
 
-function BannerTipText({ footer, helpText, helpUrl, text }) {
+function BannerTipText(props) {
+  const { footer = null, helpText = 'Learn more', helpUrl = null } = props;
+  const { text } = props;
+
   return (
     <div className="banner-tip">
       <div className="flex-row align-start">
@@ -23,12 +26,6 @@ function BannerTipText({ footer, helpText, helpUrl, text }) {
     </div>
   );
 }
-
-BannerTipText.defaultProps = {
-  footer: null,
-  helpText: 'Learn more',
-  helpUrl: null
-};
 
 BannerTipText.propTypes = {
   // required

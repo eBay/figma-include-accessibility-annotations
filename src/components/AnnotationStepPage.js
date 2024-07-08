@@ -12,7 +12,7 @@ import Context from '../context';
 function AnnotationStepPage({
   children,
   bannerTipProps,
-  footerProps,
+  footerProps = {},
   title,
   routeName
 }) {
@@ -41,10 +41,6 @@ function AnnotationStepPage({
     </React.Fragment>
   );
 }
-
-AnnotationStepPage.defaultProps = {
-  footerProps: {}
-};
 
 AnnotationStepPage.propTypes = {
   // required

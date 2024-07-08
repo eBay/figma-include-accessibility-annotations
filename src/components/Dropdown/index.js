@@ -8,7 +8,10 @@ import { SvgCheckSm, SvgDownCarrot } from '../../icons';
 // styles
 import './styles.scss';
 
-function Dropdown({ align, data, index, isOpened, onOpen, onSelect, type }) {
+function Dropdown(props) {
+  const { align = 'left', data, index, isOpened = false, onOpen } = props;
+  const { onSelect, type } = props;
+
   // ui state
   const toggledValue = isOpened ? null : index;
   const openedClass = isOpened ? ' opened' : '';
@@ -80,11 +83,6 @@ function Dropdown({ align, data, index, isOpened, onOpen, onSelect, type }) {
     </div>
   );
 }
-
-Dropdown.defaultProps = {
-  align: 'left',
-  isOpened: false
-};
 
 Dropdown.propTypes = {
   // required
