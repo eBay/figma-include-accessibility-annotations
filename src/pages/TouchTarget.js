@@ -173,7 +173,7 @@ function TouchTarget() {
             id="all-touch-targets-clear"
             isSelected={hasSelectedNoTargets}
             onClick={onEmptySelected}
-            stepName="targets to check"
+            text="No targets to check"
           />
         )}
 
