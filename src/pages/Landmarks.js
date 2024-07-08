@@ -47,8 +47,6 @@ function Landmarks() {
   // local state
   const [selected, setSelected] = React.useState(null);
   const [noLandmarks, setNoLandmarks] = React.useState(defaultNoLandmarks);
-  const [needsLabel, setNeedsLabel] = React.useState([]);
-  const [labelsTemp, setLabelsTemp] = React.useState({});
   const [openedDropdown, setOpenedDropdown] = React.useState(null);
   const [maxUsageReached, setMaxUsageReached] = React.useState([]);
 
@@ -63,9 +61,8 @@ function Landmarks() {
   const [alwaysNeedLabel, setAlwaysNeedLabel] = React.useState([]);
   const showAlwaysNeedLabel = alwaysNeedLabel.length > 0;
 
-  const showWarning =
-    needsLabel.length > 0 &&
-    Object.keys(labelsTemp).length !== needsLabel.length;
+  const [hasLandmarkWord, setHasLandmarkWord] = React.useState([]);
+  const showLandmarkWordWarning = hasLandmarkWord.length > 0;
 
   const onAddLandmark = (landmarkType) => {
     const { bounds, id } = page;
@@ -213,6 +210,22 @@ function Landmarks() {
     setMaxUsageReached(newMaxUsageReached);
   };
 
+  const checkForLandmarkInLabel = () => {
+    const hasLandmarkInLabel = [];
+
+    Object.keys(labelsTemp).forEach((key) => {
+      const label = labelsTemp[key];
+      const labelLower = label.value.toLowerCase();
+
+      // "landmark" string exists?
+      if (labelLower.includes('landmark')) {
+        hasLandmarkInLabel.push(key);
+      }
+    });
+
+    setHasLandmarkWord(hasLandmarkInLabel);
+  };
+
   const onChange = (e, id) => {
     const newLabelsTemp = { ...labelsTemp };
 
@@ -247,12 +260,18 @@ function Landmarks() {
     checkForMaxUsage();
   }, [landmarks]);
 
+  React.useEffect(() => {
+    // mount
+    checkForLandmarkInLabel();
+  }, [labelsTemp]);
+
   const getPrimaryAction = () => {
     if (landmarksAreSet || noLandmarks) {
       return {
         completesStep: true,
         isDisabled:
-          (showDupWarning || showAlwaysNeedLabel) && canContinue === false,
+          (showDupWarning || showAlwaysNeedLabel || showLandmarkWordWarning) &&
+          canContinue === false,
         onClick: onDoneWithLandmarks
       };
     }
@@ -296,6 +315,18 @@ function Landmarks() {
           </React.Fragment>
         )}
 
+        {showLandmarkWordWarning && (
+          <React.Fragment>
+            <Alert
+              icon={<SvgWarning />}
+              style={{ padding: 0 }}
+              text={`Remove the word "landmark" as it is already included in the landmark type.`}
+              type="warning"
+            />
+            <div className="spacer1" />
+          </React.Fragment>
+        )}
+
         {landmarksAreSet && (
           <React.Fragment>
             {landmarksArray.map((key) => {
@@ -306,9 +337,10 @@ function Landmarks() {
 
               const hasTempLabel = labelsTemp[id]?.value || label;
 
-              // is flagged for not having label
+              // is flagged for not having label (or can't have "Landmark" in the label)
               const warnClass =
-                needsLabel.includes(id) && hasTempLabel === null
+                (needsLabel.includes(id) && hasTempLabel === null) ||
+                hasLandmarkWord.includes(id)
                   ? ' warning'
                   : '';
 
