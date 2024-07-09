@@ -112,11 +112,28 @@ export const add = (msg) => {
   // update with id (for future scanning)
   landmarksFrame.name = `${landmarkLayerName} | ${landmarksFrame.id}`;
 
+  const landmarksLength = landmarksFrame.children.length;
+  const currentLandmarkNum = landmarksLength + 1;
+  const isFirst = currentLandmarkNum === 1;
+
+  let xStart = 0;
+  let yStart = 0;
+
+  if (isFirst === false) {
+    // get last landmark
+    const lastLandmark = landmarksFrame.children[landmarksLength - 1];
+    const { height, x, y } = lastLandmark;
+
+    // set new yStart below last landmark
+    xStart = x;
+    yStart = y + height;
+  }
+
   // create landmark layer
   const landmarkBlock = createTransparentFrame({
     name: `Landmark: ${landmark}`,
-    x: 0,
-    y: 0,
+    x: xStart,
+    y: yStart,
     width: 300,
     height: 100
   });
@@ -207,6 +224,48 @@ export const add = (msg) => {
   landmarksFrame.expanded = false;
   labelFrame.expanded = false;
   landmarkBlock.expanded = false;
+};
+
+export const updateType = (msg) => {
+  const { id, landmarkType, prevLandmarkType } = msg;
+
+  // get landmark
+  const landmarkNode = figma.getNodeById(id);
+
+  // prevent memory leak (if not found, early return)
+  if (landmarkNode === null) {
+    // let the user know an error occurred
+    figma.notify('Error occurred: please restart plugin if this continues.', {
+      error: true,
+      timeout: config.notifyTime
+    });
+
+    return;
+  }
+
+  const newType = landmarksTypesObj[landmarkType];
+  const prevType = landmarksTypesObj[prevLandmarkType];
+
+  // update landmark name
+  landmarkNode.name = `Landmark: ${landmarkType} | ${landmarkNode.id}`;
+
+  // get child landmark name
+  const landmarkName = landmarkNode.findOne(
+    (n) => n.name === `Landmark Name: ${prevType.label}`
+  );
+  if (landmarkName !== null) {
+    landmarkName.name = `Landmark Name: ${newType.label}`;
+    landmarkName.characters = newType.label;
+  }
+
+  // get child landmark area
+  const landmarkArea = landmarkNode.findOne(
+    (n) => n.name === `Landmark Area: ${prevLandmarkType}`
+  );
+
+  if (landmarkArea !== null) {
+    landmarkArea.name = `Landmark Area: ${landmarkType}`;
+  }
 };
 
 export const completed = (msg) => {
@@ -349,6 +408,7 @@ export const updateWithLabel = (msg) => {
 export default {
   noLandmarks,
   add,
+  updateType,
   completed,
   updateWithLabel
 };

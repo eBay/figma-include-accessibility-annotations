@@ -1,7 +1,7 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 
-function SvgArrowRight({ fill }) {
+function SvgArrowRight({ fill = '#189ffb' }) {
   return (
     <svg
       width="14"
@@ -16,10 +16,6 @@ function SvgArrowRight({ fill }) {
     </svg>
   );
 }
-
-SvgArrowRight.defaultProps = {
-  fill: '#189ffb'
-};
 
 SvgArrowRight.propTypes = {
   // optional

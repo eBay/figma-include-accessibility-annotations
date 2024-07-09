@@ -1,7 +1,7 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 
-function SvgText({ fill, size }) {
+function SvgText({ fill = '#111820', size = 16 }) {
   return (
     <svg
       width={size}
@@ -18,11 +18,6 @@ function SvgText({ fill, size }) {
     </svg>
   );
 }
-
-SvgText.defaultProps = {
-  fill: '#111820',
-  size: 16
-};
 
 SvgText.propTypes = {
   // optional

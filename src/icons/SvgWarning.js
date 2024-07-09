@@ -1,7 +1,7 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 
-function SvgWarning({ fill, size }) {
+function SvgWarning({ fill = 'var(--foreground-attention)', size = 16 }) {
   return (
     <svg
       width={size}
@@ -18,11 +18,6 @@ function SvgWarning({ fill, size }) {
     </svg>
   );
 }
-
-SvgWarning.defaultProps = {
-  fill: '#f24822',
-  size: 16
-};
 
 SvgWarning.propTypes = {
   // optional

@@ -114,6 +114,11 @@ figma.ui.onmessage = async (msg) => {
     step.landmarks.add(msg);
   }
 
+  // update landmark type
+  if (type === 'update-landmark-type') {
+    step.landmarks.updateType(msg);
+  }
+
   // landmarks completed (annotation placement)
   if (type === 'completed-landmark') {
     step.landmarks.completed(msg);

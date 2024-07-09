@@ -20,7 +20,6 @@ import SvgTouchTarget from '../icons/touch-target';
 // app state
 import Context from '../context';
 
-
 function TouchTarget() {
   // main app state
   const cnxt = React.useContext(Context);
@@ -174,7 +173,7 @@ function TouchTarget() {
             id="all-touch-targets-clear"
             isSelected={hasSelectedNoTargets}
             onClick={onEmptySelected}
-            stepName="targets to check"
+            text="No targets to check"
           />
         )}
 
@@ -182,6 +181,7 @@ function TouchTarget() {
           <div className="button-group" role="radiogroup">
             <div key="Add target" className="container-selection-button">
               <div
+                aria-label="add touch target"
                 className="selection-button"
                 onClick={onAddTouchTarget}
                 onKeyDown={(e) => {
@@ -214,7 +214,7 @@ function TouchTarget() {
         {errors.length > 0 && (
           <React.Fragment>
             <Alert
-              icon={<SvgWarning fill="var(--foreground-attention)" />}
+              icon={<SvgWarning />}
               style={{ padding: 0 }}
               text="Some of your touch targets are overlapping or do not meet the minimum size or spacing requirements."
               type="warning"

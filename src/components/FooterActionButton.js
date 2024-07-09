@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
 function FooterActionButton(props) {
-  const { children, className, goToNextStep, isDisabled } = props;
-  const { isLast, onClick, next } = props;
+  const { children, className = '', goToNextStep = false } = props;
+  const { isDisabled = false, isLast, onClick = () => {}, next = null } = props;
 
   // show an interactive button
   if (goToNextStep && !isDisabled) {
@@ -33,14 +33,6 @@ function FooterActionButton(props) {
     </button>
   );
 }
-
-FooterActionButton.defaultProps = {
-  className: '',
-  goToNextStep: false,
-  isDisabled: false,
-  onClick: () => {},
-  next: null
-};
 
 FooterActionButton.propTypes = {
   // required

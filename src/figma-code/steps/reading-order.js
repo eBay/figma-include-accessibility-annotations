@@ -1,12 +1,9 @@
 import { figmaLayer, utils } from '../../constants';
 import config from '../config';
-import {
-  getOrCreateMainA11yFrame,
-  getOrCreateMainAnnotationsFrame
-} from '../frame-helpers';
+import { getOrCreateMainA11yFrame } from '../frame-helpers';
 
 export const addArrow = (msg) => {
-  const { bounds, arrowType, name, page, pageId, pageType } = msg;
+  const { bounds, arrowType, name, pageId, pageType } = msg;
 
   const mainPageNode = figma.getNodeById(pageId);
 
@@ -36,10 +33,10 @@ export const addArrow = (msg) => {
   const { parent } = mainPageNode;
   const dims = { x, y, height, width };
   const mainFrame = utils.frameExistsOrCreate(parent.id, mainLayerName, dims);
-  const mainAnnotationsFrame = getOrCreateMainAnnotationsFrame({
-    mainFrame,
-    page
-  });
+  // const mainAnnotationsFrame = getOrCreateMainAnnotationsFrame({
+  //   mainFrame,
+  //   page
+  // });
 
   // does Reading order exists already?
   const readingOrderFrame = utils.frameExistsOrCreate(

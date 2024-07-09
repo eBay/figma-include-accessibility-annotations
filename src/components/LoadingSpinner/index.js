@@ -7,7 +7,7 @@ import { SvgLoadingSpinner } from '../../icons';
 // styles
 import './styles.scss';
 
-function LoadingSpinner({ fill, size }) {
+function LoadingSpinner({ fill = '#18a0fb', size = 20 }) {
   return (
     <div
       aria-label="loading"
@@ -18,11 +18,6 @@ function LoadingSpinner({ fill, size }) {
     </div>
   );
 }
-
-LoadingSpinner.defaultProps = {
-  fill: '#18a0fb',
-  size: 20
-};
 
 LoadingSpinner.propTypes = {
   // optional

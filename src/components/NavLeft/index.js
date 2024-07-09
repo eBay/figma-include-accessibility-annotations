@@ -19,7 +19,7 @@ import routesNative from '../../data/routes-native.json';
 // styles
 import './styles.scss';
 
-function NavLeft({ progress }) {
+function NavLeft({ progress = null }) {
   // main app state
   const cnxt = React.useContext(Context);
   const { colorBlindnessView, leftNavVisible, pageType, stepsCompleted } = cnxt;
@@ -138,10 +138,6 @@ function NavLeft({ progress }) {
     </nav>
   );
 }
-
-NavLeft.defaultProps = {
-  progress: null
-};
 
 NavLeft.propTypes = {
   // optional

@@ -19,7 +19,7 @@ function AltTextRow(props) {
   const { zoomTo } = React.useContext(Context);
 
   // image data and flags
-  const { base64, image, index, isOpened, warnClass } = props;
+  const { base64, image, index, isOpened, warnClass = '' } = props;
   const { id, altText, name, type } = image;
 
   // on functions
@@ -73,10 +73,6 @@ function AltTextRow(props) {
     </div>
   );
 }
-
-AltTextRow.defaultProps = {
-  warnClass: ''
-};
 
 AltTextRow.propTypes = {
   // required

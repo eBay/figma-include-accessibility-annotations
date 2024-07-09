@@ -1,7 +1,7 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 
-function SvgWavy({ fill, size }) {
+function SvgWavy({ fill = '#111820', size = 16 }) {
   return (
     <svg
       width={size}
@@ -18,11 +18,6 @@ function SvgWavy({ fill, size }) {
     </svg>
   );
 }
-
-SvgWavy.defaultProps = {
-  fill: '#111820',
-  size: 16
-};
 
 SvgWavy.propTypes = {
   // optional

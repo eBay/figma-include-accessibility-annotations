@@ -4,21 +4,15 @@ import PropTypes from 'prop-types';
 // styles
 import './styles.scss';
 
-function Alert({ icon, style, text, type }) {
+function Alert({ icon = null, style = {}, text, type = 'info' }) {
   return (
     <div className={`alert ${type}`} style={style}>
-      {icon && <div className="mr2">{icon}</div>}
+      {icon && <div className="mr1">{icon}</div>}
 
       <p>{text}</p>
     </div>
   );
 }
-
-Alert.defaultProps = {
-  icon: null,
-  style: {},
-  type: 'info'
-};
 
 Alert.propTypes = {
   // required

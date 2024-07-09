@@ -1,7 +1,7 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 
-function SvgEmojiStarEyes({ size }) {
+function SvgEmojiStarEyes({ size = 32 }) {
   return (
     <svg
       width={size}
@@ -29,10 +29,6 @@ function SvgEmojiStarEyes({ size }) {
     </svg>
   );
 }
-
-SvgEmojiStarEyes.defaultProps = {
-  size: 32
-};
 
 SvgEmojiStarEyes.propTypes = {
   // optional
