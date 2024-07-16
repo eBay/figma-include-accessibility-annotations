@@ -60,8 +60,7 @@ function TouchTarget() {
       bounds,
       page,
       pageId: id,
-      pageType,
-      targetIndex: numTargets + 1
+      pageType
     });
   };
 
@@ -96,7 +95,9 @@ function TouchTarget() {
       targets.forEach((target) => {
         targetObj[target.id] = target;
       });
+
       updateState('touchTargets', targetObj);
+
       if (targets.length === 0) {
         setHasCheckedTouchTargets(false);
       } else {

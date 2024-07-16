@@ -5,7 +5,7 @@ import { getOrCreateMainA11yFrame } from '../frame-helpers';
 const touchTargetsLayerName = 'Touch target Layer';
 
 export const add = (msg) => {
-  const { bounds, page, pageId, pageType, targetIndex } = msg;
+  const { bounds, page, pageId, pageType } = msg;
   const mainPageNode = figma.getNodeById(pageId);
 
   // node not found
@@ -37,18 +37,35 @@ export const add = (msg) => {
   // update with id (for future scanning)
   touchTargetsFrame.name = `${touchTargetsLayerName} | ${touchTargetsFrame.id}`;
 
-  let targetNode = null;
+  const targetsLength = touchTargetsFrame.children.length;
+  const nextTargetNum = targetsLength + 1;
+  const isFirst = nextTargetNum === 1;
+
+  let xStart = 0;
+  let yStart = 0;
+
+  if (isFirst === false) {
+    // get last target placed
+    const lastTarget = touchTargetsFrame.children[targetsLength - 1];
+    const { height, x, y } = lastTarget;
+
+    // set new yStart below last target
+    xStart = x;
+    yStart = y + height;
+  }
 
   // create rectangle
   const size = pageType === 'web' ? 24 : 48;
-  targetNode = figmaLayer.createRectangle({
+  const targetNode = figmaLayer.createRectangle({
     fillColor: colors.purpleDark,
-    name: `Touch target ${targetIndex}`,
+    name: `Touch target ${nextTargetNum}`,
     height: size,
     radius: 4,
     opacity: 0.3,
     stroke: 0,
     strokeColor: colors.purpleDark,
+    x: xStart,
+    y: yStart,
     width: size
   });
 
@@ -56,9 +73,6 @@ export const add = (msg) => {
     horizontal: 'SCALE',
     vertical: 'SCALE'
   };
-
-  targetNode.x = 0;
-  targetNode.y = 0;
 
   // add touch target block to greater touch targets frame
   touchTargetsFrame.appendChild(targetNode);
