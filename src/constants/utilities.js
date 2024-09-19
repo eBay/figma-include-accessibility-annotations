@@ -1,4 +1,5 @@
 import { createTransparentFrame } from './figma-layer';
+import config from '../figma-code/config';
 
 /**
  * Utility functions for working with Figma frames and strings
@@ -264,9 +265,44 @@ export const scrollToBottomOfAnnotationStep = () => {
  *
  * @return {array} newImagesScanned - array of images with base64 data
  */
-const getBase64FromHash = async (imagesScanned) => {
+const getBase64FromHash = async (imagesScanned, imagesManual, page) => {
+  const { currentPage } = figma;
+
+  // get a11y annotation page
+  const originalPage = figma.getNodeById(page.id);
+  let a11yPage = null;
+  const checkName = (name) => {
+    const check = `${originalPage.name} ${config.a11ySuffix}`;
+
+    return name.startsWith(check);
+  };
+
+  // loop through all high level pages and section pages
+  currentPage.children.forEach((topLevel) => {
+    const { name, type } = topLevel;
+    // account for sections
+    if (type === 'SECTION') {
+      // loop through section pages
+      topLevel.children.forEach((sectionPage) => {
+        if (checkName(sectionPage.name)) {
+          a11yPage = sectionPage;
+        }
+      });
+    } else if (checkName(name)) {
+      a11yPage = topLevel;
+    }
+  });
+
+  // hide if exists
+  if (a11yPage !== null) {
+    a11yPage.visible = false;
+  }
+
+  // set new images array
+  const newImagesManual = [];
   const newImagesScanned = [];
 
+  // get base64 from hash
   await Promise.all(
     imagesScanned.map(async (image) => {
       const { id, bounds, hash, name } = image;
@@ -285,7 +321,44 @@ const getBase64FromHash = async (imagesScanned) => {
     })
   );
 
-  return newImagesScanned;
+  // get imageBuffer for manual images
+  await Promise.all(
+    imagesManual.map(async (image) => {
+      const { id, bounds, name } = image;
+      const manualImageNode = figma.getNodeById(id);
+
+      // prevent memory leak
+      if (manualImageNode !== null) {
+        const EXPORT_SETTINGS = {
+          format: 'PNG',
+          contentsOnly: false,
+          constraint: {
+            type: 'SCALE',
+            value: 1
+          }
+        };
+        const imageBuffer = await manualImageNode.exportAsync(EXPORT_SETTINGS);
+
+        newImagesManual.push({
+          id,
+          name,
+          bounds,
+          imageBuffer,
+          displayType: 'manual'
+        });
+      }
+    })
+  );
+
+  // make visible again, if exists
+  if (a11yPage !== null) {
+    a11yPage.visible = true;
+  }
+
+  return {
+    scanned: newImagesScanned,
+    manual: newImagesManual
+  };
 };
 
 export default {
