@@ -22,11 +22,17 @@ export const createClone = (msg) => {
     oldCloneFrame.remove();
   }
 
+  // get all those dimensions
+  const { x, width } = pageNode;
+  const { annotationWidth } = config;
+
+  // are we within a section?
+  const withinSection = pageNode.parent.type === 'SECTION';
+
   // clone selected page
   const clone = pageNode.clone();
   const gutterSpace = 32;
-  const newX =
-    pageNode.x + pageNode.width + config.annotationWidth + gutterSpace;
+  const newX = x + width + annotationWidth + gutterSpace;
   clone.name = cloneLayerName;
   clone.x = newX;
   clone.expanded = false;
@@ -84,6 +90,11 @@ export const createClone = (msg) => {
 
     return null;
   });
+
+  // if within section, move clone to within
+  if (withinSection) {
+    pageNode.parent.appendChild(clone);
+  }
 
   // zoom figma view for new cloned page
   figma.viewport.scrollAndZoomIntoView([clone]);
