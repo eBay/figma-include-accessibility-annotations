@@ -64,11 +64,11 @@
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.24.1"
   },
-  "engines": {
-    "node": ">=18.18.2"
-  },
   "prettier": {
     "singleQuote": true,
     "trailingComma": "none"
+  },
+  "engines": {
+    "node": ">=18.18.2"
   }
 }
