@@ -4,6 +4,7 @@ export { default as SvgArrowWidth } from './SvgArrowWidth';
 export { default as SvgCarrot } from './SvgCarrot';
 export { default as SvgCheck } from './SvgCheck';
 export { default as SvgCheckSm } from './SvgCheckSm';
+export { default as SvgChevronDown } from './SvgChevronDown';
 export { default as SvgChevronLeft } from './SvgChevronLeft';
 export { default as SvgClose } from './SvgClose';
 export { default as SvgDownCarrot } from './SvgDownCarrot';
