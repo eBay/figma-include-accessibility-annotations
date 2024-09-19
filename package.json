@@ -1,6 +1,6 @@
 {
   "name": "figma-include-accessibility-annotations",
-  "version": "12",
+  "version": "14",
   "description": "Include is a tool built to make annotating for accessibility (a11y) easier",
   "main": "code.js",
   "scripts": {
