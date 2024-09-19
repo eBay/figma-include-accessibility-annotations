@@ -31,11 +31,13 @@ export default (
       const imageBuffer = await selectedNode.exportAsync(EXPORT_SETTINGS);
 
       return {
+        altText: name,
         id,
         name,
         bounds: absoluteRenderBounds,
         imageBuffer,
-        displayType: 'manual'
+        displayType: 'manual',
+        type: 'decorative'
       };
     }
 

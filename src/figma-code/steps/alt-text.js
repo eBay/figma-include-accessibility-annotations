@@ -83,11 +83,13 @@ export const imageScan = async (msg) => {
 
       return {
         // https://www.figma.com/plugin-docs/api/figma/#base64encode
+        altText: name,
         base64: figma.base64Encode(bytes),
         bounds: absoluteRenderBounds,
         id,
         name,
-        displayType: 'scanned'
+        displayType: 'scanned',
+        type: 'decorative'
       };
     })
   );
