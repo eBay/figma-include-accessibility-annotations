@@ -80,18 +80,16 @@ export const createResponsiveDesigns = (msg) => {
     const gutterSpace = 124;
     const createdScreens = [];
     breakpoints.forEach((screenSpec) => {
-      const { label, size } = screenSpec;
-
       // clone selected page
       const clone = pageNode.clone();
-      const cloneLayerName = `${pageNode.name} | Responsive | ${label}`;
+      const cloneLayerName = `${pageNode.name} | Responsive | ${screenSpec.name}`;
       clone.name = cloneLayerName;
       clone.x = startX + gutterSpace;
       clone.layoutMode = 'VERTICAL';
       clone.layoutSizingHorizontal = 'HUG';
 
-      clone.resize(size, clone.height);
-      startX = clone.x + size;
+      clone.resize(screenSpec.width, clone.height);
+      startX = clone.x + screenSpec.width;
 
       createdScreens.push(clone);
 
