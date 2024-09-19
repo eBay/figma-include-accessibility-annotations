@@ -1,7 +1,12 @@
 import config from './config';
 import headingTypes from '../data/heading-types';
 
-export default (pageSelected, listenForHeadings, defaultHeadingType) => {
+export default (
+  pageSelected,
+  listenForHeadings,
+  defaultHeadingType,
+  listenForAltText
+) => {
   const { selection } = figma.currentPage;
   const selectionLength = selection.length;
 
@@ -98,6 +103,19 @@ export default (pageSelected, listenForHeadings, defaultHeadingType) => {
         data = { selected: response };
       }
     }
+  } else if (listenForAltText === true && selectionLength === 1) {
+    const selectedNode = selection[0];
+    const { id, name, parent, type } = selectedNode;
+
+    msgResponseType = 'alt-text-image-selected';
+    data = {
+      selected: {
+        id,
+        name,
+        type,
+        parent: parent.id
+      }
+    };
   } else {
     // not a case for yet
     // console.log('Selection change detected');

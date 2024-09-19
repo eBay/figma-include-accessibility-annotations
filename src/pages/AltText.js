@@ -86,11 +86,17 @@ function AltText() {
       });
 
       updateState('imagesData', newImagesData);
+
+      // start listening for alt text image selected
+      sendToFigma('alt-text-listening-flag', { listen: true });
     } else if (isLoading) {
       // if loading, and no images returned, let user know
       setLoading(false);
       setNoImagesFound(true);
       setMsg('No images were found!');
+
+      // start listening for alt text image selected
+      sendToFigma('alt-text-listening-flag', { listen: true });
     }
   }, [imagesScanned]);
 
@@ -135,6 +141,33 @@ function AltText() {
 
     return null;
   };
+
+  const onMessageListen = async (event) => {
+    const { data, type } = event.data.pluginMessage;
+
+    // only listen for this response type on this step
+    if (type === 'alt-text-image-selected') {
+      console.log('alt-text-image-selected', data);
+    }
+  };
+
+  React.useEffect(() => {
+    // mount
+    window.addEventListener('message', onMessageListen);
+
+    // start listening for alt text image selected if we have images
+    if (imagesScanned.length > 0) {
+      sendToFigma('alt-text-listening-flag', { listen: true });
+    }
+
+    return () => {
+      // unmount
+      window.removeEventListener('message', onMessageListen);
+
+      // stop listening for alt text image selected
+      sendToFigma('alt-text-listening-flag', { listen: false });
+    };
+  }, []);
 
   return (
     <AnnotationStepPage
@@ -232,6 +265,19 @@ function AltText() {
                 );
               })}
             </React.Fragment>
+          </React.Fragment>
+        )}
+
+        {(hasImages || noImagesFound) && (
+          <React.Fragment>
+            <div className="spacer1" />
+            <div className="divider" />
+            <div className="spacer3" />
+
+            <HeadingStep
+              number={hasImages ? 3 : 2}
+              text="Check for additional images that need annotations (e.g. svg). To add, hold Crtl/Cmd to select an image, then press add image button."
+            />
           </React.Fragment>
         )}
       </React.Fragment>

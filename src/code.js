@@ -37,6 +37,9 @@ let currentPageID = null;
 let listenForHeadings = false;
 let defaultHeadingType = 2;
 
+// selection for alt text listener
+let listenForAltText = false;
+
 // clear console every time plugin opens
 // eslint-disable-next-line no-console
 console.clear();
@@ -75,7 +78,12 @@ figma.once('run', async () => {
  * https://www.figma.com/plugin-docs/api/properties/figma-on/#selectionchange
  **************************************************************************** */
 figma.on('selectionchange', () => {
-  onSelectionChange(pageSelected, listenForHeadings, defaultHeadingType);
+  onSelectionChange(
+    pageSelected,
+    listenForHeadings,
+    defaultHeadingType,
+    listenForAltText
+  );
 });
 
 /* *****************************************************************************
@@ -176,6 +184,13 @@ figma.ui.onmessage = async (msg) => {
   // add alt text layer
   if (type === 'add-alt-text') {
     step.altText.add(msg);
+  }
+
+  // set listening flag for alt text
+  if (type === 'alt-text-listening-flag') {
+    const { listen } = msg;
+
+    listenForAltText = listen;
   }
 
   // get base64 of image hash
