@@ -70,11 +70,11 @@ function TextZoom() {
       <React.Fragment>
         <HeadingStep
           number={1}
-          text={`Create an example with text size enlarged ${
+          text={`Create an example with text size enlarged${
             pageType === 'web'
-              ? '200% (e.g from 14px to 28px for body text)'
+              ? ' 200% (e.g from 14px to 28px for body text)'
               : ''
-          } and define overflow behaviour (is the container getting larger? is the text wrapping? is there an ellipsis truncation?)`}
+          }.`}
         />
 
         {(frameCopied || isCompleted) && (
