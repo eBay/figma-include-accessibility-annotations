@@ -34,8 +34,14 @@ function AltText() {
   const routeName = 'Alt text';
   const hasImages = imagesData.length > 0;
   const hasSelectedImage = selectedImage !== null;
+  const alreadySelected =
+    hasSelectedImage &&
+    imagesScanned.some((img) => img.id === selectedImage.id);
+  const selectedText = alreadySelected
+    ? 'This is already in the image list'
+    : `"${selectedImage?.name}" selected`;
   const manualText = hasSelectedImage
-    ? `"${selectedImage.name}" selected`
+    ? selectedText
     : 'Check for additional images that need annotations (e.g. svg). To add, hold Crtl/Cmd to select an image, then press add image button.';
 
   const flaggedImages = imagesData
@@ -163,9 +169,6 @@ function AltText() {
   };
 
   const addImageManually = () => {
-    // add image manually to scanned list
-    sendToFigma('add-image-manually', { selected: selectedImage });
-
     const newImagesScanned = [...imagesScanned];
     // make sure id is unique in object
     const exists = newImagesScanned.some((img) => img.id === selectedImage.id);
@@ -173,9 +176,12 @@ function AltText() {
     // if image already exists, don't add it again
     if (exists === false) {
       newImagesScanned.push(selectedImage);
-    }
 
-    updateState('imagesScanned', newImagesScanned);
+      updateState('imagesScanned', newImagesScanned);
+
+      // add image manually to scanned list
+      sendToFigma('add-image-manually', { selected: selectedImage });
+    }
 
     // reset message (if no images were found during initial scan)
     setNoImagesFound(false);
