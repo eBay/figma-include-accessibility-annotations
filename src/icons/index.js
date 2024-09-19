@@ -15,6 +15,7 @@ export { default as SvgEyeClosed } from './SvgEyeClosed';
 export { default as SvgEyeOpened } from './SvgEyeOpened';
 export { default as SvgFocusGroup } from './SvgFocusGroup';
 export { default as SvgFrame } from './SvgFrame';
+export { default as SvgImage } from './SvgImage';
 export { default as SvgInfo } from './SvgInfo';
 export { default as SvgInfoFill } from './SvgInfoFill';
 export { default as SvgLoadingSpinner } from './SvgLoadingSpinner';
