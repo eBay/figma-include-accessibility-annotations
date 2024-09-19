@@ -21,11 +21,11 @@ The plugin was developed by members of the accessibility and design teams at eBa
 
 **Near term bug fixes & improvements**
 
-- [ ] Scan for svg (alternative text)
-- [ ] Add images manually (alternative text)
 - [ ] Synchronize copy/paste, undo/redo between the plugin and Figma layers
 - [ ] Allow designer to annotate a section of a design
 - [ ] Add delete in multiple steps
+- [ ] Scan for svg (alternative text)
+- [X] Add images manually in Alternative text step (v14)
 - [X] Add ability to edit landmarks (v12)
 - [X] Placing new arrow annotation below at end of previously placed arrow (v11)
 - [X] Touch target (v11)
