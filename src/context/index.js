@@ -22,6 +22,7 @@ export default React.createContext({
   stepsNative: [],
   stepsCompleted: [],
   stepsData: {},
+  tipExpanded: true,
 
   // landmarks
   landmarks: {},

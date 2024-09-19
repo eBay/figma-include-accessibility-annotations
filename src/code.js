@@ -379,6 +379,15 @@ figma.ui.onmessage = async (msg) => {
     });
   }
 
+  // set tip expanded preference
+  if (type === 'set-tip-preference') {
+    const { expanded } = msg;
+
+    // set user preference for tip expanded
+    const { setAsync } = figma.clientStorage;
+    await setAsync('prefTipExpanded', expanded);
+  }
+
   // resize plugin
   if (type === 'resize-plugin') {
     const { condensed, height, width } = msg;

@@ -504,6 +504,10 @@ export const getUserPreferences = async () => {
   const newFeaturesIntro =
     prefNewFeaturesInfo === undefined ? [] : JSON.parse(prefNewFeaturesInfo);
 
+  // check for tip expanded preference
+  const prefTipExpanded = await getAsync('prefTipExpanded');
+  const tipExpanded = prefTipExpanded === undefined ? true : prefTipExpanded;
+
   // reset for development testing
   // const { deleteAsync } = figma.clientStorage;
   // await deleteAsync('prefBreakpoints');
@@ -514,7 +518,8 @@ export const getUserPreferences = async () => {
     data: {
       breakpoints,
       newFeaturesIntro,
-      prefCondensedUI: condensedUI
+      prefCondensedUI: condensedUI,
+      prefTipExpanded: tipExpanded
     }
   });
 };

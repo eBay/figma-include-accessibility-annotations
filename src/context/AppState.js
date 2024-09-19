@@ -37,6 +37,7 @@ class AppState extends React.Component {
       condensedUI: false,
       isLoading: true,
       leftNavVisible: true,
+      tipExpanded: true,
 
       // page changes
       hasDashboard: false,
@@ -127,6 +128,7 @@ class AppState extends React.Component {
 
       case 'load-user-preferences':
         const { breakpoints, newFeaturesIntro, prefCondensedUI } = data;
+        const { prefTipExpanded } = data;
 
         // resize plugin onload if user pref is set
         if (prefCondensedUI === true) {
@@ -145,7 +147,8 @@ class AppState extends React.Component {
           responsiveBreakpoints: newBreakpoints,
           condensedUI: prefCondensedUI,
           leftNavVisible: !prefCondensedUI,
-          newFeaturesIntro
+          newFeaturesIntro,
+          tipExpanded: prefTipExpanded
         });
 
         break;
@@ -353,6 +356,7 @@ class AppState extends React.Component {
     // global accessibility data
     const { pages, page, pageSelected, pageType } = this.state;
     const { steps, stepsNative, stepsCompleted, stepsData } = this.state;
+    const { tipExpanded } = this.state;
 
     // landmarks
     const { landmarks } = this.state;
@@ -393,6 +397,7 @@ class AppState extends React.Component {
           condensedUI,
           isLoading,
           leftNavVisible,
+          tipExpanded,
 
           // page changes
           hasDashboard,

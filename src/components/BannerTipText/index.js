@@ -5,20 +5,46 @@ import { utils } from '../../constants';
 // icons
 import { SvgChevronDown } from '../../icons';
 
+// app state
+import Context from '../../context';
+
 // styles
 import './styles.scss';
 
 function BannerTipText(props) {
-  const { expandedDefault = true, footer = null } = props;
+  // main app state
+  const { sendToFigma, tipExpanded, updateState } = React.useContext(Context);
+
+  // props
+  const { footer = null } = props;
   const { helpText = 'Learn more', helpUrl = null, text } = props;
 
   // local state
-  const [expanded, setExpanded] = React.useState(expandedDefault);
+  const [animateClass, setAnimateClass] = React.useState('');
 
   // ui state
-  const ariaLabel = expanded ? 'collapse' : 'expand';
-  const rotateClass = expanded ? 'rotate-right-rev' : 'rotate-left-rev';
-  const tipTextClass = expanded ? '' : 'tip-text-collapsed';
+  const ariaLabel = tipExpanded ? 'collapse' : 'expand';
+  const rotateClass = tipExpanded ? 'rotate-right-rev' : 'rotate-left-rev';
+  const tipTextClass = tipExpanded ? '' : 'tip-text-collapsed';
+
+  const onToggle = () => {
+    updateState('tipExpanded', !tipExpanded);
+
+    sendToFigma('set-tip-preference', {
+      expanded: !tipExpanded
+    });
+  };
+
+  // animate on mount
+  React.useEffect(() => {
+    const animateTimer = setTimeout(() => {
+      setAnimateClass(' animated');
+    }, 800);
+
+    return () => {
+      clearTimeout(animateTimer);
+    };
+  }, []);
 
   return (
     <div className="banner-tip">
@@ -33,20 +59,20 @@ function BannerTipText(props) {
         <div
           aria-label={`${ariaLabel} tip`}
           className="tip-toggle"
-          onClick={() => setExpanded(!expanded)}
+          onClick={onToggle}
           onKeyDown={({ key }) => {
-            if (utils.isEnterKey(key)) setExpanded(!expanded);
+            if (utils.isEnterKey(key)) onToggle();
           }}
           role="button"
           tabIndex="0"
         >
-          <div className={`svg-theme animated ${rotateClass}`}>
+          <div className={`svg-theme${animateClass}${rotateClass}`}>
             <SvgChevronDown size={12} />
           </div>
         </div>
       </div>
 
-      {footer && expanded && footer}
+      {footer && tipExpanded && footer}
 
       {helpUrl !== null && (
         <a className="tip-link" href={helpUrl} target="_blank" rel="noreferrer">
@@ -62,7 +88,6 @@ BannerTipText.propTypes = {
   text: PropTypes.string.isRequired,
 
   // optional
-  expandedDefault: PropTypes.bool,
   footer: PropTypes.element,
   helpText: PropTypes.string,
   helpUrl: PropTypes.string

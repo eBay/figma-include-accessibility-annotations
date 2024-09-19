@@ -27,6 +27,14 @@
   position: absolute!important;
   right: 8px;
   top: 8px;
+  
+  & .rotate-left-rev {
+    transform: rotate(-180deg)
+  }
+
+  & .rotate-right-rev {
+    transform: rotate(0deg)
+  }
 }
 
 .tip-link {
