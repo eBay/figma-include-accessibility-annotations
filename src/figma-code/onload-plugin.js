@@ -13,8 +13,11 @@ export const preload = async () => {
 const isA11yLayer = (children, childNode, name) => {
   const { children: frameChildren } = childNode;
   const a11yCompletedLayers = [];
-  const imagesScannedArray = [];
   const stepsData = {};
+
+  // alt text images
+  const imagesScannedArray = [];
+  const imagesManualArray = [];
 
   // grab layer type (web or native)
   const a11yLayerType = utils.checkTypeOfA11yLayer(childNode.name);
@@ -206,6 +209,21 @@ const isA11yLayer = (children, childNode, name) => {
                 name: nameString,
                 type
               });
+            } else {
+              altTextArray.push({
+                id,
+                altText: altTextString,
+                bounds: nodeAltText.absoluteRenderBounds,
+                name: nameString,
+                type
+              });
+
+              imagesManualArray.push({
+                bounds: nodeAltText.absoluteRenderBounds,
+                id,
+                name: nameString,
+                displayType: 'manual'
+              });
             }
           }
         }
@@ -349,7 +367,8 @@ const isA11yLayer = (children, childNode, name) => {
       name
     },
     pageId: originalPage.id,
-    imagesScanned: imagesScannedArray
+    imagesScanned: imagesScannedArray,
+    imagesManual: imagesManualArray
   };
 };
 

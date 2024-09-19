@@ -200,12 +200,21 @@ figma.ui.onmessage = async (msg) => {
 
   // get base64 of image hash
   if (type === 'get-base64') {
-    const newImagesScanned = await utils.getBase64FromHash(msg.imagesScanned);
+    const { imagesManual, imagesScanned, page } = msg;
+
+    const newImages = await utils.getBase64FromHash(
+      imagesScanned,
+      imagesManual,
+      page
+    );
+
+    // combine new images (manual and scanned)
+    const combinedImages = [...newImages.scanned, ...newImages.manual];
 
     figma.ui.postMessage({
       type: 'base64-response',
       data: {
-        newImagesScanned
+        newImagesScanned: combinedImages
       }
     });
   }

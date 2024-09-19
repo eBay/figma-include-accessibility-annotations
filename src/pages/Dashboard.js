@@ -132,17 +132,27 @@ function Dashboard() {
 
     // get stepsData from pages
     const pageIndex = pages.findIndex((p) => p.pageId === page.id);
-    const { imagesScanned: toLoadImagesScanned } = pages[pageIndex];
+    const currentPage = pages[pageIndex];
+
+    // has images scanned or manually added
+    const currentScanned = currentPage.imagesScanned;
+    const currentManual = currentPage.imagesManual;
+    const noScannedImages = currentScanned.length === 0;
+    const noManualImages = currentManual.length === 0;
 
     // no images previously annotated on document?
-    if (toLoadImagesScanned.length === 0) {
+    if (noScannedImages && noManualImages) {
       onContinue(page, stepsCompleted);
     } else {
       // grabbing base64 was killing the tread, causing loading state to not show, so delaying
       // https://www.figma.com/plugin-docs/frozen-plugins/
       setTimeout(() => {
-        // on demand base64 loading
-        sendToFigma('get-base64', { imagesScanned: toLoadImagesScanned });
+        // on demand base64 (scanned) and imageBuffer (manual) images
+        sendToFigma('get-base64', {
+          imagesManual: currentManual,
+          imagesScanned: currentScanned,
+          page
+        });
 
         setTempClickData({
           page,
