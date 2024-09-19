@@ -107,13 +107,13 @@ function AltText() {
     } else {
       // map new images scanned to array of objects for alt text, etc.
       const newImagesData = imagesScanned.map((image) => {
-        const { id, name, bounds } = image;
+        const { altText, id, name, bounds, type } = image;
 
         return {
           id,
           name,
-          altText: name,
-          type: 'decorative',
+          altText,
+          type,
           bounds
         };
       });

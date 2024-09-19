@@ -195,6 +195,7 @@ const isA11yLayer = (children, childNode, name) => {
               const { imageHash } = imageFill;
 
               imagesScannedArray.push({
+                altText: altTextString,
                 hash: imageHash,
                 bounds: nodeAltText.absoluteRenderBounds,
                 id,
@@ -210,19 +211,20 @@ const isA11yLayer = (children, childNode, name) => {
                 type
               });
             } else {
+              imagesManualArray.push({
+                altText: altTextString,
+                bounds: nodeAltText.absoluteRenderBounds,
+                id,
+                name: nameString,
+                displayType: 'manual'
+              });
+
               altTextArray.push({
                 id,
                 altText: altTextString,
                 bounds: nodeAltText.absoluteRenderBounds,
                 name: nameString,
                 type
-              });
-
-              imagesManualArray.push({
-                bounds: nodeAltText.absoluteRenderBounds,
-                id,
-                name: nameString,
-                displayType: 'manual'
               });
             }
           }

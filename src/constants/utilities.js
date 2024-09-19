@@ -305,18 +305,22 @@ const getBase64FromHash = async (imagesScanned, imagesManual, page) => {
   // get base64 from hash
   await Promise.all(
     imagesScanned.map(async (image) => {
-      const { id, bounds, hash, name } = image;
+      const { altText, id, bounds, hash, name } = image;
+
       // get image data by hash
       const imageData = figma.getImageByHash(hash);
       const bytes = await imageData.getBytesAsync();
+      const type = name === altText ? 'decorative' : 'informative';
 
       // remap and remove `data` key
       newImagesScanned.push({
+        altText,
         id,
         base64: figma.base64Encode(bytes),
         bounds,
         name,
-        displayType: 'scanned'
+        displayType: 'scanned',
+        type
       });
     })
   );
@@ -324,8 +328,9 @@ const getBase64FromHash = async (imagesScanned, imagesManual, page) => {
   // get imageBuffer for manual images
   await Promise.all(
     imagesManual.map(async (image) => {
-      const { id, bounds, name } = image;
+      const { altText, id, bounds, name } = image;
       const manualImageNode = figma.getNodeById(id);
+      const type = name === altText ? 'decorative' : 'informative';
 
       // prevent memory leak
       if (manualImageNode !== null) {
@@ -340,11 +345,13 @@ const getBase64FromHash = async (imagesScanned, imagesManual, page) => {
         const imageBuffer = await manualImageNode.exportAsync(EXPORT_SETTINGS);
 
         newImagesManual.push({
+          altText,
           id,
           name,
           bounds,
           imageBuffer,
-          displayType: 'manual'
+          displayType: 'manual',
+          type
         });
       }
     })
