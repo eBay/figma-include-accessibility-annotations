@@ -30,8 +30,22 @@ function AltText() {
   const [noImagesFound, setNoImagesFound] = React.useState(false);
   const [selectedImage, setSelectedImage] = React.useState(null);
 
+  // ui state
   const routeName = 'Alt text';
   const hasImages = imagesData.length > 0;
+  const hasSelectedImage = selectedImage !== null;
+  const manualText = hasSelectedImage
+    ? `"${selectedImage.name}" selected`
+    : 'Check for additional images that need annotations (e.g. svg). To add, hold Crtl/Cmd to select an image, then press add image button.';
+
+  const flaggedImages = imagesData
+    .filter(
+      ({ altText, type, name }) =>
+        type === 'informative' && (altText === name || altText.length < 3)
+    )
+    .map((imageData) => imageData.id);
+  const showWarning = hasAttemptedSubmit && flaggedImages.length > 0;
+  const addS = flaggedImages.length > 1 ? 's' : '';
 
   const onChange = (e, index) => {
     const newImagesData = [...imagesData];
@@ -48,13 +62,6 @@ function AltText() {
     updateState('imagesData', newImagesData);
   };
 
-  const flaggedImages = imagesData
-    .filter(
-      ({ altText, type, name }) =>
-        type === 'informative' && (altText === name || altText.length < 3)
-    )
-    .map((imageData) => imageData.id);
-
   const createAltTextOverlay = () => {
     // issues with alt text?
     if (flaggedImages.length > 0) {
@@ -64,8 +71,6 @@ function AltText() {
       sendToFigma('add-alt-text', { page, pageType, images: imagesData });
     }
   };
-
-  const showWarning = hasAttemptedSubmit && flaggedImages.length > 0;
 
   React.useEffect(() => {
     if (isLoading && imagesScanned.length > 0) {
@@ -116,8 +121,6 @@ function AltText() {
       updateState('imagesData', newImagesData);
     }
   }, [imagesScanned]);
-
-  const addS = flaggedImages.length > 1 ? 's' : '';
 
   const onScanForImages = () => {
     // set loading state
@@ -173,6 +176,10 @@ function AltText() {
     }
 
     updateState('imagesScanned', newImagesScanned);
+
+    // reset message (if no images were found during initial scan)
+    setNoImagesFound(false);
+    setMsg(null);
   };
 
   const onMessageListen = async (event) => {
@@ -310,31 +317,30 @@ function AltText() {
             <div className="divider" />
             <div className="spacer3" />
 
-            <HeadingStep
-              number={hasImages ? 3 : 2}
-              text="Check for additional images that need annotations (e.g. svg). To add, hold Crtl/Cmd to select an image, then press add image button."
-            />
+            <HeadingStep number={hasImages ? 3 : 2} text={manualText} />
 
-            {selectedImage !== null && (
-              <div className="container-selection-button">
-                <div
-                  aria-label="add image"
-                  className="selection-button"
-                  onClick={addImageManually}
-                  onKeyDown={(e) => {
-                    if (utils.isEnterKey(e.key)) addImageManually();
-                  }}
-                  role="button"
-                  tabIndex={0}
-                >
-                  <div>
-                    <SvgImage />
-                  </div>
+            <div className="container-selection-button">
+              <div
+                aria-label="add image"
+                className="selection-button"
+                onClick={() => {
+                  if (hasSelectedImage) addImageManually();
+                }}
+                onKeyDown={(e) => {
+                  if (utils.isEnterKey(e.key) && hasSelectedImage) {
+                    addImageManually();
+                  }
+                }}
+                role="button"
+                tabIndex={0}
+              >
+                <div>
+                  <SvgImage />
                 </div>
-
-                <div className="selection-button-label">add image</div>
               </div>
-            )}
+
+              <div className="selection-button-label">add selected</div>
+            </div>
           </React.Fragment>
         )}
       </React.Fragment>

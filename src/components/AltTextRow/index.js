@@ -106,6 +106,8 @@ AltTextRow.propTypes = {
   onSelect: PropTypes.func.isRequired,
 
   // optional
+  base64: PropTypes.string,
+  imageBuffer: PropTypes.instanceOf(Uint8Array),
   warnClass: PropTypes.string
 };
 
