@@ -11,7 +11,7 @@ an accessibility annotation Figma plugin
 
 ## Intro
 
-<img alt="plugin version 12" src="previews/v12/include_banner.png" />
+<img alt="plugin version 14" src="previews/v14/include_banner.png" />
 
 The eBay Include accessibility annotation Figma plugin is a tool to make annotating for accessibility (a11y) easier — easier for designers to spec and easier for developers to understand what is required.
 
