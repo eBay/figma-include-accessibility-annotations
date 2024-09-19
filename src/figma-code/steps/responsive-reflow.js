@@ -21,6 +21,14 @@ export const createResponsiveDesigns = (msg) => {
     return name.startsWith(check);
   };
 
+  // do previous responsive pages exist?
+  const responsivePages = [];
+  const checkResponsive = (name) => {
+    const check = `${pageNode.name} | Responsive `;
+
+    return name.startsWith(check);
+  };
+
   // loop through all high level pages and section pages
   currentPage.children.forEach((topLevel) => {
     const { name, type } = topLevel;
@@ -32,11 +40,33 @@ export const createResponsiveDesigns = (msg) => {
         if (checkName(sectionPage.name)) {
           hasTextResizingPage = sectionPage;
         }
+
+        if (checkResponsive(sectionPage.name)) {
+          responsivePages.push(sectionPage);
+        }
       });
     } else if (checkName(name)) {
       hasTextResizingPage = topLevel;
     }
+
+    if (checkResponsive(name)) {
+      responsivePages.push(topLevel);
+    }
   });
+
+  try {
+    // remove previous responsive pages
+    if (responsivePages.length > 0) {
+      responsivePages.forEach((resPage) => {
+        resPage.remove();
+      });
+    }
+  } catch (err) {
+    /* eslint-disable */
+    console.log('ERROR :: deleting Responsive Designs');
+    console.log(err);
+    /* eslint-enable */
+  }
 
   // if Text Zoom page exists, get dimensions
   if (hasTextResizingPage !== null) {
@@ -80,8 +110,10 @@ export const createResponsiveDesigns = (msg) => {
       screen.expanded = false;
     });
   } catch (err) {
+    /* eslint-disable */
     console.log('ERROR :: createResponsiveDesigns()');
     console.log(err);
+    /* eslint-enable */
   }
 };
 

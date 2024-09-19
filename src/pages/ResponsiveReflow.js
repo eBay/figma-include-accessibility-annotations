@@ -205,7 +205,14 @@ function ResponsiveReflow() {
               onClick: saveBreakpoints
             }
           : primaryAction,
-        secondaryAction: null
+        secondaryAction:
+          isCompleted || reflowCreated
+            ? {
+                buttonText: 'Copy again',
+                skipsStep: false,
+                onClick: onCreateDesigns
+              }
+            : null
       }}
     >
       <React.Fragment>
