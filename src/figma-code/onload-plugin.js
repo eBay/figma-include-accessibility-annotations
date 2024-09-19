@@ -186,9 +186,14 @@ const isA11yLayer = (children, childNode, name) => {
           if (nodeAltText !== null) {
             // get fills
             const { fills } = nodeAltText;
+            let imageFill;
 
-            // get the first fill that is an image type
-            const [imageFill] = fills.filter((fill) => fill.type === 'IMAGE');
+            // groups can not have fills set
+            if (fills !== undefined) {
+              // get the first fill that is an image type
+              const fillsFilter = fills.filter((fill) => fill.type === 'IMAGE');
+              imageFill = fillsFilter.length > 0 ? fillsFilter[0] : undefined;
+            }
 
             // prevent memory leak (if not found, don't add)
             if (typeof imageFill === 'object') {
