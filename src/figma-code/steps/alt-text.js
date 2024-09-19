@@ -160,6 +160,9 @@ export const imageScan = async (msg) => {
 export const addImageManually = async (msg) => {
   // const { id: selectedNodeId, page, pageType } = msg;
   console.log('addImageManually', msg);
+
+  // reset selection on add
+  figma.currentPage.selection = [];
 };
 
 const createAltTextAnnotationInfoFrame = ({ roleType, altText }) => {
