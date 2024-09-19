@@ -102,8 +102,10 @@ export const add = (msg) => {
       }
     });
   } catch (err) {
+    /* eslint-disable */
     console.log('ERROR :: step.checkmark.add()');
     console.log(err);
+    /* eslint-enable */
   }
 };
 
