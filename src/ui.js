@@ -201,6 +201,7 @@ function App() {
                   element={<ResponsiveReflow />}
                 />
                 <Route path="color-blindness" element={<ColorBlindness />} />
+                <Route path="complex-gestures" element={<ComplexGestures />} />
               </React.Fragment>
             )}
 
