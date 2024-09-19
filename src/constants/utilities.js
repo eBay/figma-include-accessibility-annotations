@@ -109,11 +109,21 @@ const frameExistsOrCreate = (parentFrameId, layerName, page) => {
   // if frame doesn't exist
   if (accessExists === null) {
     const parentNode = figma.getNodeById(parentFrameId);
+    let pageParams = page;
+
+    // case for type section as parent and not root
+    if (parentNode.type === 'SECTION') {
+      pageParams = {
+        ...page,
+        x: page.x - parentNode.x,
+        y: page.y - parentNode.y
+      };
+    }
 
     // create the frame
     frame = createTransparentFrame({
       name: layerName,
-      ...page // optional: x, y, height, width
+      ...pageParams // optional: x, y, height, width
     });
 
     // add to top level Frame or Section
