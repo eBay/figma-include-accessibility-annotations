@@ -301,6 +301,13 @@ function ComplexGestures() {
               {gestureTypesArray.map((type) => {
                 const { label, icon } = gestureTypesObj[type];
 
+                // legacy handling:
+                // allow for multi-finger tap to still exist in old annotations,
+                // but no longer allow user to add to new annotations
+                if (type === 'multi-finger') {
+                  return null;
+                }
+
                 // handle non-interactive state
                 // rectangle has already been created, lock in the gesture selection until step is completed)
                 // const noEvents = isDisabled ? ' no-events' : '';
