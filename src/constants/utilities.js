@@ -279,7 +279,8 @@ const getBase64FromHash = async (imagesScanned) => {
         id,
         base64: figma.base64Encode(bytes),
         bounds,
-        name
+        name,
+        displayType: 'scanned'
       });
     })
   );

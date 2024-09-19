@@ -37,3 +37,13 @@
   object-fit: contain;
   width: 48px;
 }
+
+.image-preview-blob {
+  background-color: var(--figma-color-bg-disabled);
+  background-repeat: no-repeat;
+  background-size: cover;
+  border-radius: 6px;
+  height: 48px;
+  min-width: 48px;
+  width: 48px;
+}

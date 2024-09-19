@@ -18,8 +18,11 @@ function AltTextRow(props) {
   // main app state
   const { zoomTo } = React.useContext(Context);
 
-  // image data and flags
-  const { base64, image, index, isOpened, warnClass = '' } = props;
+  // props data
+  const { base64 = null, displayType, index } = props;
+  const { image, imageBuffer = null, isOpened, warnClass = '' } = props;
+
+  // image data
   const { id, altText, name, type } = image;
 
   // on functions
@@ -38,11 +41,23 @@ function AltTextRow(props) {
         role="button"
         tabIndex="0"
       >
-        <img
-          alt={name}
-          className="image-preview"
-          src={`data:image/png;base64,${base64}`}
-        />
+        {displayType === 'scanned' && (
+          <img
+            alt={name}
+            className="image-preview"
+            src={`data:image/png;base64,${base64}`}
+          />
+        )}
+
+        {displayType === 'manual' && (
+          <div
+            alt={name}
+            className="image-preview-blob"
+            style={{
+              backgroundImage: `url("${URL.createObjectURL(new Blob([imageBuffer]))}")`
+            }}
+          />
+        )}
 
         <div className="scroll-to">scroll to</div>
       </div>
@@ -76,7 +91,7 @@ function AltTextRow(props) {
 
 AltTextRow.propTypes = {
   // required
-  base64: PropTypes.string.isRequired,
+  displayType: PropTypes.oneOf(['manual', 'scanned']).isRequired,
   image: PropTypes.shape({
     id: PropTypes.string.isRequired,
     altText: PropTypes.string.isRequired,

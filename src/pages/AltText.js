@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { utils } from '../constants';
 
 // components
 import {
@@ -10,7 +11,7 @@ import {
 } from '../components';
 
 // icons
-import { SvgCheck, SvgWarning } from '../icons';
+import { SvgCheck, SvgImage, SvgWarning } from '../icons';
 
 // app state
 import Context from '../context';
@@ -18,8 +19,8 @@ import Context from '../context';
 function AltText() {
   // main app state
   const cnxt = React.useContext(Context);
-  const { imagesData, imageScan, imagesScanned, page, pageType } = cnxt;
-  const { sendToFigma, updateState, zoomTo } = cnxt;
+  const { imagesData, imageScan, imagesScanned, page } = cnxt;
+  const { pageType, sendToFigma, updateState, zoomTo } = cnxt;
 
   // local state
   const [isLoading, setLoading] = React.useState(false);
@@ -27,6 +28,7 @@ function AltText() {
   const [openedDropdown, setOpenedDropdown] = React.useState(null);
   const [hasAttemptedSubmit, setHasAttemptedSubmit] = React.useState(false);
   const [noImagesFound, setNoImagesFound] = React.useState(false);
+  const [selectedImage, setSelectedImage] = React.useState(null);
 
   const routeName = 'Alt text';
   const hasImages = imagesData.length > 0;
@@ -97,6 +99,21 @@ function AltText() {
 
       // start listening for alt text image selected
       sendToFigma('alt-text-listening-flag', { listen: true });
+    } else {
+      // map new images scanned to array of objects for alt text, etc.
+      const newImagesData = imagesScanned.map((image) => {
+        const { id, name, bounds } = image;
+
+        return {
+          id,
+          name,
+          altText: name,
+          type: 'decorative',
+          bounds
+        };
+      });
+
+      updateState('imagesData', newImagesData);
     }
   }, [imagesScanned]);
 
@@ -142,12 +159,28 @@ function AltText() {
     return null;
   };
 
+  const addImageManually = () => {
+    // add image manually to scanned list
+    sendToFigma('add-image-manually', { selected: selectedImage });
+
+    const newImagesScanned = [...imagesScanned];
+    // make sure id is unique in object
+    const exists = newImagesScanned.some((img) => img.id === selectedImage.id);
+
+    // if image already exists, don't add it again
+    if (exists === false) {
+      newImagesScanned.push(selectedImage);
+    }
+
+    updateState('imagesScanned', newImagesScanned);
+  };
+
   const onMessageListen = async (event) => {
     const { data, type } = event.data.pluginMessage;
 
     // only listen for this response type on this step
     if (type === 'alt-text-image-selected') {
-      console.log('alt-text-image-selected', data);
+      setSelectedImage(data.selected);
     }
   };
 
@@ -229,7 +262,8 @@ function AltText() {
               )}
 
               {imagesData.map((image, index) => {
-                const { base64 } = imagesScanned[index];
+                const { base64, displayType, imageBuffer } =
+                  imagesScanned[index];
                 const { id, type } = image;
 
                 // case for placeholder (legacy)
@@ -247,7 +281,9 @@ function AltText() {
                   <AltTextRow
                     key={id}
                     base64={base64}
+                    displayType={displayType}
                     image={image}
+                    imageBuffer={imageBuffer}
                     index={index}
                     isOpened={isOpened}
                     onChange={(e) => onChange(e, index)}
@@ -278,6 +314,27 @@ function AltText() {
               number={hasImages ? 3 : 2}
               text="Check for additional images that need annotations (e.g. svg). To add, hold Crtl/Cmd to select an image, then press add image button."
             />
+
+            {selectedImage !== null && (
+              <div className="container-selection-button">
+                <div
+                  aria-label="add image"
+                  className="selection-button"
+                  onClick={addImageManually}
+                  onKeyDown={(e) => {
+                    if (utils.isEnterKey(e.key)) addImageManually();
+                  }}
+                  role="button"
+                  tabIndex={0}
+                >
+                  <div>
+                    <SvgImage />
+                  </div>
+                </div>
+
+                <div className="selection-button-label">add image</div>
+              </div>
+            )}
           </React.Fragment>
         )}
       </React.Fragment>

@@ -195,7 +195,8 @@ const isA11yLayer = (children, childNode, name) => {
                 hash: imageHash,
                 bounds: nodeAltText.absoluteRenderBounds,
                 id,
-                name: nameString
+                name: nameString,
+                displayType: 'scanned'
               });
 
               altTextArray.push({

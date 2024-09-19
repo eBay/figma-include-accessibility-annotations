@@ -14,6 +14,34 @@ export default (
   let msgResponseType = 'selection-change';
   let data = {};
 
+  // alt text image processing
+  async function processImageAsync() {
+    if (selection.length === 1) {
+      const selectedNode = selection[0];
+      const { absoluteRenderBounds, id, name } = selectedNode;
+      const EXPORT_SETTINGS = {
+        format: 'PNG',
+        contentsOnly: false,
+        constraint: {
+          type: 'SCALE',
+          value: 1
+        }
+      };
+
+      const imageBuffer = await selectedNode.exportAsync(EXPORT_SETTINGS);
+
+      return {
+        id,
+        name,
+        bounds: absoluteRenderBounds,
+        imageBuffer,
+        displayType: 'manual'
+      };
+    }
+
+    return null;
+  }
+
   // is the user starting the accessibility flow with select a frame?
   if (!pageSelected && selectionLength === 0) {
     msgResponseType = 'start-frame';
@@ -103,19 +131,16 @@ export default (
         data = { selected: response };
       }
     }
-  } else if (listenForAltText === true && selectionLength === 1) {
-    const selectedNode = selection[0];
-    const { id, name, parent, type } = selectedNode;
+  } else if (listenForAltText === true) {
+    // process image for alt text
+    processImageAsync(selection).then((selected) => {
+      figma.ui.postMessage({
+        data: { selected },
+        type: 'alt-text-image-selected'
+      });
+    });
 
-    msgResponseType = 'alt-text-image-selected';
-    data = {
-      selected: {
-        id,
-        name,
-        type,
-        parent: parent.id
-      }
-    };
+    return null;
   } else {
     // not a case for yet
     // console.log('Selection change detected');
@@ -126,4 +151,6 @@ export default (
     type: msgResponseType,
     data
   });
+
+  return true;
 };

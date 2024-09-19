@@ -193,6 +193,11 @@ figma.ui.onmessage = async (msg) => {
     listenForAltText = listen;
   }
 
+  // add image manually (alt text)
+  if (type === 'add-image-manually') {
+    step.altText.addImageManually(msg);
+  }
+
   // get base64 of image hash
   if (type === 'get-base64') {
     const newImagesScanned = await utils.getBase64FromHash(msg.imagesScanned);
