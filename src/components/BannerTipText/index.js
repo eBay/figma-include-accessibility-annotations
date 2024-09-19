@@ -24,7 +24,7 @@ function BannerTipText(props) {
 
   // ui state
   const ariaLabel = tipExpanded ? 'collapse' : 'expand';
-  const rotateClass = tipExpanded ? 'rotate-right-rev' : 'rotate-left-rev';
+  const rotateClass = tipExpanded ? ' rotate-right-rev' : ' rotate-left-rev';
   const tipTextClass = tipExpanded ? '' : 'tip-text-collapsed';
 
   const onToggle = () => {
