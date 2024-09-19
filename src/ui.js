@@ -102,7 +102,7 @@ function App() {
         let forceHide = false;
 
         // now that we can select images to manually add, we need to force hide
-        if (path === 'alt-text' && stepsData[key]?.existingData?.length > 0) {
+        if (path === 'alt-text' && stepsData[key] !== undefined) {
           forceHide = true;
         }
 
