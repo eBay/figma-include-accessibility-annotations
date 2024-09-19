@@ -7,7 +7,11 @@ export const createResponsiveDesigns = (msg) => {
 
   // get selected page node
   const pageNode = figma.getNodeById(pageId);
-  let startFromX = pageNode.x + pageNode.width + config.annotationWidth;
+
+  // get all those dimensions
+  const { x, width } = pageNode;
+  const { annotationWidth } = config;
+  let startX = x + width + annotationWidth;
 
   // does text resizing page exist?
   let hasTextResizingPage = null;
@@ -36,39 +40,49 @@ export const createResponsiveDesigns = (msg) => {
 
   // if Text Zoom page exists, get dimensions
   if (hasTextResizingPage !== null) {
-    startFromX = hasTextResizingPage.x + hasTextResizingPage.width;
+    startX = hasTextResizingPage.x + hasTextResizingPage.width;
   }
 
-  const gutterSpace = 124;
-  let startX = startFromX;
+  // are we within a section?
+  const withinSection = pageNode.parent.type === 'SECTION';
 
-  const createdScreens = [];
-  breakpoints.forEach((screenSpec) => {
-    const { name, width } = screenSpec;
+  try {
+    const gutterSpace = 124;
+    const createdScreens = [];
+    breakpoints.forEach((screenSpec) => {
+      const { label, size } = screenSpec;
 
-    // clone selected page
-    const clone = pageNode.clone();
-    const cloneLayerName = `${pageNode.name} | Responsive | ${name}`;
+      // clone selected page
+      const clone = pageNode.clone();
+      const cloneLayerName = `${pageNode.name} | Responsive | ${label}`;
+      clone.name = cloneLayerName;
+      clone.x = startX + gutterSpace;
+      clone.layoutMode = 'VERTICAL';
+      clone.layoutSizingHorizontal = 'HUG';
 
-    clone.name = cloneLayerName;
-    clone.x = startX + gutterSpace;
-    clone.layoutMode = 'VERTICAL';
-    clone.layoutSizingHorizontal = 'HUG';
+      clone.resize(size, clone.height);
+      startX = clone.x + size;
 
-    clone.resize(width, clone.height);
-    startX = clone.x + width;
+      createdScreens.push(clone);
 
-    createdScreens.push(clone);
-  });
+      // if within section, move clone to within
+      if (withinSection) {
+        pageNode.parent.appendChild(clone);
+      }
+    });
 
-  // set selection and view in Figma
-  figma.currentPage.selection = createdScreens;
-  figma.viewport.scrollAndZoomIntoView(createdScreens);
+    // set selection and view in Figma
+    figma.currentPage.selection = createdScreens;
+    figma.viewport.scrollAndZoomIntoView(createdScreens);
 
-  // now that they are on the canvas, close the layers up
-  createdScreens.forEach((screen) => {
-    screen.expanded = false;
-  });
+    // now that they are on the canvas, close the layers up
+    createdScreens.forEach((screen) => {
+      screen.expanded = false;
+    });
+  } catch (err) {
+    console.log('ERROR :: createResponsiveDesigns()');
+    console.log(err);
+  }
 };
 
 export const saveBreakpoints = async (msg) => {

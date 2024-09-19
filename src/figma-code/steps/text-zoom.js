@@ -2,6 +2,7 @@ import { utils } from '../../constants';
 import config from '../config';
 
 export const createClone = (msg) => {
+  const { currentPage } = figma;
   const { page, pageType } = msg;
   const { id: pageId } = page;
 
@@ -25,14 +26,56 @@ export const createClone = (msg) => {
   // get all those dimensions
   const { x, width } = pageNode;
   const { annotationWidth } = config;
+  let startX = x + width + annotationWidth;
+
+  // do responsive pages exist?
+  let largestResponsivePage = null;
+  const checkName = (name) => {
+    const check = `${pageNode.name} | Responsive `;
+
+    return name.startsWith(check);
+  };
+
+  // loop through all high level pages and section pages
+  currentPage.children.forEach((topLevel) => {
+    const { name, type } = topLevel;
+    const isResponsive = checkName(name);
+
+    // account for sections
+    if (type === 'SECTION') {
+      // loop through section pages
+      topLevel.children.forEach((sectionPage) => {
+        const isResponsiveSec = checkName(sectionPage.name);
+        if (isResponsiveSec) {
+          if (largestResponsivePage === null) {
+            largestResponsivePage = sectionPage;
+          } else if (largestResponsivePage.x < sectionPage.x) {
+            largestResponsivePage = sectionPage;
+          }
+        }
+      });
+    } else if (isResponsive) {
+      if (largestResponsivePage === null) {
+        largestResponsivePage = topLevel;
+      } else if (largestResponsivePage.x < topLevel.x) {
+        largestResponsivePage = topLevel;
+      }
+    }
+  });
+
+  // if Responsive page exists, get dimensions
+  if (largestResponsivePage !== null) {
+    startX = largestResponsivePage.x + largestResponsivePage.width;
+  }
 
   // are we within a section?
   const withinSection = pageNode.parent.type === 'SECTION';
 
+  const gutterSpace = 124;
+
   // clone selected page
   const clone = pageNode.clone();
-  const gutterSpace = 32;
-  const newX = x + width + annotationWidth + gutterSpace;
+  const newX = startX + gutterSpace;
   clone.name = cloneLayerName;
   clone.x = newX;
   clone.expanded = false;
