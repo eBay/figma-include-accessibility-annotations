@@ -55,7 +55,7 @@ function Landmarks() {
   const [needsLabel, setNeedsLabel] = React.useState([]);
   const canContinue = needsLabel.length !== Object.keys(labelsTemp).length;
 
-  const [dupNeedLabel, setDupNeedLable] = React.useState([]);
+  const [dupNeedLabel, setDupNeedLabel] = React.useState([]);
   const showDupWarning = dupNeedLabel.length > 0;
 
   const [alwaysNeedLabel, setAlwaysNeedLabel] = React.useState([]);
@@ -179,10 +179,16 @@ function Landmarks() {
       // has duplicate row and no label?
       const noLabel = label === null || label === '';
 
+      // check if temp label exists
+      const tempLabel = labelsTemp[id]?.value || null;
+
       if (typesDupArray.includes(type) && noLabel) {
-        // has duplicate row and no label?
-        rowsDupNeedLabelArray.push(id);
         rowsNeedLabelArray.push(id);
+
+        // do we not have a temp label?
+        if (tempLabel === null) {
+          rowsDupNeedLabelArray.push(id);
+        }
       } else if (landmarksAlwaysNeedLabel.includes(type) && noLabel) {
         // always need a label
         rowsAlwaysNeedLabelArray.push(id);
@@ -193,8 +199,7 @@ function Landmarks() {
     });
 
     setNeedsLabel(rowsNeedLabelArray);
-
-    setDupNeedLable(rowsDupNeedLabelArray);
+    setDupNeedLabel(rowsDupNeedLabelArray);
     setAlwaysNeedLabel(rowsAlwaysNeedLabelArray);
   };
 
@@ -269,6 +274,7 @@ function Landmarks() {
 
   React.useEffect(() => {
     // mount
+    checkForDuplicates();
     checkForLandmarkInLabel();
   }, [labelsTemp]);
 
