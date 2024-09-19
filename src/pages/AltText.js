@@ -42,7 +42,7 @@ function AltText() {
     : `"${selectedImage?.name}" selected`;
   const manualText = hasSelectedImage
     ? selectedText
-    : 'Check for additional images that need annotations (e.g. svg). To add, hold Crtl/Cmd to select an image, then press add image button.';
+    : 'Hold Ctrl/Cmd to select more images for annotations (e.g., icons).';
 
   const flaggedImages = imagesData
     .filter(
