@@ -13,7 +13,7 @@
     "designerCheck": "Headings",
     "path": "headings",
     "shouldHide": true,
-    "percent": 12
+    "percent": 10
   },
   "Reading order": {
     "id": "Reading order",
@@ -45,7 +45,7 @@
     "designerCheck": "Color checked",
     "path": "color-blindness",
     "shouldHide": false,
-    "percent": 10
+    "percent": 8
   },
   "Text zoom": {
     "id": "Text zoom",
@@ -53,7 +53,7 @@
     "designerCheck": "Text resizing documented",
     "path": "text-zoom",
     "shouldHide": false,
-    "percent": 10
+    "percent": 8
   },
   "Responsive reflow": {
     "id": "Responsive reflow",
@@ -61,13 +61,21 @@
     "designerCheck": "Responsive reflow documented",
     "path": "responsive-reflow",
     "shouldHide": false,
-    "percent": 10
+    "percent": 8
   },
   "Touch target": {
     "id": "Touch target",
     "label": "Touch target",
     "designerCheck": "Sufficient click target sizes",
     "path": "touch-target",
+    "shouldHide": true,
+    "percent": 8
+  },
+  "Complex gestures": {
+    "id": "Complex gestures",
+    "label": "Complex gestures",
+    "designerCheck": "Complex gestures documented",
+    "path": "complex-gestures",
     "shouldHide": true,
     "percent": 8
   }

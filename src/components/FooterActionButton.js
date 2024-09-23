@@ -14,7 +14,7 @@ function FooterActionButton(props) {
         type="button"
         className={className}
         onClick={onClick}
-        tabIndex="-1"
+        tabIndex="0"
       >
         {children}
       </Link>

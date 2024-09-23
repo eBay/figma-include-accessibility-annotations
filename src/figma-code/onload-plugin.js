@@ -13,8 +13,11 @@ export const preload = async () => {
 const isA11yLayer = (children, childNode, name) => {
   const { children: frameChildren } = childNode;
   const a11yCompletedLayers = [];
-  const imagesScannedArray = [];
   const stepsData = {};
+
+  // alt text images
+  const imagesScannedArray = [];
+  const imagesManualArray = [];
 
   // grab layer type (web or native)
   const a11yLayerType = utils.checkTypeOfA11yLayer(childNode.name);
@@ -183,19 +186,42 @@ const isA11yLayer = (children, childNode, name) => {
           if (nodeAltText !== null) {
             // get fills
             const { fills } = nodeAltText;
+            let imageFill;
 
-            // get the first fill that is an image type
-            const [imageFill] = fills.filter((fill) => fill.type === 'IMAGE');
+            // groups can not have fills set
+            if (fills !== undefined) {
+              // get the first fill that is an image type
+              const fillsFilter = fills.filter((fill) => fill.type === 'IMAGE');
+              imageFill = fillsFilter.length > 0 ? fillsFilter[0] : undefined;
+            }
 
             // prevent memory leak (if not found, don't add)
             if (typeof imageFill === 'object') {
               const { imageHash } = imageFill;
 
               imagesScannedArray.push({
+                altText: altTextString,
                 hash: imageHash,
                 bounds: nodeAltText.absoluteRenderBounds,
                 id,
-                name: nameString
+                name: nameString,
+                displayType: 'scanned'
+              });
+
+              altTextArray.push({
+                id,
+                altText: altTextString,
+                bounds: nodeAltText.absoluteRenderBounds,
+                name: nameString,
+                type
+              });
+            } else {
+              imagesManualArray.push({
+                altText: altTextString,
+                bounds: nodeAltText.absoluteRenderBounds,
+                id,
+                name: nameString,
+                displayType: 'manual'
               });
 
               altTextArray.push({
@@ -348,7 +374,8 @@ const isA11yLayer = (children, childNode, name) => {
       name
     },
     pageId: originalPage.id,
-    imagesScanned: imagesScannedArray
+    imagesScanned: imagesScannedArray,
+    imagesManual: imagesManualArray
   };
 };
 
@@ -504,6 +531,10 @@ export const getUserPreferences = async () => {
   const newFeaturesIntro =
     prefNewFeaturesInfo === undefined ? [] : JSON.parse(prefNewFeaturesInfo);
 
+  // check for tip expanded preference
+  const prefTipExpanded = await getAsync('prefTipExpanded');
+  const tipExpanded = prefTipExpanded === undefined ? true : prefTipExpanded;
+
   // reset for development testing
   // const { deleteAsync } = figma.clientStorage;
   // await deleteAsync('prefBreakpoints');
@@ -514,7 +545,8 @@ export const getUserPreferences = async () => {
     data: {
       breakpoints,
       newFeaturesIntro,
-      prefCondensedUI: condensedUI
+      prefCondensedUI: condensedUI,
+      prefTipExpanded: tipExpanded
     }
   });
 };

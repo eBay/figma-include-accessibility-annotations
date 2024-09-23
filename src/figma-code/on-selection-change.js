@@ -1,13 +1,48 @@
 import config from './config';
 import headingTypes from '../data/heading-types';
 
-export default (pageSelected, listenForHeadings, defaultHeadingType) => {
+export default (
+  pageSelected,
+  listenForHeadings,
+  defaultHeadingType,
+  listenForAltText
+) => {
   const { selection } = figma.currentPage;
   const selectionLength = selection.length;
 
   // default message type and data returned
   let msgResponseType = 'selection-change';
   let data = {};
+
+  // alt text image processing
+  async function processImageAsync() {
+    if (selection.length === 1) {
+      const selectedNode = selection[0];
+      const { absoluteRenderBounds, id, name } = selectedNode;
+      const EXPORT_SETTINGS = {
+        format: 'PNG',
+        contentsOnly: false,
+        constraint: {
+          type: 'SCALE',
+          value: 1
+        }
+      };
+
+      const imageBuffer = await selectedNode.exportAsync(EXPORT_SETTINGS);
+
+      return {
+        altText: name,
+        id,
+        name,
+        bounds: absoluteRenderBounds,
+        imageBuffer,
+        displayType: 'manual',
+        type: 'decorative'
+      };
+    }
+
+    return null;
+  }
 
   // is the user starting the accessibility flow with select a frame?
   if (!pageSelected && selectionLength === 0) {
@@ -98,6 +133,16 @@ export default (pageSelected, listenForHeadings, defaultHeadingType) => {
         data = { selected: response };
       }
     }
+  } else if (listenForAltText === true) {
+    // process image for alt text
+    processImageAsync(selection).then((selected) => {
+      figma.ui.postMessage({
+        data: { selected },
+        type: 'alt-text-image-selected'
+      });
+    });
+
+    return null;
   } else {
     // not a case for yet
     // console.log('Selection change detected');
@@ -108,4 +153,6 @@ export default (pageSelected, listenForHeadings, defaultHeadingType) => {
     type: msgResponseType,
     data
   });
+
+  return true;
 };

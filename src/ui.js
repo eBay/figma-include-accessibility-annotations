@@ -99,11 +99,17 @@ function App() {
       for (let i = 0; i < routeKeysArray.length; i += 1) {
         const key = routeKeysArray[i];
         const { path, shouldHide } = routeData[key];
+        let forceHide = false;
+
+        // now that we can select images to manually add, we need to force hide
+        if (path === 'alt-text' && stepsData[key] !== undefined) {
+          forceHide = true;
+        }
 
         // should hide flag is true and step data exists
         if (shouldHide === true && stepsDataKeysArray.includes(key)) {
-          // if not current path, hide layer
-          if (currentPath !== path) {
+          // if not current path, hide layer + force hide override
+          if (currentPath !== path || forceHide === true) {
             layerIdsToHide.push(stepsData[key].id);
           } else {
             layerIdsToShow.push(stepsData[key].id);
@@ -201,6 +207,7 @@ function App() {
                   element={<ResponsiveReflow />}
                 />
                 <Route path="color-blindness" element={<ColorBlindness />} />
+                <Route path="complex-gestures" element={<ComplexGestures />} />
               </React.Fragment>
             )}
 

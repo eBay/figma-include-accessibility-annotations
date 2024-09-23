@@ -1,6 +1,6 @@
 {
   "name": "figma-include-accessibility-annotations",
-  "version": "12",
+  "version": "14",
   "description": "Include is a tool built to make annotating for accessibility (a11y) easier",
   "main": "code.js",
   "scripts": {
@@ -64,11 +64,11 @@
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.24.1"
   },
-  "engines": {
-    "node": ">=18.18.2"
-  },
   "prettier": {
     "singleQuote": true,
     "trailingComma": "none"
+  },
+  "engines": {
+    "node": ">=18.18.2"
   }
 }

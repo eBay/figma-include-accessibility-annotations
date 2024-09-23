@@ -1,4 +1,5 @@
 import { createTransparentFrame } from './figma-layer';
+import config from '../figma-code/config';
 
 /**
  * Utility functions for working with Figma frames and strings
@@ -109,11 +110,21 @@ const frameExistsOrCreate = (parentFrameId, layerName, page) => {
   // if frame doesn't exist
   if (accessExists === null) {
     const parentNode = figma.getNodeById(parentFrameId);
+    let pageParams = page;
+
+    // case for type section as parent and not root
+    if (parentNode.type === 'SECTION') {
+      pageParams = {
+        ...page,
+        x: page.x - parentNode.x,
+        y: page.y - parentNode.y
+      };
+    }
 
     // create the frame
     frame = createTransparentFrame({
       name: layerName,
-      ...page // optional: x, y, height, width
+      ...pageParams // optional: x, y, height, width
     });
 
     // add to top level Frame or Section
@@ -254,27 +265,107 @@ export const scrollToBottomOfAnnotationStep = () => {
  *
  * @return {array} newImagesScanned - array of images with base64 data
  */
-const getBase64FromHash = async (imagesScanned) => {
+const getBase64FromHash = async (imagesScanned, imagesManual, page) => {
+  const { currentPage } = figma;
+
+  // get a11y annotation page
+  const originalPage = figma.getNodeById(page.id);
+  let a11yPage = null;
+  const checkName = (name) => {
+    const check = `${originalPage.name} ${config.a11ySuffix}`;
+
+    return name.startsWith(check);
+  };
+
+  // loop through all high level pages and section pages
+  currentPage.children.forEach((topLevel) => {
+    const { name, type } = topLevel;
+    // account for sections
+    if (type === 'SECTION') {
+      // loop through section pages
+      topLevel.children.forEach((sectionPage) => {
+        if (checkName(sectionPage.name)) {
+          a11yPage = sectionPage;
+        }
+      });
+    } else if (checkName(name)) {
+      a11yPage = topLevel;
+    }
+  });
+
+  // hide if exists
+  if (a11yPage !== null) {
+    a11yPage.visible = false;
+  }
+
+  // set new images array
+  const newImagesManual = [];
   const newImagesScanned = [];
 
+  // get base64 from hash
   await Promise.all(
     imagesScanned.map(async (image) => {
-      const { id, bounds, hash, name } = image;
+      const { altText, id, bounds, hash, name } = image;
+
       // get image data by hash
       const imageData = figma.getImageByHash(hash);
       const bytes = await imageData.getBytesAsync();
+      const type = name === altText ? 'decorative' : 'informative';
 
       // remap and remove `data` key
       newImagesScanned.push({
+        altText,
         id,
         base64: figma.base64Encode(bytes),
         bounds,
-        name
+        name,
+        displayType: 'scanned',
+        type
       });
     })
   );
 
-  return newImagesScanned;
+  // get imageBuffer for manual images
+  await Promise.all(
+    imagesManual.map(async (image) => {
+      const { altText, id, bounds, name } = image;
+      const manualImageNode = figma.getNodeById(id);
+      const type = name === altText ? 'decorative' : 'informative';
+
+      // prevent memory leak
+      if (manualImageNode !== null) {
+        const EXPORT_SETTINGS = {
+          format: 'PNG',
+          contentsOnly: false,
+          constraint: {
+            type: 'SCALE',
+            value: 1
+          }
+        };
+        const imageBuffer = await manualImageNode.exportAsync(EXPORT_SETTINGS);
+
+        newImagesManual.push({
+          altText,
+          id,
+          name,
+          bounds,
+          imageBuffer,
+          displayType: 'manual',
+          type
+        });
+      }
+    })
+  );
+
+  // make visible again, if exists
+  if (a11yPage !== null) {
+    a11yPage.visible = true;
+  }
+
+  return {
+    scanned: newImagesScanned,
+    manual: newImagesManual
+  };
 };
 
 export default {

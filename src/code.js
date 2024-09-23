@@ -37,6 +37,9 @@ let currentPageID = null;
 let listenForHeadings = false;
 let defaultHeadingType = 2;
 
+// selection for alt text listener
+let listenForAltText = false;
+
 // clear console every time plugin opens
 // eslint-disable-next-line no-console
 console.clear();
@@ -75,7 +78,12 @@ figma.once('run', async () => {
  * https://www.figma.com/plugin-docs/api/properties/figma-on/#selectionchange
  **************************************************************************** */
 figma.on('selectionchange', () => {
-  onSelectionChange(pageSelected, listenForHeadings, defaultHeadingType);
+  onSelectionChange(
+    pageSelected,
+    listenForHeadings,
+    defaultHeadingType,
+    listenForAltText
+  );
 });
 
 /* *****************************************************************************
@@ -178,14 +186,35 @@ figma.ui.onmessage = async (msg) => {
     step.altText.add(msg);
   }
 
+  // set listening flag for alt text
+  if (type === 'alt-text-listening-flag') {
+    const { listen } = msg;
+
+    listenForAltText = listen;
+  }
+
+  // add image manually (alt text)
+  if (type === 'add-image-manually') {
+    step.altText.addImageManually(msg);
+  }
+
   // get base64 of image hash
   if (type === 'get-base64') {
-    const newImagesScanned = await utils.getBase64FromHash(msg.imagesScanned);
+    const { imagesManual, imagesScanned, page } = msg;
+
+    const newImages = await utils.getBase64FromHash(
+      imagesScanned,
+      imagesManual,
+      page
+    );
+
+    // combine new images (manual and scanned)
+    const combinedImages = [...newImages.scanned, ...newImages.manual];
 
     figma.ui.postMessage({
       type: 'base64-response',
       data: {
-        newImagesScanned
+        newImagesScanned: combinedImages
       }
     });
   }
@@ -377,6 +406,15 @@ figma.ui.onmessage = async (msg) => {
 
       return null;
     });
+  }
+
+  // set tip expanded preference
+  if (type === 'set-tip-preference') {
+    const { expanded } = msg;
+
+    // set user preference for tip expanded
+    const { setAsync } = figma.clientStorage;
+    await setAsync('prefTipExpanded', expanded);
   }
 
   // resize plugin

@@ -4,7 +4,8 @@
   color: var(--foreground-on-warning);
   font-size: 11px;
   line-height: 15px;
-  padding: var(--spacing-xs) var(--spacing-sm) var(--spacing-xs) var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-md) var(--spacing-xs) var(--spacing-xs);
+  position: relative;
 }
 
 .tip-label {
@@ -12,6 +13,28 @@
   font-weight: bold;
   margin-right: var(--spacing-xs);
   text-transform: uppercase;
+}
+
+.tip-text-collapsed {
+  max-height: 16px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tip-toggle {
+  cursor: pointer;
+  position: absolute!important;
+  right: 8px;
+  top: 8px;
+  
+  & .rotate-left-rev {
+    transform: rotate(-180deg)
+  }
+
+  & .rotate-right-rev {
+    transform: rotate(0deg)
+  }
 }
 
 .tip-link {

@@ -83,10 +83,13 @@ export const imageScan = async (msg) => {
 
       return {
         // https://www.figma.com/plugin-docs/api/figma/#base64encode
+        altText: name,
         base64: figma.base64Encode(bytes),
         bounds: absoluteRenderBounds,
         id,
-        name
+        name,
+        displayType: 'scanned',
+        type: 'decorative'
       };
     })
   );
@@ -154,6 +157,11 @@ export const imageScan = async (msg) => {
   figma.notify(`${imagesData.length} image${addS} found!`, {
     timeout: config.notifyTime
   });
+};
+
+export const addImageManually = async () => {
+  // reset selection on add
+  figma.currentPage.selection = [];
 };
 
 const createAltTextAnnotationInfoFrame = ({ roleType, altText }) => {
@@ -423,4 +431,4 @@ export const add = (msg) => {
   });
 };
 
-export default { imageScan, add };
+export default { imageScan, addImageManually, add };

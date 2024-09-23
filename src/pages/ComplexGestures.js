@@ -207,10 +207,11 @@ function ComplexGestures() {
         {gesturesAreSet && (
           <React.Fragment>
             <HeadingStep
-              number={3}
+              number={1}
               style={{ marginBottom: 8 }}
               text="Describe the action for the alternative affordance"
             />
+
             {showWarning && (
               <React.Fragment>
                 <Alert
@@ -222,6 +223,7 @@ function ComplexGestures() {
                 <div className="spacer1" />
               </React.Fragment>
             )}
+
             <div style={{ marginTop: showWarning ? 0 : -8 }}>
               {gesturesArray.map((key) => {
                 const { id, label, type } = gestures[key];
@@ -284,7 +286,7 @@ function ComplexGestures() {
 
         <React.Fragment>
           <HeadingStep
-            number={1}
+            number={gesturesAreSet ? 2 : 1}
             text="Select a gesture that needs an alternative affordance."
           />
           {!gesturesAreSet && (
@@ -300,6 +302,13 @@ function ComplexGestures() {
             <div className="button-group">
               {gestureTypesArray.map((type) => {
                 const { label, icon } = gestureTypesObj[type];
+
+                // legacy handling:
+                // allow for multi-finger tap to still exist in old annotations,
+                // but no longer allow user to add to new annotations
+                if (type === 'multi-finger') {
+                  return null;
+                }
 
                 // handle non-interactive state
                 // rectangle has already been created, lock in the gesture selection until step is completed)
@@ -330,7 +339,7 @@ function ComplexGestures() {
 
         {selected && (
           <HeadingStep
-            number={2}
+            number={gesturesAreSet ? 3 : 2}
             text={`Place the overlay on the onscreen elements that enable users to perform the ${selected.replace(
               /-/g,
               ' '

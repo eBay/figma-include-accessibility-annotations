@@ -54,6 +54,20 @@
   animation-name: rotate-left;
 }
 
+@keyframes rotate-left-rev {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(180deg);
+  }
+}
+
+.rotate-left-rev {
+  animation-name: rotate-left-rev;
+}
+
 @keyframes rotate-right {
   0% {
     transform: rotate(-180deg);
@@ -66,6 +80,20 @@
 
 .rotate-right {
   animation-name: rotate-right;
+}
+
+@keyframes rotate-right-rev {
+  0% {
+    transform: rotate(180deg);
+  }
+
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+.rotate-right-rev {
+  animation-name: rotate-right-rev;
 }
 
 // fade in

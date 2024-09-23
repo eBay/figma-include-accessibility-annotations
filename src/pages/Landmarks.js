@@ -55,7 +55,7 @@ function Landmarks() {
   const [needsLabel, setNeedsLabel] = React.useState([]);
   const canContinue = needsLabel.length !== Object.keys(labelsTemp).length;
 
-  const [dupNeedLabel, setDupNeedLable] = React.useState([]);
+  const [dupNeedLabel, setDupNeedLabel] = React.useState([]);
   const showDupWarning = dupNeedLabel.length > 0;
 
   const [alwaysNeedLabel, setAlwaysNeedLabel] = React.useState([]);
@@ -63,6 +63,9 @@ function Landmarks() {
 
   const [hasLandmarkWord, setHasLandmarkWord] = React.useState([]);
   const showLandmarkWordWarning = hasLandmarkWord.length > 0;
+
+  const [hasSameLabel, setHasSameLabel] = React.useState([]);
+  const showSameLabelWarning = hasSameLabel.length > 0;
 
   const onAddLandmark = (landmarkType) => {
     const { bounds, id } = page;
@@ -179,10 +182,16 @@ function Landmarks() {
       // has duplicate row and no label?
       const noLabel = label === null || label === '';
 
+      // check if temp label exists
+      const tempLabel = labelsTemp[id]?.value || null;
+
       if (typesDupArray.includes(type) && noLabel) {
-        // has duplicate row and no label?
-        rowsDupNeedLabelArray.push(id);
         rowsNeedLabelArray.push(id);
+
+        // do we not have a temp label?
+        if (tempLabel === null) {
+          rowsDupNeedLabelArray.push(id);
+        }
       } else if (landmarksAlwaysNeedLabel.includes(type) && noLabel) {
         // always need a label
         rowsAlwaysNeedLabelArray.push(id);
@@ -193,8 +202,7 @@ function Landmarks() {
     });
 
     setNeedsLabel(rowsNeedLabelArray);
-
-    setDupNeedLable(rowsDupNeedLabelArray);
+    setDupNeedLabel(rowsDupNeedLabelArray);
     setAlwaysNeedLabel(rowsAlwaysNeedLabelArray);
   };
 
@@ -233,6 +241,52 @@ function Landmarks() {
     setHasLandmarkWord(hasLandmarkInLabel);
   };
 
+  const findDuplicateKeys = (jsonObject) => {
+    const valueToKeys = {};
+    const duplicateKeys = [];
+
+    // map values to their corresponding keys
+    Object.keys(jsonObject).forEach((key) => {
+      const value = jsonObject[key].toLowerCase();
+
+      if (valueToKeys[value]) {
+        valueToKeys[value].push(key);
+      } else {
+        valueToKeys[value] = [key];
+      }
+    });
+
+    // find keys with duplicate values
+    Object.values(valueToKeys).forEach((keys) => {
+      if (keys.length > 1) {
+        duplicateKeys.push(...keys);
+      }
+    });
+
+    return duplicateKeys;
+  };
+
+  const checkForSameLabel = () => {
+    const labelsUsed = {};
+
+    Object.values(landmarks).forEach((row) => {
+      const { id, label } = row;
+
+      // first check if temp label exists
+      if (labelsTemp[id]?.value) {
+        labelsUsed[id] = labelsTemp[id].value;
+      } else if (label !== null) {
+        // label exists
+        labelsUsed[id] = label;
+      }
+    });
+
+    // check for duplicates
+    const duplicates = findDuplicateKeys(labelsUsed);
+
+    setHasSameLabel(duplicates);
+  };
+
   const onChange = (e, id) => {
     const newLabelsTemp = { ...labelsTemp };
 
@@ -265,11 +319,14 @@ function Landmarks() {
     // mount
     checkForDuplicates();
     checkForMaxUsage();
+    checkForSameLabel();
   }, [landmarks]);
 
   React.useEffect(() => {
     // mount
+    checkForDuplicates();
     checkForLandmarkInLabel();
+    checkForSameLabel();
   }, [labelsTemp]);
 
   const getPrimaryAction = () => {
@@ -277,7 +334,10 @@ function Landmarks() {
       return {
         completesStep: true,
         isDisabled:
-          (showDupWarning || showAlwaysNeedLabel || showLandmarkWordWarning) &&
+          (showDupWarning ||
+            showAlwaysNeedLabel ||
+            showLandmarkWordWarning ||
+            showSameLabelWarning) &&
           canContinue === false,
         onClick: onDoneWithLandmarks
       };
@@ -334,6 +394,18 @@ function Landmarks() {
           </React.Fragment>
         )}
 
+        {showSameLabelWarning && (
+          <React.Fragment>
+            <Alert
+              icon={<SvgWarning />}
+              style={{ padding: 0 }}
+              text="Labels must be unique."
+              type="warning"
+            />
+            <div className="spacer1" />
+          </React.Fragment>
+        )}
+
         {landmarksAreSet && (
           <React.Fragment>
             {landmarksArray.map((key) => {
@@ -347,7 +419,8 @@ function Landmarks() {
               // is flagged for not having label (or can't have "Landmark" in the label)
               const warnClass =
                 (needsLabel.includes(id) && hasTempLabel === null) ||
-                hasLandmarkWord.includes(id)
+                hasLandmarkWord.includes(id) ||
+                hasSameLabel.includes(id)
                   ? ' warning'
                   : '';
 
