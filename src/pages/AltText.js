@@ -114,12 +114,13 @@ function AltText() {
       // map new images scanned to array of objects for alt text, etc.
       const newImagesData = imagesScanned.map((image) => {
         const { altText, id, name, bounds, type } = image;
+        const existingData = imagesData.find((img) => img.id === id);
 
         return {
           id,
           name,
-          altText,
-          type,
+          altText: existingData ? existingData.altText : altText,
+          type: existingData ? existingData.type : type,
           bounds
         };
       });
