@@ -26,7 +26,7 @@ function AltTextRow(props) {
   const { id, altText, name, type } = image;
 
   // on functions
-  const { onChange, onFocus, onOpen, onSelect } = props;
+  const { onChange, onFocus, onOpen, onSelect, onRemove } = props;
 
   const canEdit = type === 'informative';
 
@@ -41,7 +41,7 @@ function AltTextRow(props) {
         role="button"
         tabIndex="0"
       >
-        {displayType === 'scanned' && (
+        {displayType === "scanned" && (
           <img
             alt={name}
             className="image-preview"
@@ -49,7 +49,7 @@ function AltTextRow(props) {
           />
         )}
 
-        {displayType === 'manual' && (
+        {displayType === "manual" && (
           <div
             alt={name}
             className="image-preview-blob"
@@ -85,13 +85,26 @@ function AltTextRow(props) {
         onSelect={onSelect}
         type={type}
       />
+
+      <div
+        aria-label="remove alt text"
+        className="btn-remove"
+        onClick={onRemove}
+        onKeyDown={(e) => {
+          if (utils.isEnterKey(e.key)) onRemove();
+        }}
+        role="button"
+        tabIndex="0"
+      >
+        <div className="remove-dash" />
+      </div>
     </div>
   );
 }
 
 AltTextRow.propTypes = {
   // required
-  displayType: PropTypes.oneOf(['manual', 'scanned']).isRequired,
+  displayType: PropTypes.oneOf(["manual", "scanned"]).isRequired,
   image: PropTypes.shape({
     id: PropTypes.string.isRequired,
     altText: PropTypes.string.isRequired,

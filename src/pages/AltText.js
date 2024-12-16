@@ -310,6 +310,9 @@ function AltText() {
                     }}
                     onOpen={setOpenedDropdown}
                     onSelect={onTypeSelect}
+                    onRemove={(e) => {
+                      console.log("Click me!")
+                    }}
                     warnClass={warnClass}
                   />
                 );
