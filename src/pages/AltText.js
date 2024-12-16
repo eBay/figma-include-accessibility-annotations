@@ -68,6 +68,17 @@ function AltText() {
     updateState('imagesData', newImagesData);
   };
 
+  const onRemove = (index) => {
+    const newImagesData = [...imagesData];
+    const newImagesScanned = [...imagesScanned];
+
+    newImagesData.splice(index, 1);
+    newImagesScanned.splice(index, 1);
+
+    updateState('imagesData', newImagesData);
+    updateState('imagesScanned', newImagesScanned);
+  };
+
   const createAltTextOverlay = () => {
     // issues with alt text?
     if (flaggedImages.length > 0) {
@@ -310,9 +321,7 @@ function AltText() {
                     }}
                     onOpen={setOpenedDropdown}
                     onSelect={onTypeSelect}
-                    onRemove={(e) => {
-                      console.log("Click me!")
-                    }}
+                    onRemove={() => onRemove(index)}
                     warnClass={warnClass}
                   />
                 );

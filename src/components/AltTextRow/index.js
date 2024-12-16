@@ -117,6 +117,7 @@ AltTextRow.propTypes = {
   onFocus: PropTypes.func.isRequired,
   onOpen: PropTypes.func.isRequired,
   onSelect: PropTypes.func.isRequired,
+  onRemove: PropTypes.func.isRequired,
 
   // optional
   base64: PropTypes.string,
