@@ -28,7 +28,7 @@
     "label": "Alternative text",
     "designerCheck": "Alternative text",
     "path": "alt-text",
-    "shouldHide": true,
+    "shouldHide": false,
     "percent": 20
   },
   "Contrast": {
