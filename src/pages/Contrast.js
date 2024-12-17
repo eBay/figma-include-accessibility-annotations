@@ -365,6 +365,8 @@ function Contrast() {
                 <ContrastScreenshot report={contrastResults} />
               </React.Fragment>
             )}
+
+            <div className="spacer4" />
           </React.Fragment>
         )}
 
