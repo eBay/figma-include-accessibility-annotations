@@ -41,7 +41,7 @@ function AltTextRow(props) {
         role="button"
         tabIndex="0"
       >
-        {displayType === "scanned" && (
+        {displayType === 'scanned' && (
           <img
             alt={name}
             className="image-preview"
@@ -49,7 +49,7 @@ function AltTextRow(props) {
           />
         )}
 
-        {displayType === "manual" && (
+        {displayType === 'manual' && (
           <div
             alt={name}
             className="image-preview-blob"
@@ -104,7 +104,7 @@ function AltTextRow(props) {
 
 AltTextRow.propTypes = {
   // required
-  displayType: PropTypes.oneOf(["manual", "scanned"]).isRequired,
+  displayType: PropTypes.oneOf(['manual', 'scanned']).isRequired,
   image: PropTypes.shape({
     id: PropTypes.string.isRequired,
     altText: PropTypes.string.isRequired,
