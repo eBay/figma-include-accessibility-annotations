@@ -129,6 +129,7 @@ export const imageScan = async (msg) => {
     altTextFrame.name = `${altTextLayerName} | ${altTextFrame.id}`;
     altTextFrame.expanded = false;
     altTextFrame.visible = false;
+    altTextFrame.locked = true;
 
     // create the "no images" layer
     const layerName = 'No Images';
@@ -292,6 +293,7 @@ export const add = (msg) => {
   // update with id (for future scanning)
   altTextFrame.name = `${altTextLayerName} | ${altTextFrame.id}`;
   altTextFrame.expanded = false;
+  altTextFrame.locked = true;
 
   // loop through images with alt text and add image overlays to Figma Document
   for (let i = 0; i < images.length; i += 1) {
