@@ -26,7 +26,7 @@ function AltTextRow(props) {
   const { id, altText, name, type } = image;
 
   // on functions
-  const { onChange, onFocus, onOpen, onSelect } = props;
+  const { onChange, onFocus, onOpen, onSelect, onRemove } = props;
 
   const canEdit = type === 'informative';
 
@@ -85,6 +85,19 @@ function AltTextRow(props) {
         onSelect={onSelect}
         type={type}
       />
+
+      <div
+        aria-label="remove alt text"
+        className="btn-remove"
+        onClick={onRemove}
+        onKeyDown={(e) => {
+          if (utils.isEnterKey(e.key)) onRemove();
+        }}
+        role="button"
+        tabIndex="0"
+      >
+        <div className="remove-dash" />
+      </div>
     </div>
   );
 }
@@ -104,6 +117,7 @@ AltTextRow.propTypes = {
   onFocus: PropTypes.func.isRequired,
   onOpen: PropTypes.func.isRequired,
   onSelect: PropTypes.func.isRequired,
+  onRemove: PropTypes.func.isRequired,
 
   // optional
   base64: PropTypes.string,

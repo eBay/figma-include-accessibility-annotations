@@ -47,3 +47,12 @@
   min-width: 48px;
   width: 48px;
 }
+
+.input {
+  flex-grow: 1;
+}
+
+.input-na {
+  flex-grow: 1;
+  padding-left: 8px;
+}
