@@ -37,9 +37,9 @@ const capitalize = (string) =>
  *
  * @return {(null|string)} if found returns id of layer OR returns null
  */
-const checkIfChildNameExists = (nodeId, layerName, withPipe = true) => {
+const checkIfChildNameExists = async (nodeId, layerName, withPipe = true) => {
   // get parent node, then grab children
-  const parentNode = figma.getNodeById(nodeId);
+  const parentNode = await figma.getNodeByIdAsync(nodeId);
   const { children } = parentNode;
 
   // search on names with pipe or not
@@ -101,15 +101,24 @@ const checkTypeOfA11yLayer = (layerName) => {
  *
  * @return {object} Figma frame
  */
-const frameExistsOrCreate = (parentFrameId, layerName, page) => {
+const frameExistsOrCreate = async (
+  parentFrameId,
+  layerName,
+  page,
+  withPipe = true
+) => {
   // does frame already exist?
-  const accessExists = checkIfChildNameExists(parentFrameId, layerName);
+  const accessExists = await checkIfChildNameExists(
+    parentFrameId,
+    layerName,
+    withPipe
+  );
 
   let frame = null;
 
   // if frame doesn't exist
   if (accessExists === null) {
-    const parentNode = figma.getNodeById(parentFrameId);
+    const parentNode = await figma.getNodeByIdAsync(parentFrameId);
     let pageParams = page;
 
     // case for type section as parent and not root
@@ -131,7 +140,7 @@ const frameExistsOrCreate = (parentFrameId, layerName, page) => {
     parentNode.appendChild(frame);
   } else {
     // already exists, grab by Node ID
-    frame = figma.getNodeById(accessExists);
+    frame = await figma.getNodeByIdAsync(accessExists);
   }
 
   // collapsed frame
@@ -212,27 +221,21 @@ const showAllLayers = (a11ySuffix) => {
   // check if this page has children layers
   if (children.length > 0) {
     // loop through frames, find accessibility layers
-    children.map((node) => {
+    children.forEach((node) => {
       // is accessibility layer?
       if (node.name.includes(a11ySuffix)) {
         const { children: a11ySteps } = node;
         // show main a11y layer
-        const mainA11yLayer = figma.getNodeById(node.id);
-        mainA11yLayer.visible = true;
+        node.visible = true;
 
         // do we have a11y step layers?
         if (a11ySteps.length > 0) {
           // loop through step layers
-          a11ySteps.map((childNode) => {
-            const innerLayer = figma.getNodeById(childNode.id);
-            innerLayer.visible = true;
-
-            return null;
+          a11ySteps.forEach((childNode) => {
+            childNode.visible = true;
           });
         }
       }
-
-      return null;
     });
   }
 };
@@ -269,7 +272,7 @@ const getBase64FromHash = async (imagesScanned, imagesManual, page) => {
   const { currentPage } = figma;
 
   // get a11y annotation page
-  const originalPage = figma.getNodeById(page.id);
+  const originalPage = await figma.getNodeByIdAsync(page.id);
   let a11yPage = null;
   const checkName = (name) => {
     const check = `${originalPage.name} ${config.a11ySuffix}`;
@@ -329,7 +332,7 @@ const getBase64FromHash = async (imagesScanned, imagesManual, page) => {
   await Promise.all(
     imagesManual.map(async (image) => {
       const { altText, id, bounds, name } = image;
-      const manualImageNode = figma.getNodeById(id);
+      const manualImageNode = await figma.getNodeByIdAsync(id);
       const type = name === altText ? 'decorative' : 'informative';
 
       // prevent memory leak

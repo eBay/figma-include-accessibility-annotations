@@ -114,7 +114,7 @@ async function createDesignerCheckMarkIndicator({ completed }) {
   return checkMarkFrame;
 }
 
-function createDesignerCheckMarkRow({ name, id, completed }) {
+async function createDesignerCheckMarkRow({ name, id, completed }) {
   const checkMarkFrame = createTransparentFrame({
     name: id,
     width: 1,
@@ -126,7 +126,7 @@ function createDesignerCheckMarkRow({ name, id, completed }) {
   checkMarkFrame.counterAxisSizingMode = 'AUTO';
   checkMarkFrame.counterAxisAlignItems = 'CENTER';
 
-  const checkMark = createDesignerCheckMarkIndicator({ completed });
+  const checkMark = await createDesignerCheckMarkIndicator({ completed });
   checkMarkFrame.appendChild(checkMark);
 
   const titleNode = createDesignerCheckMarkTitle({ id, name });
@@ -150,7 +150,7 @@ function getStepDataForPage({ pageType, steps, stepsNative }) {
   return stepsData.map((step) => routeData[step]);
 }
 
-function createDesignerChecksFrame({
+async function createDesignerChecksFrame({
   pageType,
   steps,
   stepsNative,
@@ -170,23 +170,25 @@ function createDesignerChecksFrame({
 
   // for each step, add a check box to indicate completion
   const stepsForPage = getStepDataForPage({ pageType, steps, stepsNative });
-  stepsForPage.forEach((step) => {
-    const checkMarkFrame = createDesignerCheckMarkRow({
-      id: step.id,
-      name: step.designerCheck,
-      completed: stepsCompleted.includes(step.id)
-    });
+  await Promise.all(
+    stepsForPage.map(async (step) => {
+      const checkMarkFrame = await createDesignerCheckMarkRow({
+        id: step.id,
+        name: step.designerCheck,
+        completed: stepsCompleted.includes(step.id)
+      });
 
-    // have layer collapsed on creation
-    checkMarkFrame.expanded = false;
+      // have layer collapsed on creation
+      checkMarkFrame.expanded = false;
 
-    designerChecksAnnotation.appendChild(checkMarkFrame);
-  });
+      designerChecksAnnotation.appendChild(checkMarkFrame);
+    })
+  );
 
   return designerChecksAnnotation;
 }
 
-function createOrUpdateDesignerChecksFrame({
+async function createOrUpdateDesignerChecksFrame({
   pageType,
   page,
   steps,
@@ -194,13 +196,13 @@ function createOrUpdateDesignerChecksFrame({
   stepsCompleted
 }) {
   if (page) {
-    const mainA11yLayer = getOrCreateMainA11yFrame({ page, pageType });
-    const mainAnnotationsFrame = getOrCreateMainAnnotationsFrame({
+    const mainA11yLayer = await getOrCreateMainA11yFrame({ page, pageType });
+    const mainAnnotationsFrame = await getOrCreateMainAnnotationsFrame({
       mainFrame: mainA11yLayer,
       page
     });
 
-    findAndRemovePreviousAnnotationFrame({
+    await findAndRemovePreviousAnnotationFrame({
       mainAnnotationsFrame,
       layerName: DESIGNER_CHECKS_LAYER_NAME
     });

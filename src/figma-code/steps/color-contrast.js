@@ -4,7 +4,7 @@ import { contrast } from '../../constants';
 export const scan = async (msg) => {
   const { page } = msg;
 
-  const frameNode = figma.getNodeById(page.id);
+  const frameNode = await figma.getNodeByIdAsync(page.id);
   const duplicate = frameNode.clone();
   const nodeIdMap = contrast.mapNodeIds(frameNode, duplicate);
 

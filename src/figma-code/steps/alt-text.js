@@ -16,7 +16,7 @@ export const imageScan = async (msg) => {
   const { id: selectedNodeId, page, pageType } = msg;
 
   // https://www.figma.com/plugin-docs/accessing-document/#traversing-all-nodes-in-the-page
-  const nodeWrapper = figma.getNodeById(selectedNodeId);
+  const nodeWrapper = await figma.getNodeByIdAsync(selectedNodeId);
 
   // find images in selected node/page
   const imageNodes = nodeWrapper.findAll((node) => {
@@ -103,17 +103,17 @@ export const imageScan = async (msg) => {
     const altTextLayerName = 'Alt text Layer';
 
     // get main A11y frame if it exists (or create it)
-    const mainFrame = getOrCreateMainA11yFrame({ page, pageType });
+    const mainFrame = await getOrCreateMainA11yFrame({ page, pageType });
 
     // does Alt text exists already?
-    const altTextExists = utils.checkIfChildNameExists(
+    const altTextExists = await utils.checkIfChildNameExists(
       mainFrame.id,
       altTextLayerName
     );
 
     // if Alt text exist, delete it
     if (altTextExists !== null) {
-      const oldAltTextFrame = figma.getNodeById(altTextExists);
+      const oldAltTextFrame = await figma.getNodeByIdAsync(altTextExists);
       // https://www.figma.com/plugin-docs/api/properties/nodes-remove/
       oldAltTextFrame.remove();
     }
@@ -235,10 +235,11 @@ const createAltTextAnnotationFrame = ({ name }) => {
   // and add the Annotation frame title
   const annotationTitle = createAnnotationFrameTitleText({ title: 'Images' });
   frame.appendChild(annotationTitle);
+
   return frame;
 };
 
-export const add = (msg) => {
+export const add = async (msg) => {
   const { images, page, pageType } = msg;
 
   // colors
@@ -251,11 +252,11 @@ export const add = (msg) => {
   const altTextLayerName = 'Alt text Layer';
   const altTextAnnotationLayerName = 'Alt text Annotations';
 
-  const mainPageNode = figma.getNodeById(page.id);
+  const mainPageNode = await figma.getNodeByIdAsync(page.id);
 
   // get main A11y frame if it exists (or create it)
-  const mainFrame = getOrCreateMainA11yFrame({ page, pageType });
-  const mainAnnotationsFrame = getOrCreateMainAnnotationsFrame({
+  const mainFrame = await getOrCreateMainA11yFrame({ page, pageType });
+  const mainAnnotationsFrame = await getOrCreateMainAnnotationsFrame({
     mainFrame,
     page
   });
@@ -271,14 +272,14 @@ export const add = (msg) => {
   const nodes = [];
 
   // does Alt text exist already?
-  const altTextExists = utils.checkIfChildNameExists(
+  const altTextExists = await utils.checkIfChildNameExists(
     mainFrame.id,
     altTextLayerName
   );
 
   // if Alt text exist, delete it
   if (altTextExists !== null) {
-    const oldAltTextFrame = figma.getNodeById(altTextExists);
+    const oldAltTextFrame = await figma.getNodeByIdAsync(altTextExists);
     // https://www.figma.com/plugin-docs/api/properties/nodes-remove/
     oldAltTextFrame.remove();
   }

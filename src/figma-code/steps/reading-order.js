@@ -2,10 +2,10 @@ import { figmaLayer, utils } from '../../constants';
 import config from '../config';
 import { getOrCreateMainA11yFrame } from '../frame-helpers';
 
-export const addArrow = (msg) => {
+export const addArrow = async (msg) => {
   const { bounds, arrowType, name, pageId, pageType } = msg;
 
-  const mainPageNode = figma.getNodeById(pageId);
+  const mainPageNode = await figma.getNodeByIdAsync(pageId);
 
   // node not found
   if (mainPageNode === null) {
@@ -32,14 +32,18 @@ export const addArrow = (msg) => {
   // get main A11y frame if it exists (or create it)
   const { parent } = mainPageNode;
   const dims = { x, y, height, width };
-  const mainFrame = utils.frameExistsOrCreate(parent.id, mainLayerName, dims);
+  const mainFrame = await utils.frameExistsOrCreate(
+    parent.id,
+    mainLayerName,
+    dims
+  );
   // const mainAnnotationsFrame = getOrCreateMainAnnotationsFrame({
   //   mainFrame,
   //   page
   // });
 
   // does Reading order exists already?
-  const readingOrderFrame = utils.frameExistsOrCreate(
+  const readingOrderFrame = await utils.frameExistsOrCreate(
     mainFrame.id,
     readingOrderLayerName,
     { height, width }
@@ -136,7 +140,7 @@ export const addArrow = (msg) => {
     yStart = lastChild.y + yDiff;
   }
 
-  const arrow = figmaLayer.createArrow({
+  const arrow = await figmaLayer.createArrow({
     arrowType,
     name: arrowName,
     x: xStart,
@@ -158,7 +162,7 @@ export const addArrow = (msg) => {
   });
 };
 
-export const confirm = (msg) => {
+export const confirm = async (msg) => {
   const { page, pageType } = msg;
   const { bounds, mainPageId, name } = page;
 
@@ -167,10 +171,10 @@ export const confirm = (msg) => {
   const readingOrderLayerName = 'Reading order Layer';
 
   // get main A11y frame if it exists (or create it)
-  const mainFrame = getOrCreateMainA11yFrame({ page, pageType });
+  const mainFrame = await getOrCreateMainA11yFrame({ page, pageType });
 
   // does Reading order layer exists already?
-  const readingOrderExists = utils.checkIfChildNameExists(
+  const readingOrderExists = await utils.checkIfChildNameExists(
     mainFrame.id,
     readingOrderLayerName
   );

@@ -2,7 +2,7 @@ import { figmaLayer, utils } from '../../constants';
 // import config from '../config';
 import { getOrCreateMainA11yFrame } from '../frame-helpers';
 
-export const add = (msg) => {
+export const add = async (msg) => {
   const { create, layerName, page, pageType, existingData, stateKey } = msg;
 
   // main data and setup
@@ -12,17 +12,20 @@ export const add = (msg) => {
   const saniName = utils.sanitizeName(name);
 
   // get main A11y frame if it exists (or create it)
-  const mainFrame = getOrCreateMainA11yFrame({ page, pageType });
+  const mainFrame = await getOrCreateMainA11yFrame({ page, pageType });
 
   // does step layer exist already?
-  const layerExists = utils.checkIfChildNameExists(mainFrame.id, layerName);
+  const layerExists = await utils.checkIfChildNameExists(
+    mainFrame.id,
+    layerName
+  );
   let status = 'add';
   let layerId = null;
 
   try {
     // if layer exist and create is false, delete it
     if (layerExists !== null && create === false) {
-      const oldAltTextFrame = figma.getNodeById(layerExists);
+      const oldAltTextFrame = await figma.getNodeByIdAsync(layerExists);
       // https://www.figma.com/plugin-docs/api/properties/nodes-remove/
       oldAltTextFrame.remove();
 

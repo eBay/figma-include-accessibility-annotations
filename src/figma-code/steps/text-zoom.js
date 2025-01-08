@@ -1,17 +1,17 @@
 import { utils } from '../../constants';
 import config from '../config';
 
-export const createClone = (msg) => {
+export const createClone = async (msg) => {
   const { currentPage } = figma;
   const { page, pageType } = msg;
   const { id: pageId } = page;
 
   // get selected page node
-  const pageNode = figma.getNodeById(pageId);
+  const pageNode = await figma.getNodeByIdAsync(pageId);
   const cloneLayerName = `${pageNode.name} Text Zoom`;
 
   // does previous clone exist?
-  const doesExist = utils.checkIfChildNameExists(
+  const doesExist = await utils.checkIfChildNameExists(
     pageNode.parent.id,
     cloneLayerName,
     false
@@ -19,7 +19,7 @@ export const createClone = (msg) => {
 
   // if previous clone frame does exist, delete it
   if (doesExist !== null) {
-    const oldCloneFrame = figma.getNodeById(doesExist);
+    const oldCloneFrame = await figma.getNodeByIdAsync(doesExist);
     oldCloneFrame.remove();
   }
 

@@ -4,9 +4,9 @@ import { getOrCreateMainA11yFrame } from '../frame-helpers';
 
 const touchTargetsLayerName = 'Touch target Layer';
 
-export const add = (msg) => {
+export const add = async (msg) => {
   const { bounds, page, pageId, pageType } = msg;
-  const mainPageNode = figma.getNodeById(pageId);
+  const mainPageNode = await figma.getNodeByIdAsync(pageId);
 
   // node not found
   if (mainPageNode === null) {
@@ -22,10 +22,10 @@ export const add = (msg) => {
   const { height: pageH, width: pageW } = bounds;
 
   // get main A11y frame if it exists (or create it)
-  const mainFrame = getOrCreateMainA11yFrame({ page, pageType });
+  const mainFrame = await getOrCreateMainA11yFrame({ page, pageType });
 
   // does touch targets exists already?
-  const touchTargetsFrame = utils.frameExistsOrCreate(
+  const touchTargetsFrame = await utils.frameExistsOrCreate(
     mainFrame.id,
     touchTargetsLayerName,
     {
@@ -104,12 +104,14 @@ export const add = (msg) => {
   touchTargetsFrame.expanded = false;
 };
 
-export const checkTouchTargets = (msg) => {
+export const checkTouchTargets = async (msg) => {
   const { touchTargets } = msg;
 
-  const validTargetNodes = Object.keys(touchTargets)
-    .map((nodeId) => figma.getNodeById(nodeId))
-    .filter(Boolean);
+  const validTargetNodes = (
+    await Promise.all(
+      Object.keys(touchTargets).map((nodeId) => figma.getNodeByIdAsync(nodeId))
+    )
+  ).filter(Boolean);
 
   // Rename the nodes based on how many we now have
   validTargetNodes.forEach((targetNode, index) => {

@@ -1,12 +1,12 @@
 import config from '../config';
 
-export const createResponsiveDesigns = (msg) => {
+export const createResponsiveDesigns = async (msg) => {
   const { currentPage } = figma;
   const { breakpoints, page } = msg;
   const { id: pageId } = page;
 
   // get selected page node
-  const pageNode = figma.getNodeById(pageId);
+  const pageNode = await figma.getNodeByIdAsync(pageId);
 
   // get all those dimensions
   const { x, width } = pageNode;

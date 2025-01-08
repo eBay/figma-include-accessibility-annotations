@@ -3,7 +3,7 @@ import config from './config';
 import designerChecks from './designer-checks';
 import { getMainA11yLayerName } from './frame-helpers';
 
-export default function initializePage({
+export default async function initializePage({
   pageType,
   page,
   stepsCompleted,
@@ -15,12 +15,16 @@ export default function initializePage({
 
   const { x, y, height, width } = page.bounds;
 
-  const mainFrame = utils.frameExistsOrCreate(page.mainPageId, mainLayerName, {
-    x,
-    y,
-    height,
-    width: width + config.annotationWidth
-  });
+  const mainFrame = await utils.frameExistsOrCreate(
+    page.mainPageId,
+    mainLayerName,
+    {
+      x,
+      y,
+      height,
+      width: width + config.annotationWidth
+    }
+  );
 
   // Initialize the designer checks frame on page creation
   designerChecks.createOrUpdateDesignerChecksFrame({
@@ -30,6 +34,9 @@ export default function initializePage({
     stepsNative,
     stepsCompleted
   });
+
+  // let figma creation catch up
+  await utils.sleep(800);
 
   // Initialize data for the page
   figma.ui.postMessage({

@@ -1,7 +1,7 @@
 export const getDesignFile = async (msg) => {
   const { page } = msg;
 
-  const frameNode = figma.getNodeById(page.id);
+  const frameNode = await figma.getNodeByIdAsync(page.id);
   const duplicate = frameNode.clone();
 
   const EXPORT_SETTINGS = {
