@@ -69,7 +69,14 @@ module.exports = (env, argv) => {
             // Translates CSS into CommonJS
             'css-loader',
             // Compiles Sass to CSS
-            'sass-loader'
+            // 'sass-loader'
+            {
+              loader: 'sass-loader',
+              options: {
+                // Use Dart Sass
+                implementation: require('sass')
+              }
+            }
           ]
         },
         // allows you to use "<%= require('./file.svg') %>" in your HTML code to get a data URI
