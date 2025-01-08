@@ -26,7 +26,7 @@ export default async function initializePage({
     }
   );
 
-  // Initialize the designer checks frame on page creation
+  // initialize the designer checks frame on page creation
   designerChecks.createOrUpdateDesignerChecksFrame({
     page,
     pageType,
@@ -38,7 +38,7 @@ export default async function initializePage({
   // let figma creation catch up
   await utils.sleep(800);
 
-  // Initialize data for the page
+  // initialize data for the page
   figma.ui.postMessage({
     type: 'initialize-pages-data',
     data: {

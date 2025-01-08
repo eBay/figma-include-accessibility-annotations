@@ -180,7 +180,7 @@ const createAltTextAnnotationInfoFrame = ({ roleType, altText }) => {
     name: 'Alt text info'
   });
 
-  // Append the first row of alt text info
+  // append the first row of alt text info
   altTextInfoFrame.appendChild(
     createAnnotationLabelValueRow({
       rowName: 'Alt text',
@@ -189,7 +189,7 @@ const createAltTextAnnotationInfoFrame = ({ roleType, altText }) => {
     })
   );
 
-  // Append the second row of alt text info
+  // append the second row of alt text info
   altTextInfoFrame.appendChild(
     createAnnotationLabelValueRow({
       rowName: 'Role',
@@ -209,7 +209,7 @@ const createAltTextAnnotation = ({ number, id, roleType, altText }) => {
     id
   });
 
-  // Add the annotation number
+  // add the annotation number
   altTextAnnotationBlock.appendChild(
     createAnnotationNumberFrame({
       number,
@@ -217,7 +217,7 @@ const createAltTextAnnotation = ({ number, id, roleType, altText }) => {
     })
   );
 
-  // Add the annotation info
+  // add the annotation info
   altTextAnnotationBlock.appendChild(
     createAltTextAnnotationInfoFrame({
       roleType,
@@ -263,7 +263,7 @@ export const add = async (msg) => {
 
   const saniName = utils.sanitizeName(name);
 
-  // Check for existing annotation frame and remove if found
+  // check for existing annotation frame and remove if found
   findAndRemovePreviousAnnotationFrame({
     mainAnnotationsFrame,
     layerName: altTextAnnotationLayerName

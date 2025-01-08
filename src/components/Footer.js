@@ -81,7 +81,7 @@ function Footer({ primaryAction = null, secondaryAction = null, routeName }) {
     const newStepsCompleted = [...stepsCompleted];
     const indexFound = stepsCompleted.indexOf(routeName);
 
-    // If not, add it as completed
+    // if not, add it as completed
     if (indexFound < 0) newStepsCompleted.push(routeName);
 
     sendToFigma('steps-completed', {

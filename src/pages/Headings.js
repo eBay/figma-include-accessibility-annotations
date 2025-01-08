@@ -176,7 +176,7 @@ function Headings() {
   const getPrimaryAction = () => {
     if (headingsAreSet || noHeadings) {
       return {
-        onClick: onHeadingsConfirmed, // Create annotations
+        onClick: onHeadingsConfirmed, // create annotations
         completesStep: true
       };
     }

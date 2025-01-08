@@ -44,8 +44,8 @@ async function getOrCreateMainAnnotationsFrame({ mainFrame, page }) {
   // update with id (for future scanning)
   mainAnnotationsFrame.name = `${annotationLayerName} | ${mainAnnotationsFrame.id}`;
 
-  // Set up vertical auto-layout so that it looks okay
-  //   with any number of annotations added
+  // set up vertical auto-layout so that it looks okay
+  // with any number of annotations added
   mainAnnotationsFrame.fills = [
     { type: 'SOLID', color: colors.grey, opacity: 1 }
   ];
@@ -56,7 +56,7 @@ async function getOrCreateMainAnnotationsFrame({ mainFrame, page }) {
 }
 
 /**
- * Finds and removes existing annotation layer for the step using the layer name.
+ * finds and removes existing annotation layer for the step using the layer name.
  *
  * @param {object} mainAnnotationsFrame - the parent annotations frame
  * @param {string} layerName - the name of the annotations layer for the step
@@ -90,7 +90,7 @@ function createAnnotationFrame({ name }) {
     width: config.annotationWidth - 32
   });
 
-  // Give it vertical auto-layout formatting
+  // give it vertical auto-layout formatting
   annotationFrame.expanded = false;
   annotationFrame.layoutMode = 'VERTICAL';
   annotationFrame.counterAxisSizingMode = 'FIXED';
@@ -116,7 +116,7 @@ function createAnnotationFrameTitleText({ title }) {
 }
 
 /**
- * Creates and returns an annotation number label for use within an annotation
+ * creates and returns an annotation number label for use within an annotation
  * frame. Label is circular, with color background and white text.
  *
  * @param {number} number - The number to use for the annotation number label
@@ -158,7 +158,7 @@ function createAnnotationNumberFrame({ number, fillColor }) {
 }
 
 /**
- * Create annotation info frame with vertical auto-layout
+ * create annotation info frame with vertical auto-layout
  *
  * @param {string} name - desired name of the info frame
  * @returns Annotation info frame formatted with vertical auto-layout
@@ -177,7 +177,7 @@ function createAnnotationInfoFrame({ name }) {
 }
 
 /**
- * Creates a Figma frame with horizontal autolayout that contains two
+ * creates a Figma frame with horizontal autolayout that contains two
  * text nodes. The first text node is the bolded label, and the second
  * text nod is the value.
  *
@@ -218,7 +218,7 @@ function createAnnotationLabelValueRow({ rowName, label, value }) {
 }
 
 /**
- * Create inner annotation frame with horizontal auto-layout
+ * create inner annotation frame with horizontal auto-layout
  *
  * @param {string} annotationBlockName
  * @param {number} number - index of the frame

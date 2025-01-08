@@ -190,10 +190,10 @@ export const add = async (msg) => {
   // add label node to frame
   labelFrame.appendChild(labelNode);
 
-  // Add label frame to landmark block
+  // add label frame to landmark block
   landmarkBlock.appendChild(labelFrame);
 
-  // Add landmark block to greater landmarks frame
+  // add landmark block to greater landmarks frame
   landmarksFrame.appendChild(landmarkBlock);
 
   // de-selection of layer on Figma document

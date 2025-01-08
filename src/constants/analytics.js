@@ -21,7 +21,7 @@ export const logEvent = async (data) => {
       // fail silently
     }
   } else {
-    // Uncomment to debug analytics logging
+    // uncomment to debug analytics logging
     // console.log(
     //   'analytics event log call',
     //   `${baseURL}/${sessionId}/${currentUser}/${name}/${pageTitle}`

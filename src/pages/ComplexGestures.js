@@ -136,7 +136,7 @@ function ComplexGestures() {
         pageType
       });
     } else {
-      // Check that all gestures have annotations
+      // check that all gestures have annotations
       if (labelNeeded) {
         setAnnotateAttempted(true);
         return;
@@ -175,7 +175,7 @@ function ComplexGestures() {
     setLabelsTemp(newLabelsTemp);
   };
 
-  // Needs a label, and user tried to annotate without
+  // needs a label, and user tried to annotate without
   const showWarning = annotateAttempted && labelNeeded;
 
   React.useEffect(() => {
@@ -183,7 +183,7 @@ function ComplexGestures() {
   }, [gestures]);
 
   const getPrimaryAction = () => {
-    // Gestures are set and none are in progress,
+    // gestures are set and none are in progress,
     // allow user to confirm and annotate
     if (gesturesAreSet || noGestures) {
       return {

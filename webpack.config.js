@@ -64,11 +64,11 @@ module.exports = (env, argv) => {
         {
           test: /\.s[ac]ss$/i,
           use: [
-            // Creates `style` nodes from JS strings
+            // creates `style` nodes from JS strings
             'style-loader',
-            // Translates CSS into CommonJS
+            // translates CSS into CommonJS
             'css-loader',
-            // Compiles Sass to CSS
+            // compiles Sass to CSS
             // 'sass-loader'
             {
               loader: 'sass-loader',

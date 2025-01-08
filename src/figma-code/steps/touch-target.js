@@ -113,7 +113,7 @@ export const checkTouchTargets = async (msg) => {
     )
   ).filter(Boolean);
 
-  // Rename the nodes based on how many we now have
+  // rename the nodes based on how many we now have
   validTargetNodes.forEach((targetNode, index) => {
     // eslint-disable-next-line no-param-reassign
     targetNode.name = `Touch target ${index + 1}`;
@@ -132,12 +132,12 @@ export const checkTouchTargets = async (msg) => {
     const radius1 = node1.width / 2.0;
     const radius2 = node2.width / 2.0;
 
-    // Calculate the distance between the centers of the two circles
+    // calculate the distance between the centers of the two circles
     const distanceX = node1.x - node2.x;
     const distanceY = node1.y - node2.y;
     const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
 
-    // If the distance is less than the sum of the radii, the circles intersect
+    // if the distance is less than the sum of the radii, the circles intersect
     return distance <= radius1 + radius2;
   }
 
@@ -149,20 +149,20 @@ export const checkTouchTargets = async (msg) => {
     const ry = node2.y;
     const { width, height } = node2;
 
-    // Check if circle's center is inside the rectangle
+    // check if circle's center is inside the rectangle
     if (rx <= x && x <= rx + width && ry <= y && y <= ry + height) {
       return true;
     }
 
-    // Find the closest point in the rectangle to the circle's center
+    // find the closest point in the rectangle to the circle's center
     const closestX = Math.max(rx, Math.min(x, rx + width));
     const closestY = Math.max(ry, Math.min(y, ry + height));
 
-    // Calculate the distance between the circle's center and this closest point
+    // calculate the distance between the circle's center and this closest point
     const distanceX = x - closestX;
     const distanceY = y - closestY;
 
-    // If the distance is less than the circle's radius, an intersection occurs
+    // if the distance is less than the circle's radius, an intersection occurs
     return distanceX * distanceX + distanceY * distanceY <= radius * radius;
   }
 
@@ -175,7 +175,7 @@ export const checkTouchTargets = async (msg) => {
     return doRectanglesIntersect(node1, node2);
   };
 
-  // In terms of WCAG compliance, this is the same on native and web
+  // in terms of WCAG compliance, this is the same on native and web
   const targetSize = 24;
 
   const checkOverlap = (nodes) => {
@@ -216,7 +216,7 @@ export const checkTouchTargets = async (msg) => {
 
     nodes.forEach((node) => {
       if (isUndersized(node)) {
-        // If the node is undersized, we need to see if it passes
+        // if the node is undersized, we need to see if it passes
         // via the spacing exception. We will set up a spacing-circle
         // that is 24x24 centered at the center of mass for the node
         const centerOfMass = {
@@ -240,7 +240,7 @@ export const checkTouchTargets = async (msg) => {
         nodesToCompare.push(compareNode);
       }
 
-      // No matter what, push the original node to the comparison list
+      // no matter what, push the original node to the comparison list
       nodesToCompare.push(node);
     });
 

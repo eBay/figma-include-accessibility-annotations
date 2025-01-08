@@ -109,7 +109,7 @@ export default (
       for (let i = 0; i < onlyTextNodes.length; i += 1) {
         const { id, characters, absoluteRenderBounds, name } = onlyTextNodes[i];
 
-        // Don't send the cursor focus text node
+        // don't send the cursor focus text node
         if (name !== 'cursor-focus-node') {
           // sanitize: remove double returns, and returns
           const title = characters

@@ -108,10 +108,10 @@ export const createClone = async (msg) => {
       if (typeof fontSize === 'number') {
         const { unit, value } = lineHeight;
 
-        // Web: scale everything by 2
+        // web: scale everything by 2
         let scaleFactor = 2;
 
-        // Native: scale based on current fontSize
+        // native: scale based on current fontSize
         if (pageType === 'native') {
           scaleFactor = 1.3;
           if (fontSize < 32) scaleFactor = 1.4;

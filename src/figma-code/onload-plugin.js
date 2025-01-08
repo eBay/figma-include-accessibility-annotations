@@ -291,13 +291,13 @@ const isA11yLayer = async (children, childNode, name) => {
 
             // if we have an existing label, grab it from annotations frame
             if (gesturesAnnotationFrame) {
-              // Find annotation block for the id, if it exists
+              // find annotation block for the id, if it exists
               const gestureAnnotationBlock =
                 gesturesAnnotationFrame.children.find(
                   (annotationChild) => annotationChild.name.split('|')[1] === id
                 );
 
-              // Get the label node if it exists
+              // get the label node if it exists
               const labelNode = findDescendentOfFrame({
                 frame: gestureAnnotationBlock,
                 descendantNames: [

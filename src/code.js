@@ -45,7 +45,7 @@ let listenForAltText = false;
 console.clear();
 
 /* *****************************************************************************
- * Run once on Figma load
+ * run once on Figma load
  * this searches current figma page for any a11y layers, previous data created
  * https://www.figma.com/plugin-docs/api/figma/#once
  **************************************************************************** */
