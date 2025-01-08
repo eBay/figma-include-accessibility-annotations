@@ -1,20 +1,20 @@
 // reset
-@import 'reset';
+@use 'reset';
 
 // variables
-@import 'variables';
+@use 'variables';
 
 // mixins
-@import 'mixins';
+@use 'mixins';
 
 // animations
-@import 'animations';
+@use 'animations';
 
 // scaffolding
-@import 'scaffolding';
+@use 'scaffolding';
 
 // shared
-@import 'shared';
+@use 'shared';
 
 // pages
-@import 'pages';
+@use 'pages';

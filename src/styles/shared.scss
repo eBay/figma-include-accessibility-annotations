@@ -1,3 +1,5 @@
+@use 'variables' as vars;
+
 *,
 *::before,
 *::after {
@@ -130,7 +132,7 @@ strong,
 }
 
 .border-radius-xs {
-  border-radius: $spacing-xs;
+  border-radius: vars.$spacing-xs;
 }
 
 .display-block {
@@ -291,7 +293,7 @@ input {
   font-size: 14px;
   height: 28px;
   outline: none;
-  padding-left: $spacing-xs;
+  padding-left: vars.$spacing-xs;
   width: 190px;
 
   &:disabled {
@@ -366,6 +368,7 @@ input {
   padding-top: var(--spacing-sm);
   text-align: center;
 }
+
 .error-line-item {
   padding: 10px 0;
 }

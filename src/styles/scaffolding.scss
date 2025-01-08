@@ -1,3 +1,5 @@
+@use 'variables' as vars;
+
 // app layout
 // /////////////////////////////////////////////////////////////////////////////
 .app-top {
@@ -11,9 +13,9 @@
 // main panel (layout)
 // /////////////////////////////////////////////////////////////////////////////
 main {
-  height: calc(100% - $footer-height);
+  height: calc(100% - vars.$footer-height);
   overflow: hidden scroll;
-  padding: $spacing-sm $spacing-sm 0 $spacing-sm;
+  padding: vars.$spacing-sm vars.$spacing-sm 0 vars.$spacing-sm;
   transition: width 500ms ease-in-out;
   width: 475px;
 
@@ -36,9 +38,9 @@ footer {
   align-items: center;
   border-top: 1px solid var(--figma-color-border);
   display: flex;
-  height: $footer-height;
+  height: vars.$footer-height;
   justify-content: flex-end;
-  padding: 0 $spacing-sm;
+  padding: 0 vars.$spacing-sm;
 
   &.has-dashboard {
     justify-content: space-between;
