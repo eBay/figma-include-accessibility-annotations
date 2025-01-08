@@ -16,7 +16,7 @@ import routes from '../data/routes.json';
 const DESIGNER_CHECKS_LAYER_NAME = 'Designer check Annotations';
 
 // https://github.com/romannurik/Figma-Contrast
-function createCheckMark() {
+async function createCheckMark() {
   const checkmark = figma.createVector();
   checkmark.name = 'check';
   checkmark.x = 0;
@@ -26,7 +26,7 @@ function createCheckMark() {
   checkmark.resize(18, 18); // w, h
 
   // https://www.figma.com/plugin-docs/api/VectorNetwork
-  checkmark.vectorNetwork = {
+  const vectorNetwork = {
     vertices: [
       {
         x: 5.6,
@@ -70,6 +70,10 @@ function createCheckMark() {
       }
     ]
   };
+
+  // https://www.figma.com/plugin-docs/api/VectorNode/#setvectornetworkasync
+  await checkmark.setVectorNetworkAsync(vectorNetwork, 'source');
+
   return checkmark;
 }
 
@@ -80,15 +84,17 @@ function createDesignerCheckMarkTitle({ id, name }) {
   checkMarkTitle.characters = name;
   checkMarkTitle.fills = [{ type: 'SOLID', color: colors.black }];
   checkMarkTitle.fontName = { family: 'Roboto', style: 'Regular' };
+
   return checkMarkTitle;
 }
 
-function createDesignerCheckMarkIndicator({ completed }) {
+async function createDesignerCheckMarkIndicator({ completed }) {
   const checkMarkFrame = createTransparentFrame({
     name: 'checkmarkFrame',
     height: 20,
     width: 20
   });
+
   const checkMarkRect = createCircle({
     size: 20,
     name: 'checkmark',
@@ -101,7 +107,7 @@ function createDesignerCheckMarkIndicator({ completed }) {
   checkMarkFrame.appendChild(checkMarkRect);
 
   if (completed) {
-    const checkMark = createCheckMark();
+    const checkMark = await createCheckMark();
     checkMarkFrame.appendChild(checkMark);
   }
 
@@ -140,6 +146,7 @@ function getStepsForPageType({ pageType, steps, stepsNative }) {
 function getStepDataForPage({ pageType, steps, stepsNative }) {
   const routeData = getRoutesForPageType({ pageType });
   const stepsData = getStepsForPageType({ pageType, steps, stepsNative });
+
   return stepsData.map((step) => routeData[step]);
 }
 

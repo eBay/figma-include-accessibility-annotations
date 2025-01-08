@@ -74,7 +74,7 @@ const arrowSpecs = {
  *
  * @return {object} VectorNode
  */
-export function createArrow(props) {
+export async function createArrow(props) {
   // details, dimensions, and placement
   const { arrowType = 'right', name, x = 50, y = 50 } = props;
   const { width, height, start, end } = arrowSpecs[arrowType];
@@ -92,7 +92,7 @@ export function createArrow(props) {
   arrow.resize(width, height); // w, h
 
   // https://www.figma.com/plugin-docs/api/VectorNetwork
-  arrow.vectorNetwork = {
+  const vectorNetwork = {
     vertices: [
       {
         ...start,
@@ -127,6 +127,9 @@ export function createArrow(props) {
 
     regions: []
   };
+
+  // https://www.figma.com/plugin-docs/api/VectorNode/#setvectornetworkasync
+  await arrow.setVectorNetworkAsync(vectorNetwork, 'source');
 
   return arrow;
 }
