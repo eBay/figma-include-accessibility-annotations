@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { utils } from '../constants';
+import { utils } from '@/constants';
 
 // components
 import {
@@ -8,16 +8,17 @@ import {
   EmptyStepSelection,
   HeadingStep,
   Alert
-} from '../components';
+} from '@/components';
 
 // icons
-import { SvgText, SvgWarning } from '../icons';
+import { SvgText, SvgWarning } from '@/icons';
 
 // app state
-import Context from '../context';
+import Context from '@/context';
 
-import headingTypesWeb from '../data/heading-types';
-import headingTypesNative from '../data/heading-types-native';
+// data
+import headingTypesWeb from '@/data/heading-types';
+import headingTypesNative from '@/data/heading-types-native';
 
 function Headings() {
   // main app state

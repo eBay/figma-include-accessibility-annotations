@@ -1,14 +1,14 @@
 import * as React from 'react';
-import { utils } from '../constants';
+import { utils } from '@/constants';
 
 // components
-import { Footer } from '../components';
+import { Footer } from '@/components';
 
 // icons
-import { SvgArrowWidth, SvgPlus } from '../icons';
+import { SvgArrowWidth, SvgPlus } from '@/icons';
 
 // app state
-import Context from '../context';
+import Context from '@/context';
 
 function Settings() {
   // main app state

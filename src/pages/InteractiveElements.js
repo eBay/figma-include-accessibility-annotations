@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 // components
-import { BannerTip } from '../components';
+import { BannerTip } from '@/components';
 
 function InteractiveElements() {
   return (

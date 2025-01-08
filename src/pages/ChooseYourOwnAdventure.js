@@ -1,11 +1,11 @@
 import * as React from 'react';
-import { utils } from '../constants';
+import { utils } from '@/constants';
 
 // icons
-import { SvgArrowRight, SvgMobile, SvgWeb } from '../icons';
+import { SvgArrowRight, SvgMobile, SvgWeb } from '@/icons';
 
 // app state
-import Context from '../context';
+import Context from '@/context';
 
 function ChooseYourOwnAdventure() {
   // main app state

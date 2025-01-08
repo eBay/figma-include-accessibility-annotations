@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { analytics, utils } from '../constants';
+import { analytics, utils } from '@/constants';
 
 // components
-import ProgressLine from '../components/ProgressLine';
-import ProgressPieChart from '../components/ProgressPieChart';
+import ProgressLine from '@/components/ProgressLine';
+import ProgressPieChart from '@/components/ProgressPieChart';
 
 // icons
 import {
@@ -13,17 +13,17 @@ import {
   SvgMobile,
   SvgSettings,
   SvgWeb
-} from '../icons';
+} from '@/icons';
 
 // app state
-import Context from '../context';
+import Context from '@/context';
 
 // pages
-import ProgressLoading from './ProgressLoading';
+import ProgressLoading from '@/pages/ProgressLoading';
 
 // data
-import routes from '../data/routes.json';
-import routesNative from '../data/routes-native.json';
+import routes from '@/data/routes.json';
+import routesNative from '@/data/routes-native.json';
 
 const feedbackFormUrl = process.env.FEEDBACK_FORM_URL;
 

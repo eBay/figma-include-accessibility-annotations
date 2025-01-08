@@ -1,18 +1,18 @@
 import * as React from 'react';
-import { utils } from '../constants';
+import { utils } from '@/constants';
 
 // components
-import { AnnotationStepPage, HeadingStep } from '../components';
+import { AnnotationStepPage, HeadingStep } from '@/components';
 
 // icons
-import { SvgCheck } from '../icons';
+import { SvgCheck } from '@/icons';
 
 // icons: reading order
-import SvgReadingOrder from '../icons/reading-order';
-import readingOrderTypes from '../data/reading-order-types';
+import SvgReadingOrder from '@/icons/reading-order';
+import readingOrderTypes from '@/data/reading-order-types';
 
 // app state
-import Context from '../context';
+import Context from '@/context';
 
 const customFooter = (
   <React.Fragment>

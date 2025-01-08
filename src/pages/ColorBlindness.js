@@ -1,18 +1,18 @@
 import * as React from 'react';
-import { contrast, utils } from '../constants';
+import { contrast, utils } from '@/constants';
 
 // components
-import { AnnotationStepPage, HeadingStep, LoadingSpinner } from '../components';
-import ColorBlindnessFilter from '../components/ColorBlindnessFilter';
+import { AnnotationStepPage, HeadingStep, LoadingSpinner } from '@/components';
+import ColorBlindnessFilter from '@/components/ColorBlindnessFilter';
 
 // icons
-import { SvgCarrot } from '../icons';
+import { SvgCarrot } from '@/icons';
 
 // app state
-import Context from '../context';
+import Context from '@/context';
 
-// get color blindness types
-import colorBlindnessTypesObj from '../data/color-blindness-types';
+// data
+import colorBlindnessTypesObj from '@/data/color-blindness-types';
 
 const colorBlindnessTypesArray = Object.keys(colorBlindnessTypesObj);
 

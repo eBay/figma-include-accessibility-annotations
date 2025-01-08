@@ -1,21 +1,21 @@
 import * as React from 'react';
-import { utils } from '../constants';
+import { utils } from '@/constants';
 
 // components
 import {
   AnnotationStepPage,
   EmptyStepSelection,
   HeadingStep
-} from '../components';
+} from '@/components';
 
 // icons
-import { SvgFocusGroup } from '../icons';
+import { SvgFocusGroup } from '@/icons';
 
 // icons: focus grouping
-import SvgFocusGrouping from '../icons/focus-grouping';
+import SvgFocusGrouping from '@/icons/focus-grouping';
 
 // app state
-import Context from '../context';
+import Context from '@/context';
 
 const customFooter = (
   <React.Fragment>

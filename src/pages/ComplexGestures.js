@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { utils } from '../constants';
+import { utils } from '@/constants';
 
 // components
 import {
@@ -7,14 +7,16 @@ import {
   AnnotationStepPage,
   EmptyStepSelection,
   HeadingStep
-} from '../components';
+} from '@/components';
+
+// icons
+import { SvgWarning } from '@/icons';
 
 // app state
-import Context from '../context';
+import Context from '@/context';
 
 // get gesture types
-import gestureTypesObj from '../data/gesture-types';
-import { SvgWarning } from '../icons';
+import gestureTypesObj from '@/data/gesture-types';
 
 const gestureTypesArray = Object.keys(gestureTypesObj);
 

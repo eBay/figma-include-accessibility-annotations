@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { utils } from '../constants';
+import { utils } from '@/constants';
 
 // components
 import {
@@ -8,16 +8,16 @@ import {
   Dropdown,
   EmptyStepSelection,
   HeadingStep
-} from '../components';
+} from '@/components';
 
 // icons
-import { SvgWarning } from '../icons';
+import { SvgWarning } from '@/icons';
 
 // app state
-import Context from '../context';
+import Context from '@/context';
 
 // get landmark types
-import landmarksTypesObj from '../data/landmark-types';
+import landmarksTypesObj from '@/data/landmark-types';
 
 const landmarksTypesArray = Object.keys(landmarksTypesObj);
 const landmarksOnlyOnce = ['main', 'header', 'footer'];
