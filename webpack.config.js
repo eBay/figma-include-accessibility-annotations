@@ -89,7 +89,12 @@ module.exports = (env, argv) => {
     },
 
     // webpack tries these extensions for you if you omit the extension like "import './file'"
-    resolve: { extensions: ['.js'] },
+    resolve: {
+      alias: {
+        '@': path.resolve(__dirname, 'src')
+      },
+      extensions: ['.js', '.json']
+    },
 
     output: {
       filename: '[name].js',
