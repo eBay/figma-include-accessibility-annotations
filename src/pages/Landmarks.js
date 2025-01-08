@@ -179,11 +179,9 @@ function Landmarks() {
     Object.values(landmarks).map((row) => {
       const { id, label, type } = row;
 
-      // has duplicate row and no label?
-      const noLabel = label === null || label === '';
-
-      // check if temp label exists
+      // check if temp label exists and if we need to alert user to add one
       const tempLabel = labelsTemp[id]?.value || null;
+      const noLabel = (label === null || label === '') && tempLabel === null;
 
       if (typesDupArray.includes(type) && noLabel) {
         rowsNeedLabelArray.push(id);
@@ -412,9 +410,11 @@ function Landmarks() {
               const { id, label, type } = landmarks[key];
               const isOpened = openedDropdown === id;
 
-              const showLabel = label !== null || needsLabel.includes(id);
-
               const hasTempLabel = labelsTemp[id]?.value || label;
+              const showLabel =
+                label !== null ||
+                needsLabel.includes(id) ||
+                hasTempLabel !== null;
 
               // is flagged for not having label (or can't have "Landmark" in the label)
               const warnClass =
