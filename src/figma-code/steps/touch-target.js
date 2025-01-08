@@ -57,13 +57,13 @@ export const add = async (msg) => {
   // create rectangle
   const size = pageType === 'web' ? 24 : 48;
   const targetNode = figmaLayer.createRectangle({
-    fillColor: colors.purpleDark,
+    fillColor: colors.deepTeal,
     name: `Touch target ${nextTargetNum}`,
     height: size,
     radius: 4,
     opacity: 0.3,
     stroke: 0,
-    strokeColor: colors.purpleDark,
+    strokeColor: colors.deepTeal,
     x: xStart,
     y: yStart,
     width: size
@@ -232,8 +232,12 @@ export const checkTouchTargets = async (msg) => {
           height: targetSize,
           type: 'spacing-circle'
         };
-        undersizedNodes.push(compareNode); // add spacing node to the undersized list
-        nodesToCompare.push(compareNode); // we also need to add the spacing node to the comparison list
+
+        // add spacing node to the undersized list
+        undersizedNodes.push(compareNode);
+
+        // we also need to add the spacing node to the comparison list
+        nodesToCompare.push(compareNode);
       }
 
       // No matter what, push the original node to the comparison list
