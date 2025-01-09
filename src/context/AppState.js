@@ -124,6 +124,17 @@ class AppState extends React.Component {
           currentUser: data.currentUser,
           sessionId: data.sessionId
         });
+
+        await utils.sleep(200);
+
+        // do we need to update old annotation key layers
+        if (data.newKeyV2.length > 0) {
+          sendToFigma('update-annotation-key-v2', {
+            layers: data.newKeyV2,
+            pages: data.pages
+          });
+        }
+
         break;
 
       case 'load-user-preferences':

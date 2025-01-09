@@ -56,6 +56,12 @@ const arrowSpecs = {
     height: ARROW_SIZE,
     end: { x: 0, y: ARROW_SIZE },
     start: { x: ARROW_SIZE, y: 0 }
+  },
+  example: {
+    width: 40,
+    height: 0,
+    start: { x: 0, y: 0 },
+    end: { x: 40, y: 0 }
   }
 };
 

@@ -7,18 +7,20 @@ export default {
 
   // a11y layer data
   a11ySuffix: '| Accessibility Layer',
+  a11yAnnotationLayerKey: 'Accessibility annotations Layer',
+  a11yAnnotationLayerKeyV2: 'Accessibility annotations Checklist Layer',
   a11yMainLayers: [
     'Landmarks Layer',
     'Headings Layer',
     'Reading order Layer',
     'Alt text Layer',
     'Contrast Layer',
-    'Touch target Layer',
+    'Color blindness Layer',
     'Text zoom Layer',
     'Responsive reflow Layer',
-    'Focus grouping Layer',
+    'Touch target Layer',
     'Complex gestures Layer',
-    'Color blindness Layer'
+    'Focus grouping Layer'
   ],
   a11yCheckboxLayers: [
     'Contrast Layer',

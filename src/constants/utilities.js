@@ -34,6 +34,7 @@ const capitalize = (string) =>
  *
  * @param {string} nodeId - Node ID to grab
  * @param {string} layerName - layer name to check against
+ * @param {boolean} withPipe - check with pipe or not
  *
  * @return {(null|string)} if found returns id of layer OR returns null
  */
@@ -98,6 +99,7 @@ const checkTypeOfA11yLayer = (layerName) => {
  * @param {string} parentFrameId - parent node ID
  * @param {string} layerName - layer name
  * @param {string} page - page creation data (optional: x, y, height, width)
+ * @param {boolean} withPipe - check with pipe or not
  *
  * @return {object} Figma frame
  */

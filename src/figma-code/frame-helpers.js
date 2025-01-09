@@ -29,30 +29,35 @@ async function getOrCreateMainA11yFrame({ page, pageType }) {
 async function getOrCreateMainAnnotationsFrame({ mainFrame, page }) {
   const { bounds } = page;
   const { height: pageH, width: pageW } = bounds;
-  const annotationLayerName = 'Accessibility annotations Layer';
+  const paddingMain = 20;
 
-  const mainAnnotationsFrame = await utils.frameExistsOrCreate(
+  const mainAnnoFrame = await utils.frameExistsOrCreate(
     mainFrame.id,
-    annotationLayerName,
+    config.a11yAnnotationLayerKeyV2,
     {
       height: pageH,
       x: pageW + 32,
       width: config.annotationWidth - 32
-    }
+    },
+    false
   );
-
-  // update with id (for future scanning)
-  mainAnnotationsFrame.name = `${annotationLayerName} | ${mainAnnotationsFrame.id}`;
 
   // set up vertical auto-layout so that it looks okay
   // with any number of annotations added
-  mainAnnotationsFrame.fills = [
-    { type: 'SOLID', color: colors.grey, opacity: 1 }
-  ];
-  mainAnnotationsFrame.layoutMode = 'VERTICAL';
-  mainAnnotationsFrame.itemSpacing = 4;
+  mainAnnoFrame.cornerRadius = 16;
+  mainAnnoFrame.fills = [{ type: 'SOLID', color: colors.white, opacity: 1 }];
+  mainAnnoFrame.strokes = [{ type: 'SOLID', color: colors.coolGrey }];
+  mainAnnoFrame.strokeWeight = 1;
+  mainAnnoFrame.layoutMode = 'VERTICAL';
+  mainAnnoFrame.counterAxisSizingMode = 'FIXED';
+  mainAnnoFrame.primaryAxisSizingMode = 'AUTO';
+  mainAnnoFrame.itemSpacing = 16;
+  mainAnnoFrame.paddingLeft = paddingMain;
+  mainAnnoFrame.paddingRight = paddingMain;
+  mainAnnoFrame.paddingBottom = paddingMain;
+  mainAnnoFrame.paddingTop = paddingMain;
 
-  return mainAnnotationsFrame;
+  return mainAnnoFrame;
 }
 
 /**

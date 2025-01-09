@@ -112,6 +112,11 @@ figma.ui.onmessage = async (msg) => {
     designerChecks.createOrUpdateDesignerChecksFrame(msg);
   }
 
+  // update to v2 annotation key layer
+  if (type === 'update-annotation-key-v2') {
+    designerChecks.updateToAnnotationKeyV2(msg);
+  }
+
   // no landmarks checked
   if (type === 'no-landmark') {
     step.landmarks.noLandmarks(msg);

@@ -36,7 +36,7 @@ const isA11yLayer = async (children, childNode, name) => {
 
   const existingAnnotationsFrame = frameChildren.find(
     (child) =>
-      utils.nameBeforePipe(child.name) === 'Accessibility annotations Layer'
+      utils.nameBeforePipe(child.name) === config.a11yAnnotationLayerKeyV2
   );
 
   // old landmarks mapper (legacy)
@@ -273,7 +273,7 @@ const isA11yLayer = async (children, childNode, name) => {
         const gestures = {};
         const gesturesAnnotationFrame = findDescendentOfFrame({
           frame: existingAnnotationsFrame,
-          descendantNames: ['Complex gesture Annotations']
+          descendantNames: ['Complex gestures line']
         });
 
         for (let l = 0; l < frameChild.children.length; l += 1) {
@@ -391,6 +391,7 @@ export const getPreviousScanData = async (pageSelected) => {
   const { children: topLevelLayers } = currentPage;
 
   const pages = [];
+  const needsNewLayerKeyV2 = [];
   let hasProgress = false;
 
   // check if has children
@@ -399,41 +400,75 @@ export const getPreviousScanData = async (pageSelected) => {
     const a11yFrames = [];
 
     // loop through frames, grab regular and accessibility types
-    for (let i = 0; i < topLevelLayers.length; i += 1) {
-      const layer = topLevelLayers[i];
-      const name = utils.nameBeforePipe(layer.name);
+    await Promise.all(
+      topLevelLayers.map(async (layer) => {
+        const name = utils.nameBeforePipe(layer.name);
 
-      // is it a section node?
-      if (layer.type === 'SECTION') {
-        const { children: secLayers } = layer;
+        // is it a section node?
+        if (layer.type === 'SECTION') {
+          const { children: secLayers } = layer;
 
-        for (let s = 0; s < secLayers.length; s += 1) {
-          const secLayer = secLayers[s];
+          await Promise.all(
+            secLayers.map(async (secLayer) => {
+              // is accessibility layer?
+              if (secLayer.name.includes(config.a11ySuffix)) {
+                const secLayerName = utils.nameBeforePipe(secLayer.name);
+                const secLayerData = await isA11yLayer(
+                  secLayers,
+                  secLayer,
+                  secLayerName
+                );
 
+                if (typeof secLayerData === 'object' && secLayerData !== null) {
+                  pages.push(secLayerData);
+                  a11yFrames.push(secLayer);
+
+                  // check if we have children
+                  if (secLayer.children.length > 0) {
+                    secLayer.children.forEach((child) => {
+                      // check if we need to update the layer key
+                      if (child.name.includes(config.a11yAnnotationLayerKey)) {
+                        needsNewLayerKeyV2.push({
+                          id: child.id,
+                          name: child.name,
+                          parentId: secLayerData.pageId
+                        });
+                      }
+                    });
+                  }
+                }
+              } else {
+                regularFrames.push(secLayer);
+              }
+            })
+          );
+        } else if (layer.name.includes(config.a11ySuffix)) {
           // is accessibility layer?
-          if (secLayer.name.includes(config.a11ySuffix)) {
-            const secLayerName = utils.nameBeforePipe(secLayer.name);
-            const secLayerData = isA11yLayer(secLayers, secLayer, secLayerName);
+          const layerData = await isA11yLayer(topLevelLayers, layer, name);
 
-            if (typeof secLayerData === 'object' && secLayerData !== null) {
-              pages.push(secLayerData);
-              a11yFrames.push(secLayer);
+          if (typeof layerData === 'object' && layerData !== null) {
+            pages.push(layerData);
+            a11yFrames.push(layer);
+
+            // check if we have children
+            if (layer.children.length > 0) {
+              layer.children.forEach((child) => {
+                // check if we need to update the layer key
+                if (child.name.includes(config.a11yAnnotationLayerKey)) {
+                  needsNewLayerKeyV2.push({
+                    id: child.id,
+                    name: child.name,
+                    parentId: layerData.pageId
+                  });
+                }
+              });
             }
-          } else {
-            regularFrames.push(secLayer);
           }
+        } else {
+          regularFrames.push(layer);
         }
-      } else if (layer.name.includes(config.a11ySuffix)) {
-        // is accessibility layer?
-        const layerData = isA11yLayer(topLevelLayers, layer, name);
-        if (typeof layerData === 'object' && layerData !== null) {
-          pages.push(layerData);
-          a11yFrames.push(layer);
-        }
-      } else {
-        regularFrames.push(layer);
-      }
-    }
+      })
+    );
 
     // do we have Accessibility steps completed?
     if (pages.length > 0) {
@@ -445,7 +480,6 @@ export const getPreviousScanData = async (pageSelected) => {
     if (a11yFrames.length === 0) {
       // no previous data found
       // so let's check if a valid frame is selected off the bat
-
       const { selection } = figma.currentPage;
       const selectionLength = selection.length;
 
@@ -509,7 +543,8 @@ export const getPreviousScanData = async (pageSelected) => {
       hasProgress,
       pages,
       currentUser,
-      sessionId
+      sessionId,
+      newKeyV2: needsNewLayerKeyV2
     }
   });
 

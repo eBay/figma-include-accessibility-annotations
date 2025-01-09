@@ -1,13 +1,10 @@
 import { colors, figmaLayer, utils } from '../../constants';
 import config from '../config';
 import {
-  createAnnotationFrame,
-  createAnnotationFrameTitleText,
   createAnnotationInfoFrame,
   createAnnotationLabelValueRow,
   createAnnotationNumberFrame,
   createInnerAnnotationFrame,
-  findAndRemovePreviousAnnotationFrame,
   getOrCreateMainA11yFrame,
   getOrCreateMainAnnotationsFrame
 } from '../frame-helpers';
@@ -43,6 +40,15 @@ export const imageScan = async (msg) => {
 
     return imageFills.length > 0;
   });
+
+  // find all svgs in the file
+  // const svgNodes = nodeWrapper.findAll((node) => {
+  //   const nodeName = node.name.toLowerCase();
+
+  //   return nodeName.includes('vector-shape');
+  // });
+  // console.log('svgNodes', svgNodes);
+  // console.log('----------');
 
   // now because of how figma does bottom to top, and we are using the optimized findAll above ^
   // this step is to reverse that order and target any elements that have
@@ -185,7 +191,7 @@ const createAltTextAnnotationInfoFrame = ({ roleType, altText }) => {
     createAnnotationLabelValueRow({
       rowName: 'Alt text',
       label: 'Alt text:',
-      value: hasAltText ? `"${altText}"` : '""'
+      value: hasAltText ? `"${altText}"` : '" "'
     })
   );
 
@@ -228,17 +234,6 @@ const createAltTextAnnotation = ({ number, id, roleType, altText }) => {
   return altTextAnnotationBlock;
 };
 
-const createAltTextAnnotationFrame = ({ name }) => {
-  // create an annotation frame
-  const frame = createAnnotationFrame({ name });
-
-  // and add the Annotation frame title
-  const annotationTitle = createAnnotationFrameTitleText({ title: 'Images' });
-  frame.appendChild(annotationTitle);
-
-  return frame;
-};
-
 export const add = async (msg) => {
   const { images, page, pageType } = msg;
 
@@ -250,8 +245,6 @@ export const add = async (msg) => {
   const { x: pageX, y: pageY, height: pageH, width: pageW } = bounds;
 
   const altTextLayerName = 'Alt text Layer';
-  const altTextAnnotationLayerName = 'Alt text Annotations';
-
   const mainPageNode = await figma.getNodeByIdAsync(page.id);
 
   // get main A11y frame if it exists (or create it)
@@ -262,13 +255,6 @@ export const add = async (msg) => {
   });
 
   const saniName = utils.sanitizeName(name);
-
-  // check for existing annotation frame and remove if found
-  findAndRemovePreviousAnnotationFrame({
-    mainAnnotationsFrame,
-    layerName: altTextAnnotationLayerName
-  });
-
   const nodes = [];
 
   // does Alt text exist already?
@@ -370,10 +356,20 @@ export const add = async (msg) => {
     nodes.push(imageLayer);
   }
 
-  // create alt text annotation frame
-  const annotationFrame = createAltTextAnnotationFrame({
-    name: altTextAnnotationLayerName
-  });
+  // get alt text annotation frame
+  const annotationFrame = mainAnnotationsFrame.findOne(
+    (n) => n.name === 'Alternative text line'
+  );
+
+  // find and remove previous annotation alt text frames
+  if (annotationFrame !== null) {
+    annotationFrame.children.forEach((n) => {
+      // remove all alt text blocks
+      if (n.name.startsWith('Alt text Block')) {
+        n.remove();
+      }
+    });
+  }
 
   // loop through images with alt text and add annotation section to Figma Document
   for (let i = 0; i < images.length; i += 1) {
@@ -390,9 +386,6 @@ export const add = async (msg) => {
       })
     );
   }
-
-  // add Annotation layer to the main annotations frame
-  mainAnnotationsFrame.insertChild(0, annotationFrame);
 
   // add alt text frame to main Accessibility layer
   mainFrame.appendChild(altTextFrame);

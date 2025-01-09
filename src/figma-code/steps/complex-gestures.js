@@ -3,8 +3,6 @@ import { createTransparentFrame } from '../../constants/figma-layer';
 import gestureTypes from '../../data/gesture-types';
 import config from '../config';
 import {
-  createAnnotationFrame,
-  createAnnotationFrameTitleText,
   createAnnotationInfoFrame,
   createAnnotationLabelValueRow,
   createAnnotationNumberFrame,
@@ -121,6 +119,10 @@ export const add = async (msg) => {
 
   // get main A11y frame if it exists (or create it)
   const mainFrame = await getOrCreateMainA11yFrame({ page, pageType });
+  const mainAnnotationsFrame = await getOrCreateMainAnnotationsFrame({
+    mainFrame,
+    page
+  });
 
   // does Complex gestures exist already?
   const gestureFrame = await utils.frameExistsOrCreate(
@@ -210,6 +212,8 @@ export const add = async (msg) => {
       name: gestureBlockName
     }
   });
+
+  figma.viewport.scrollAndZoomIntoView([mainPageNode, mainAnnotationsFrame]);
 };
 
 export const completed = async (msg) => {
@@ -339,18 +343,6 @@ const createGestureAnnotation = ({ number, id, label, type }) => {
   return gestureAnnotationFrame;
 };
 
-const createComplexGesturesAnnotationFrame = () => {
-  const annotationFrame = createAnnotationFrame({
-    name: complexGesturesAnnotationLayerName
-  });
-  const annotationTitle = createAnnotationFrameTitleText({
-    title: 'Complex gestures'
-  });
-  annotationFrame.appendChild(annotationTitle);
-
-  return annotationFrame;
-};
-
 export const annotateComplexGestures = async (msg) => {
   const { gestures, page, pageType } = msg;
 
@@ -371,13 +363,20 @@ export const annotateComplexGestures = async (msg) => {
     page
   });
 
-  // check for existing annotation frame and remove if found
-  const oldAnnotationFrameId = await findAndRemovePreviousAnnotationFrame({
-    mainAnnotationsFrame,
-    layerName: complexGesturesAnnotationLayerName
-  });
+  // get complex gesture annotation frame
+  const annotationFrame = mainAnnotationsFrame.findOne(
+    (n) => n.name === 'Complex gestures line'
+  );
 
-  const annotationFrame = createComplexGesturesAnnotationFrame();
+  // find and remove previous annotation complex gesture frames
+  if (annotationFrame !== null) {
+    annotationFrame.children.forEach((n) => {
+      // remove all complex gesture blocks
+      if (n.name.startsWith('Complex gesture Block')) {
+        n.remove();
+      }
+    });
+  }
 
   // for each gesture...
   for (let i = 0; i < gestures.length; i += 1) {
@@ -408,17 +407,10 @@ export const annotateComplexGestures = async (msg) => {
     );
   }
 
-  // add Annotation frame to main Accessibility annotations frame
-  mainAnnotationsFrame.insertChild(0, annotationFrame);
-
   // let the user know layer(s) have been added/updated
-  const notifyMsg = oldAnnotationFrameId !== null ? 'updated' : 'added';
-  figma.notify(
-    `Complex gesture annotations have been ${notifyMsg} successfully!`,
-    {
-      timeout: config.notifyTime
-    }
-  );
+  figma.notify('Complex gesture annotations have been added successfully!', {
+    timeout: config.notifyTime
+  });
 };
 
 export default {
