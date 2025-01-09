@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import { utils } from '../constants';
 
@@ -22,93 +22,76 @@ const zoomTo = (nodeIdsArray, selectNodes = false) => {
   sendToFigma('zoom-to', { nodeIds: nodeIdsArray, selectNodes });
 };
 
-class AppState extends React.Component {
-  constructor() {
-    super();
+function AppState({ children }) {
+  const stepsArray = Object.keys(routes);
+  const stepsNativeArray = Object.keys(routesNative);
 
-    // get steps array
-    const stepsArray = Object.keys(routes);
-    const stepsNativeArray = Object.keys(routesNative);
+  const [state, setState] = useState({
+    // global ui
+    alertMsg: null,
+    condensedUI: false,
+    isLoading: true,
+    leftNavVisible: true,
+    tipExpanded: true,
 
-    // default state
-    this.state = {
-      // global ui
-      alertMsg: null,
-      condensedUI: false,
-      isLoading: true,
-      leftNavVisible: true,
-      tipExpanded: true,
+    // page changes
+    hasDashboard: false,
+    showDashboard: false,
+    showPageChange: false,
+    showSettings: false,
 
-      // page changes
-      hasDashboard: false,
-      showDashboard: false,
-      showPageChange: false,
-      showSettings: false,
+    // global accessibility data
+    pages: [],
+    page: null,
+    pageSelected: null,
+    pageType: null,
+    steps: stepsArray,
+    stepsNative: stepsNativeArray,
+    stepsCompleted: [],
+    stepsData: {},
 
-      // global accessibility data
-      pages: [],
-      page: null,
-      pageSelected: null,
-      pageType: null,
-      steps: stepsArray,
-      stepsNative: stepsNativeArray,
-      stepsCompleted: [],
-      stepsData: {},
+    // landmarks
+    landmarks: {},
 
-      // landmarks
-      landmarks: {},
+    // headings
+    headings: {},
+    headingTemp: null,
 
-      // headings
-      headings: {},
-      headingTemp: null,
+    // alt text
+    noImages: false,
+    imagesData: [],
+    imagesScanned: [],
 
-      // alt text
-      noImages: false,
-      imagesData: [],
-      imagesScanned: [],
+    // contrast
+    contrastResults: null,
 
-      // contrast
-      contrastResults: null,
+    // focus grouping
+    groups: [],
 
-      // focus grouping
-      groups: [],
+    // complex gestures
+    gestures: {},
 
-      // complex gestures
-      gestures: {},
+    // touch targets
+    touchTargets: {},
 
-      // touch targets
-      touchTargets: {},
+    // color blindness
+    colorBlindnessView: false,
 
-      // color blindness
-      colorBlindnessView: false,
+    // responsive reflow
+    responsiveBreakpoints: responsiveDefaultBreakpoints,
 
-      // responsive reflow
-      responsiveBreakpoints: responsiveDefaultBreakpoints,
+    // user data
+    currentUser: null,
+    newFeaturesIntro: [],
+    sessionId: 0
+  });
 
-      // user data
-      currentUser: null,
-      newFeaturesIntro: [],
-      sessionId: 0
-    };
+  const updateState = useCallback((key, value) => {
+    setState((prevState) => ({ ...prevState, [key]: value }));
+  }, []);
 
-    this.updateState = this.updateState.bind(this);
-    this.messageFromFigma = this.messageFromFigma.bind(this);
-    this.imageScan = this.imageScan.bind(this);
-  }
-
-  componentDidMount() {
-    window.addEventListener('message', this.messageFromFigma);
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('message', this.messageFromFigma);
-  }
-
-  // main listener for all messages from Figma bridge
-  // https://www.figma.com/plugin-docs/how-plugins-run/
-  async messageFromFigma(event) {
+  const messageFromFigma = useCallback(async (event) => {
     const { data, type } = event.data.pluginMessage;
-    const { pageType, pages } = this.state;
 
     switch (type) {
       // loading/scanning for a11y progress on current Figma document
@@ -116,14 +99,15 @@ class AppState extends React.Component {
         // boost the wait time a bit
         await utils.sleep(200);
 
-        this.setState({
+        setState((prevState) => ({
+          ...prevState,
           isLoading: false,
           pages: data.pages,
           hasDashboard: data.hasProgress,
           showDashboard: data.hasProgress,
           currentUser: data.currentUser,
           sessionId: data.sessionId
-        });
+        }));
 
         await utils.sleep(200);
 
@@ -134,198 +118,174 @@ class AppState extends React.Component {
             pages: data.pages
           });
         }
-
         break;
 
       case 'load-user-preferences':
-        const { breakpoints, newFeaturesIntro, prefCondensedUI } = data;
-        const { prefTipExpanded } = data;
+        const { breakpoints, newFeaturesIntro } = data;
+        const { prefCondensedUI, prefTipExpanded } = data;
+
+        // if custom breakpoints are set, use those
+        const newBreakpoints = breakpoints || responsiveDefaultBreakpoints;
+
+        setState((prevState) => ({
+          ...prevState,
+          responsiveBreakpoints: newBreakpoints,
+          condensedUI: prefCondensedUI,
+          leftNavVisible: !prefCondensedUI,
+          newFeaturesIntro,
+          tipExpanded: prefTipExpanded
+        }));
 
         // resize plugin onload if user pref is set
-        if (prefCondensedUI === true) {
+        if (prefCondensedUI) {
           sendToFigma('resize-plugin', {
             condensed: true,
             height: 518,
             width: 516
           });
         }
-
-        // if custom breakpoints are set, use those
-        const newBreakpoints =
-          breakpoints !== null ? breakpoints : responsiveDefaultBreakpoints;
-
-        this.setState({
-          responsiveBreakpoints: newBreakpoints,
-          condensedUI: prefCondensedUI,
-          leftNavVisible: !prefCondensedUI,
-          newFeaturesIntro,
-          tipExpanded: prefTipExpanded
-        });
-
         break;
 
       // pre-load base64 images
       case 'base64-response':
-        this.setState({
+        setState((prevState) => ({
+          ...prevState,
           imagesScanned: data.newImagesScanned
-        });
+        }));
         break;
 
       // show alert
       case 'alert-page-change':
-        this.setState({
+        setState((prevState) => ({
+          ...prevState,
           showPageChange: data.showAlert
-        });
+        }));
         break;
 
       // user selected the start frame
       case 'start-frame':
-        // do we need to tell the user something?
-        if (data?.msg) {
-          // let user know of selection parameters
-          this.setState({
-            alertMsg: data.msg,
-            pageSelected: null
-          });
-        } else {
-          // set selected page data (for confirmation)
-          this.setState({
-            alertMsg: null,
-            pageSelected: data
-          });
-        }
+        setState((prevState) => ({
+          ...prevState,
+          alertMsg: data?.msg || null,
+          pageSelected: data?.msg ? null : data
+        }));
         break;
 
       case 'initialize-pages-data':
-        const mainFrame = data.main;
+        setState((prevState) => {
+          const updatedPages = [
+            ...prevState.pages,
+            {
+              ...data.main,
+              stepsCompleted: [],
+              stepsData: {},
+              imagesScanned: [],
+              type: prevState.pageType
+            }
+          ];
 
-        const dashPages = [...pages];
-
-        dashPages.push({
-          ...mainFrame,
-          stepsCompleted: [],
-          stepsData: {},
-          imagesScanned: [],
-          type: pageType
+          return {
+            ...prevState,
+            hasDashboard: updatedPages.length > 0,
+            pages: updatedPages
+          };
         });
-
-        // update main state
-        this.setState({
-          hasDashboard: dashPages.length > 0,
-          pages: dashPages
-        });
-
         break;
 
       // update pages data
       case 'update-pages-data':
-        const { stepsData } = this.state;
-        const { main, status, stepKey } = data;
+        setState((prevState) => {
+          const { stepsData, pages } = prevState;
+          const { main, status, stepKey } = data;
+          const updatedPages = [...pages];
+          const updatedStepsData = { ...stepsData };
+          const pageIndex = updatedPages.findIndex((p) => p.id === main.id);
 
-        const newPages = [...pages];
-        const newStepsData = { ...stepsData };
+          if (pageIndex > -1) {
+            const updatedPage = { ...updatedPages[pageIndex] };
 
-        const indexFound = pages.findIndex((p) => p.id === main.id);
-        const newPage = newPages[indexFound];
+            if (status === 'add') {
+              if (!updatedPage.stepsCompleted.includes(stepKey)) {
+                updatedPage.stepsCompleted.push(stepKey);
+                updatedPage.stepsData[stepKey] = {
+                  ...data[stepKey],
+                  stateKey: stepKey.toLowerCase(),
+                  visible: true
+                };
+              }
+            }
 
-        if (status === 'add') {
-          // make sure it's not already present
-          if (newPage.stepsCompleted.includes(stepKey) === false) {
-            newPage.stepsCompleted.push(stepKey);
-            newPage.stepsData[stepKey] = {
-              ...data[stepKey],
-              stateKey: stepKey.toLowerCase(),
-              visible: true
-            };
+            updatedPages[pageIndex] = updatedPage;
           }
 
-          newPage.stepsData[stepKey] = {
-            ...(newPage.stepsData[stepKey] || {}),
-            ...data[stepKey],
-            visible: true
+          return {
+            ...prevState,
+            pages: updatedPages,
+            stepsData: updatedStepsData
           };
-        }
-
-        // check if we have previous steps data
-        if (stepKey in newStepsData) {
-          // remove old ID reference
-          delete newStepsData[stepKey];
-        }
-
-        // add steps data
-        if (status === 'add') {
-          newStepsData[stepKey] = data[stepKey];
-        }
-
-        // update main state
-        this.setState({
-          hasDashboard: newPages.length > 0,
-          pages: newPages,
-          stepsData: newStepsData
         });
-
         break;
 
       // landmark confirmed (landmarks)
       case 'landmark-confirmed':
-        const { landmarks } = this.state;
-        const { id: landmarkId } = data;
-
-        const newEntry = {
-          id: landmarkId,
-          label: null,
-          name: data.name,
-          type: data.landmarkType
-        };
-
-        this.setState({
-          landmarks: { ...landmarks, [landmarkId]: newEntry }
-        });
+        setState((prevState) => ({
+          ...prevState,
+          landmarks: {
+            ...prevState.landmarks,
+            [data.id]: {
+              id: data.id,
+              label: null,
+              name: data.name,
+              type: data.landmarkType
+            }
+          }
+        }));
         break;
 
       // gesture confirmed (complex gestures)
       case 'gesture-confirmed':
-        const { gestures } = this.state;
-        const { id: gestureId } = data;
-
-        const newGesture = {
-          id: gestureId,
-          label: null,
-          name: data.name,
-          type: data.gestureType
-        };
-
-        this.setState({
-          gestures: { ...gestures, [gestureId]: newGesture }
-        });
+        setState((prevState) => ({
+          ...prevState,
+          gestures: {
+            ...prevState.gestures,
+            [data.id]: {
+              id: data.id,
+              label: null,
+              name: data.name,
+              type: data.gestureType
+            }
+          }
+        }));
         break;
 
       // touch target confirmed (touch targets)
       case 'touch-target-confirmed':
-        const { touchTargets } = this.state;
-        const { id: targetId } = data;
-
-        const newTargetEntry = {
-          id: targetId,
-          name: data.name
-        };
-
-        this.setState({
-          touchTargets: { ...touchTargets, [targetId]: newTargetEntry }
-        });
+        setState((prevState) => ({
+          ...prevState,
+          touchTargets: {
+            ...prevState.touchTargets,
+            [data.id]: {
+              id: data.id,
+              name: data.name
+            }
+          }
+        }));
         break;
 
       // images found from scan (alt text)
       case 'images-found':
-        this.setState({
+        setState((prevState) => ({
+          ...prevState,
           imagesScanned: data.images
-        });
+        }));
         break;
 
       // listening for headings selected
       case 'headings-selected':
-        const { selected } = data;
-        this.setState({ headingTemp: selected[0] });
+        setState((prevState) => ({
+          ...prevState,
+          headingTemp: data.selected[0]
+        }));
         break;
 
       // no need for this yet, but a msg hook is here
@@ -338,149 +298,44 @@ class AppState extends React.Component {
         console.warn(`unknown type "${type}" message from Figma`);
         break;
     }
-  }
+  }, []);
 
-  imageScan() {
-    const { page, pageType } = this.state;
-    const { id } = page;
+  const imageScan = useCallback(() => {
+    const { page, pageType } = state;
 
-    // let figma side know, image scan on nodeID
-    sendToFigma('image-scan', { id, page, pageType });
-  }
+    if (page) {
+      // let figma side know, image scan on nodeID
+      sendToFigma('image-scan', { id: page.id, page, pageType });
+    }
+  }, [state]);
 
-  updateState(key, value) {
-    this.setState({
-      [key]: value
-    });
-  }
+  useEffect(() => {
+    window.addEventListener('message', messageFromFigma);
 
-  render() {
-    const { children } = this.props;
+    return () => {
+      window.removeEventListener('message', messageFromFigma);
+    };
+  }, [messageFromFigma]);
 
-    // global ui
-    const { alertMsg, condensedUI, isLoading, leftNavVisible } = this.state;
-
-    // page changes
-    const { hasDashboard, showDashboard, showPageChange } = this.state;
-    const { showSettings } = this.state;
-
-    // global accessibility data
-    const { pages, page, pageSelected, pageType } = this.state;
-    const { steps, stepsNative, stepsCompleted, stepsData } = this.state;
-    const { tipExpanded } = this.state;
-
-    // landmarks
-    const { landmarks } = this.state;
-
-    // headings
-    const { headings, headingTemp } = this.state;
-
-    // alt text
-    const { noImages, imagesData, imagesScanned } = this.state;
-
-    // contrast
-    const { contrastResults } = this.state;
-
-    // focus grouping
-    const { groups } = this.state;
-
-    // complex gestures
-    const { gestures } = this.state;
-
-    // touch targets
-    const { touchTargets } = this.state;
-
-    // color blindness
-    const { colorBlindnessView } = this.state;
-
-    // responsive reflow
-    const { responsiveBreakpoints } = this.state;
-
-    // user data
-    const { currentUser, newFeaturesIntro, sessionId } = this.state;
-
-    return (
-      <Context.Provider
-        // eslint-disable-next-line react/jsx-no-constructed-context-values
-        value={{
-          // global ui
-          alertMsg,
-          condensedUI,
-          isLoading,
-          leftNavVisible,
-          tipExpanded,
-
-          // page changes
-          hasDashboard,
-          showDashboard,
-          showPageChange,
-          showSettings,
-
-          // global accessibility data
-          pages,
-          page,
-          pageSelected,
-          pageType,
-          steps,
-          stepsNative,
-          stepsCompleted,
-          stepsData,
-
-          // landmarks
-          landmarks,
-
-          // headings
-          headings,
-          headingTemp,
-
-          // alt text
-          noImages,
-          imagesData,
-          imagesScanned,
-
-          // contrast
-          contrastResults,
-
-          // focus grouping
-          groups,
-
-          // complex gestures
-          gestures,
-
-          // touch targets
-          touchTargets,
-
-          // color blindness
-          colorBlindnessView,
-
-          // responsive reflow
-          responsiveBreakpoints,
-
-          // global helpers
-          imageScan: this.imageScan,
-          removeNodes,
-          sendToFigma,
-          updateState: this.updateState,
-          zoomTo,
-
-          // user data
-          currentUser,
-          newFeaturesIntro,
-          sessionId,
-
-          // environment and project
-          isProd: process.env.ISPROD,
-          version: process.env.VERSION
-        }}
-      >
-        {children}
-      </Context.Provider>
-    );
-  }
+  return (
+    <Context.Provider
+      value={{
+        ...state,
+        imageScan,
+        removeNodes,
+        sendToFigma,
+        updateState,
+        zoomTo,
+        isProd: process.env.ISPROD,
+        version: process.env.VERSION
+      }}
+    >
+      {children}
+    </Context.Provider>
+  );
 }
 
 AppState.propTypes = {
-  // required
   children: PropTypes.oneOfType([
     PropTypes.arrayOf(PropTypes.node),
     PropTypes.node
