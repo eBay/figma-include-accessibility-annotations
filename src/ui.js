@@ -40,16 +40,13 @@ import ErrorBoundary from './components/ErrorBoundary';
 
 function App() {
   const cnxt = React.useContext(Context);
-  const { alertMsg, condensedUI, isLoading, leftNavVisible } = cnxt;
+  const { alertMsg, condensedUI, isLoading, loadingMsg, leftNavVisible } = cnxt;
   const { colorBlindnessView, page, pageSelected, pageType } = cnxt;
-  const { steps, stepsNative, stepsCompleted, stepsData } = cnxt;
-  const { showDashboard, showPageChange, showSettings, sendToFigma } = cnxt;
+  const { steps, stepsNative, stepsCompleted, stepsData, showDashboard } = cnxt;
+  const { showPageChange, showSettings, sendToFigma, updateState } = cnxt;
 
   // local state
   const [progressPercent, setPercentage] = React.useState(null);
-  const [loadingMsg, setLoadingMsg] = React.useState(
-    'Scanning for Accessibility layers in Figma document'
-  );
   const [showLoadingWarning, setLoadingWarning] = React.useState(false);
 
   // hook for route changes
@@ -63,13 +60,15 @@ function App() {
 
     if (isLoading === true) {
       timer15 = setTimeout(() => {
-        setLoadingMsg(
+        updateState(
+          'loadingMsg',
           'If you have a lot of pages with annotations, and high-res images, try moving them to their own Figma page to get it to load faster.'
         );
       }, 15000);
 
       timer60 = setTimeout(() => {
-        setLoadingMsg(
+        updateState(
+          'loadingMsg',
           "We couldn't load the annotations. If you have a lot of pages with annotations, and high-res images, try moving them to their own Figma page to get it to load faster."
         );
         setLoadingWarning(true);

@@ -5,6 +5,7 @@ export default React.createContext({
   alertMsg: null,
   condensedUI: false,
   isLoading: true,
+  loadingMsg: 'Scanning for Accessibility layers in Figma document',
   leftNavVisible: true,
 
   // page changes
