@@ -1,4 +1,4 @@
-import { contrast } from '../../constants';
+import { contrast } from '@/constants';
 
 // https://github.com/romannurik/Figma-Contrast
 export const scan = async (msg) => {

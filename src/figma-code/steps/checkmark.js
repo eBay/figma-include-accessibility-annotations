@@ -1,6 +1,5 @@
-import { figmaLayer, utils } from '../../constants';
-// import config from '../config';
-import { getOrCreateMainA11yFrame } from '../frame-helpers';
+import { figmaLayer, utils } from '@/constants';
+import { getOrCreateMainA11yFrame } from '@/figma-code/frame-helpers';
 
 export const add = async (msg) => {
   const { create, layerName, page, pageType, existingData, stateKey } = msg;

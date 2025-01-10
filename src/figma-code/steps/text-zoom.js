@@ -1,5 +1,5 @@
-import { utils } from '../../constants';
-import config from '../config';
+import { utils } from '@/constants';
+import config from '@/figma-code/config';
 
 export const createClone = async (msg) => {
   const { currentPage } = figma;

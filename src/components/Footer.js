@@ -1,20 +1,20 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import { Link, useLocation } from 'react-router-dom';
-import { analytics, utils } from '../constants';
+import { analytics, utils } from '@/constants';
 
 // components
-import FooterActionButton from './FooterActionButton';
+import FooterActionButton from '@/components/FooterActionButton';
 
 // icons
-import { SvgArrowRight } from '../icons';
+import { SvgArrowRight } from '@/icons';
 
 // app state
-import Context from '../context';
+import Context from '@/context';
 
 // data
-import routes from '../data/routes.json';
-import routesNative from '../data/routes-native.json';
+import routes from '@/data/routes.json';
+import routesNative from '@/data/routes-native.json';
 
 function Footer({ primaryAction = null, secondaryAction = null, routeName }) {
   // main app state

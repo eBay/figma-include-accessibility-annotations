@@ -1,9 +1,9 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import { analytics } from '../constants';
+import { analytics } from '@/constants';
 
 // app state
-import Context from '../context';
+import Context from '@/context';
 
 // catch any React component issues and log to GA
 class ErrorBoundary extends React.Component {

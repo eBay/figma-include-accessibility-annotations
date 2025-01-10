@@ -1,6 +1,6 @@
-import { figmaLayer, utils } from '../../constants';
-import config from '../config';
-import { getOrCreateMainA11yFrame } from '../frame-helpers';
+import { figmaLayer, utils } from '@/constants';
+import config from '@/figma-code/config';
+import { getOrCreateMainA11yFrame } from '@/figma-code/frame-helpers';
 
 export const addArrow = async (msg) => {
   const { bounds, arrowType, name, pageId, pageType } = msg;

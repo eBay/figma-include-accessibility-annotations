@@ -1,20 +1,20 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import { NavLink } from 'react-router-dom';
-import { utils } from '../../constants';
+import { utils } from '@/constants';
 
 // components
-import ProgressPieChart from '../ProgressPieChart';
+import ProgressPieChart from '@/components/ProgressPieChart';
 
 // icons
-import { SvgCheck, SvgChevronLeft, SvgMobile, SvgWeb } from '../../icons';
+import { SvgCheck, SvgChevronLeft, SvgMobile, SvgWeb } from '@/icons';
 
 // app state
-import Context from '../../context';
+import Context from '@/context';
 
 // data
-import routes from '../../data/routes.json';
-import routesNative from '../../data/routes-native.json';
+import routes from '@/data/routes.json';
+import routesNative from '@/data/routes-native.json';
 
 // styles
 import './styles.scss';

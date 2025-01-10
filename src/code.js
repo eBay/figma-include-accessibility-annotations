@@ -1,4 +1,4 @@
-import { utils } from './constants';
+import { utils } from '@/constants';
 import {
   config,
   designerChecks,
@@ -6,7 +6,7 @@ import {
   onSelectionChange,
   step,
   initializePage
-} from './figma-code';
+} from '@/figma-code';
 
 /* *****************************************************************************
  * initial setup

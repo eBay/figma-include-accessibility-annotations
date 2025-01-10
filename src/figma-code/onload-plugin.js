@@ -1,6 +1,6 @@
-import { utils } from '../constants';
-import config from './config';
-import { findDescendentOfFrame } from './frame-helpers';
+import { utils } from '@/constants';
+import config from '@/figma-code/config';
+import { findDescendentOfFrame } from '@/figma-code/frame-helpers';
 
 export const preload = async () => {
   // async load fonts

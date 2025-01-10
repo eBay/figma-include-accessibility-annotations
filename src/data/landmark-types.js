@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 // svg landmarks
-import SvgLandmarks from '../icons/landmarks';
+import SvgLandmarks from '@/icons/landmarks';
 
 // setup landmark options
 export default {

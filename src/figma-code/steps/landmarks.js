@@ -1,10 +1,10 @@
-import { colors, figmaLayer, utils } from '../../constants';
-import { createTransparentFrame } from '../../constants/figma-layer';
-import config from '../config';
-import { getOrCreateMainA11yFrame } from '../frame-helpers';
+import { colors, figmaLayer, utils } from '@/constants';
+import { createTransparentFrame } from '@/constants/figma-layer';
+import config from '@/figma-code/config';
+import { getOrCreateMainA11yFrame } from '@/figma-code/frame-helpers';
 
 // data
-import landmarksTypesObj from '../../data/landmark-types';
+import landmarksTypesObj from '@/data/landmark-types';
 
 const landmarkLayerName = 'Landmarks Layer';
 

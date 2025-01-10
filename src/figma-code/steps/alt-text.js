@@ -1,5 +1,5 @@
-import { colors, figmaLayer, utils } from '../../constants';
-import config from '../config';
+import { colors, figmaLayer, utils } from '@/constants';
+import config from '@/figma-code/config';
 import {
   createAnnotationInfoFrame,
   createAnnotationLabelValueRow,
@@ -7,7 +7,7 @@ import {
   createInnerAnnotationFrame,
   getOrCreateMainA11yFrame,
   getOrCreateMainAnnotationsFrame
-} from '../frame-helpers';
+} from '@/figma-code/frame-helpers';
 
 export const imageScan = async (msg) => {
   const { id: selectedNodeId, page, pageType } = msg;

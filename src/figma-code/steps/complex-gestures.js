@@ -1,7 +1,7 @@
-import { colors, figmaLayer, utils } from '../../constants';
-import { createTransparentFrame } from '../../constants/figma-layer';
-import gestureTypes from '../../data/gesture-types';
-import config from '../config';
+import { colors, figmaLayer, utils } from '@/constants';
+import { createTransparentFrame } from '@/constants/figma-layer';
+import gestureTypes from '@/data/gesture-types';
+import config from '@/figma-code/config';
 import {
   createAnnotationInfoFrame,
   createAnnotationLabelValueRow,
@@ -10,7 +10,7 @@ import {
   findAndRemovePreviousAnnotationFrame,
   getOrCreateMainA11yFrame,
   getOrCreateMainAnnotationsFrame
-} from '../frame-helpers';
+} from '@/figma-code/frame-helpers';
 
 const complexGesturesLayerName = 'Complex gestures Layer';
 const complexGesturesAnnotationLayerName = 'Complex gesture Annotations';

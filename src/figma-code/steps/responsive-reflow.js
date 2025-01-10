@@ -1,4 +1,4 @@
-import config from '../config';
+import config from '@/figma-code/config';
 
 export const createResponsiveDesigns = async (msg) => {
   const { currentPage } = figma;

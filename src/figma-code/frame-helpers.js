@@ -1,5 +1,5 @@
-import { colors, figmaLayer, utils } from '../constants';
-import config from './config';
+import { colors, figmaLayer, utils } from '@/constants';
+import config from '@/figma-code/config';
 
 function getMainA11yLayerName({ pageName, pageType }) {
   const saniName = utils.sanitizeName(pageName);

@@ -3,40 +3,40 @@ import { createRoot } from 'react-dom/client';
 import { MemoryRouter, Routes, Route, useLocation } from 'react-router-dom';
 
 // styles
-import './styles/base.scss';
+import '@/styles/base.scss';
 
 // pages
-import ProgressLoading from './pages/ProgressLoading';
-import PageChange from './pages/PageChange';
-import Dashboard from './pages/Dashboard';
-import ChooseYourOwnAdventure from './pages/ChooseYourOwnAdventure';
-import SelectFrameToStart from './pages/SelectFrameToStart';
-import Landmarks from './pages/Landmarks';
-import Headings from './pages/Headings';
-import ReadingOrder from './pages/ReadingOrder';
-import AltText from './pages/AltText';
-import Contrast from './pages/Contrast';
-import TouchTarget from './pages/TouchTarget';
-import TextZoom from './pages/TextZoom';
-import ResponsiveReflow from './pages/ResponsiveReflow';
-import FocusGrouping from './pages/FocusGrouping';
-import ComplexGestures from './pages/ComplexGestures';
-import ColorBlindness from './pages/ColorBlindness';
-import Settings from './pages/Settings';
+import ProgressLoading from '@/pages/ProgressLoading';
+import PageChange from '@/pages/PageChange';
+import Dashboard from '@/pages/Dashboard';
+import ChooseYourOwnAdventure from '@/pages/ChooseYourOwnAdventure';
+import SelectFrameToStart from '@/pages/SelectFrameToStart';
+import Landmarks from '@/pages/Landmarks';
+import Headings from '@/pages/Headings';
+import ReadingOrder from '@/pages/ReadingOrder';
+import AltText from '@/pages/AltText';
+import Contrast from '@/pages/Contrast';
+import TouchTarget from '@/pages/TouchTarget';
+import TextZoom from '@/pages/TextZoom';
+import ResponsiveReflow from '@/pages/ResponsiveReflow';
+import FocusGrouping from '@/pages/FocusGrouping';
+import ComplexGestures from '@/pages/ComplexGestures';
+import ColorBlindness from '@/pages/ColorBlindness';
+import Settings from '@/pages/Settings';
 
 // components
-import { NavLeft } from './components';
+import { NavLeft } from '@/components';
 
 // app context state
-import AppState from './context/AppState';
+import AppState from '@/context/AppState';
 
 // app state
-import Context from './context';
+import Context from '@/context';
 
 // data
-import routes from './data/routes.json';
-import routesNative from './data/routes-native.json';
-import ErrorBoundary from './components/ErrorBoundary';
+import routes from '@/data/routes.json';
+import routesNative from '@/data/routes-native.json';
+import ErrorBoundary from '@/components/ErrorBoundary';
 
 function App() {
   const cnxt = React.useContext(Context);

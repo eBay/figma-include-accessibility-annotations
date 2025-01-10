@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 // svg gestures
-import SvgGestures from '../icons/complex-gestures';
+import SvgGestures from '@/icons/complex-gestures';
 
 // setup gesture options
 export default {

@@ -1,5 +1,5 @@
-import config from './config';
-import headingTypes from '../data/heading-types';
+import config from '@/figma-code/config';
+import headingTypes from '@/data/heading-types';
 
 export default (
   pageSelected,

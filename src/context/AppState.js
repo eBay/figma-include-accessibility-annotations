@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { utils } from '../constants';
+import { utils } from '@/constants';
 
 // data
-import responsiveDefaultBreakpoints from '../data/responsive-reflow-default-breakpoints.json';
-import routes from '../data/routes.json';
-import routesNative from '../data/routes-native.json';
+import responsiveDefaultBreakpoints from '@/data/responsive-reflow-default-breakpoints.json';
+import routes from '@/data/routes.json';
+import routesNative from '@/data/routes-native.json';
 
 // context
 import Context from './index';

@@ -1,13 +1,13 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import { analytics } from '../constants';
+import { analytics } from '@/constants';
 
 // components
-import BannerTip from './BannerTip';
-import Footer from './Footer';
+import BannerTip from '@/components/BannerTip';
+import Footer from '@/components/Footer';
 
 // app state
-import Context from '../context';
+import Context from '@/context';
 
 function AnnotationStepPage({
   children,

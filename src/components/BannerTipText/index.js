@@ -1,12 +1,12 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import { utils } from '../../constants';
+import { utils } from '@/constants';
 
 // icons
-import { SvgChevronDown } from '../../icons';
+import { SvgChevronDown } from '@/icons';
 
 // app state
-import Context from '../../context';
+import Context from '@/context';
 
 // styles
 import './styles.scss';

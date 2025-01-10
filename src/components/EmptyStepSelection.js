@@ -2,7 +2,7 @@ import * as React from 'react';
 import PropTypes from 'prop-types';
 
 // components
-import Checkbox from './Checkbox';
+import Checkbox from '@/components/Checkbox';
 
 function EmptyStepSelection(props) {
   const { id, isDisabled = false, isSelected, onClick, text } = props;

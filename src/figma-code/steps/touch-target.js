@@ -1,6 +1,6 @@
-import { colors, figmaLayer, utils } from '../../constants';
-import config from '../config';
-import { getOrCreateMainA11yFrame } from '../frame-helpers';
+import { colors, figmaLayer, utils } from '@/constants';
+import config from '@/figma-code/config';
+import { getOrCreateMainA11yFrame } from '@/figma-code/frame-helpers';
 
 const touchTargetsLayerName = 'Touch target Layer';
 

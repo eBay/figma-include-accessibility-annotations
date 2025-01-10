@@ -1,5 +1,5 @@
-import { createTransparentFrame } from './figma-layer';
-import config from '../figma-code/config';
+import { createTransparentFrame } from '@/constants/figma-layer';
+import config from '@/figma-code/config';
 
 /**
  * Utility functions for working with Figma frames and strings
