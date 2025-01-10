@@ -303,6 +303,13 @@ function Landmarks() {
     if (value !== null) {
       // update label on figma document
       sendToFigma('update-landmark-label', { id, landmarkType: type, value });
+
+      // update main state
+      const newLandmarksObj = { ...landmarks };
+      const newLandmark = newLandmarksObj[id];
+      newLandmarksObj[id] = { ...newLandmark, label: value };
+
+      updateState('landmarks', newLandmarksObj);
     }
   };
 
