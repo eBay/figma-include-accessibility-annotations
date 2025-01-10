@@ -1,63 +1,135 @@
 {
   "native": {
     "Headings": {
-      "text": "Headings help provide a hierarchy for the screen's content, and allow people using a screen reader to quickly jump between sections. Numbered headings (H1,H2 etc)  are not supported by iOS or Android."
+      "text": "Headings help provide a hierarchy for the screen's content, and allow people using a screen reader to quickly jump between sections. Numbered headings (H1,H2 etc)  are not supported by iOS or Android.",
+      "link": {
+        "text": "More about Headings",
+        "url": "https://playbook.ebay.com/foundations/accessibility/include-plugin?tab=native-mobile#headings"
+      }
     },
     "Focus grouping": {
-      "text": "Grouping elements like the contents of a tile or cell can make for a better experience when using assistive technology.<br /><br />If multiple actions are in the group more instruction will be needed on how this will behave."
+      "text": "Grouping elements like the contents of a tile or cell can make for a better experience when using assistive technology.<br /><br />If multiple actions are in the group more instruction will be needed on how this will behave.",
+      "link": {
+        "text": "More about Focus grouping",
+        "url": "https://playbook.ebay.com/foundations/accessibility/include-plugin?tab=native-mobile#focus-grouping"
+      }
     },
     "Reading order": {
-      "text": "Designing the order that keyboard-only or screen reader users will flow through the content can improve their experience.<br /><br />Typically, focus order (the order of interactive elements, e.g moving with the TAB key) aligns with reading order (the order of all content e.g. using the down arrow key, or 'say all' command with a screen reader)."
+      "text": "Designing the order that keyboard-only or screen reader users will flow through the content can improve their experience.<br /><br />Typically, focus order (the order of interactive elements, e.g moving with the TAB key) aligns with reading order (the order of all content e.g. using the down arrow key, or 'say all' command with a screen reader).",
+      "link": {
+        "text": "More about Reading & focus order",
+        "url": "https://playbook.ebay.com/foundations/accessibility/include-plugin?tab=native-mobile#reading--focus-order"
+      }
     },
     "Alt text": {
-      "text": "Alternative text is announced by screen readers and describes the purpose, function, or content of an image.<br/><br/>Images that convey meaning are <em>informative</em> and require alt text. Images that do not convey meaning, or are non-functional and beside text that conveys their meaning are considered <em>decorative.</em>"
+      "text": "Alternative text is announced by screen readers and describes the purpose, function, or content of an image.<br/><br/>Images that convey meaning are <em>informative</em> and require alt text. Images that do not convey meaning, or are non-functional and beside text that conveys their meaning are considered <em>decorative.</em>",
+      "link": {
+        "text": "More about Alternative text",
+        "url": "https://playbook.ebay.com/foundations/accessibility/include-plugin?tab=native-mobile#alternative-text"
+      }
     },
     "Contrast": {
-      "text": "Text must have a contrast ratio of 4.5:1. Large text must have a contrast ratio of 3:1. Interactive and meaningful graphical elements must have a contrast ratio of 3:1."
+      "text": "Text must have a contrast ratio of 4.5:1. Large text must have a contrast ratio of 3:1. Interactive and meaningful graphical elements must have a contrast ratio of 3:1.",
+      "link": {
+        "text": "More about Contrast",
+        "url": "https://playbook.ebay.com/foundations/accessibility/include-plugin?tab=native-mobile#contrast"
+      }
     },
     "Touch target": {
-      "text": "WCAG SC 2.5.8 Target Size defines the minimum area as 24px by 24px. Some teams prefer to use 44px x 44px for iOS and 48px x 48px for Android.<br/><br/>There are exceptions for undersize targets with sufficient spacing, links within sentences or blocks of text, or targets like pins on a map, or dots on a chart.<br/><br/>Use this step of <span style=\"font-style: italic;\">Include</span> as a tool to check where needed; it may not be necessary to annotate every target in every design."
+      "text": "WCAG SC 2.5.8 Target Size defines the minimum area as 24px by 24px. Some teams prefer to use 44px x 44px for iOS and 48px x 48px for Android.<br/><br/>There are exceptions for undersize targets with sufficient spacing, links within sentences or blocks of text, or targets like pins on a map, or dots on a chart.<br/><br/>Use this step of <span style=\"font-style: italic;\">Include</span> as a tool to check where needed; it may not be necessary to annotate every target in every design.",
+      "link": {
+        "text": "More about Touch target",
+        "url": "https://playbook.ebay.com/foundations/accessibility/include-plugin?tab=native-mobile#touch-target"
+      }
     },
     "Text zoom": {
-      "text": "Mobile devices allow users to customize text sizes. Ensure the layout will adapt to respect these user preferences."
+      "text": "Mobile devices allow users to customize text sizes. Ensure the layout will adapt to respect these user preferences.",
+      "link": {
+        "text": "More about Text resizing",
+        "url": "https://playbook.ebay.com/foundations/accessibility/include-plugin?tab=native-mobile#text-resizing"
+      }
     },
     "Complex gestures": {
-      "text": "When actions can be performed with a <em>gesture</em> ensure there is an alternate and visible way to perform this using one finger and taps."
+      "text": "When actions can be performed with a <em>gesture</em> ensure there is an alternate and visible way to perform this using one finger and taps.",
+      "link": {
+        "text": "More about Complex gestures",
+        "url": "https://playbook.ebay.com/foundations/accessibility/include-plugin?tab=native-mobile#complex-gestures"
+      }
     },
     "Color blindness": {
-      "text": "People may perceive colors differently, and may not be able to differentiate between some or all colors. Ensure a design does not rely only on color to convey meaning."
+      "text": "People may perceive colors differently, and may not be able to differentiate between some or all colors. Ensure a design does not rely only on color to convey meaning.",
+      "link": {
+        "text": "More about Color",
+        "url": "https://playbook.ebay.com/foundations/accessibility/include-plugin?tab=native-mobile#color"
+      }
     }
   },
   "web": {
     "Landmarks": {
-      "text": "Landmarks identify regions of a screen and help people who use assistive technology to make a mental model of a screen's content.<br/><br/>When creating multiple landmarks of the same type you'll be prompted to a short label. Do not include  words like 'landmark', 'region' or 'navigation' in  the label as screen readers already announce the type."
+      "text": "Landmarks identify regions of a screen and help people who use assistive technology to make a mental model of a screen's content.<br/><br/>When creating multiple landmarks of the same type you'll be prompted to a short label. Do not include  words like 'landmark', 'region' or 'navigation' in  the label as screen readers already announce the type.",
+      "link": {
+        "text": "More about Landmarks",
+        "url": "https://playbook.ebay.com/foundations/accessibility/include-plugin?tab=responsive-web#landmarks"
+      }
     },
     "Headings": {
-      "text": "Headings help provide a hierarchy for the screen's content, and allow people using a screen reader to quickly jump between sections. Use only one H1 per page, avoid skipping heading levels, and make them succinct."
+      "text": "Headings help provide a hierarchy for the screen's content, and allow people using a screen reader to quickly jump between sections. Use only one H1 per page, avoid skipping heading levels, and make them succinct.",
+      "link": {
+        "text": "More about Headings",
+        "url": "https://playbook.ebay.com/foundations/accessibility/include-plugin?tab=responsive-web#headings"
+      }
     },
     "Reading order": {
-      "text": "Designing the order that keyboard-only or screen reader users will flow through the content can improve their experience.<br /><br />Typically, focus order (the order of interactive elements, e.g moving with the TAB key) aligns with reading order (the order of all content e.g. using the down arrow key, or 'say all' command with a screen reader)."
+      "text": "Designing the order that keyboard-only or screen reader users will flow through the content can improve their experience.<br /><br />Typically, focus order (the order of interactive elements, e.g moving with the TAB key) aligns with reading order (the order of all content e.g. using the down arrow key, or 'say all' command with a screen reader).",
+      "link": {
+        "text": "More about Reading & focus order",
+        "url": "https://playbook.ebay.com/foundations/accessibility/include-plugin?tab=responsive-web#reading--focus-order"
+      }
     },
     "Alt text": {
-      "text": "Alternative text is announced by screen readers and describes the purpose, function, or content of an image.<br/><br/>Images that convey meaning are <em>informative</em> and require alt text. Images that do not convey meaning, or are non-functional and beside text that conveys their meaning are considered <em>decorative.</em>"
+      "text": "Alternative text is announced by screen readers and describes the purpose, function, or content of an image.<br/><br/>Images that convey meaning are <em>informative</em> and require alt text. Images that do not convey meaning, or are non-functional and beside text that conveys their meaning are considered <em>decorative.</em>",
+      "link": {
+        "text": "More about Alternative text",
+        "url": "https://playbook.ebay.com/foundations/accessibility/include-plugin?tab=responsive-web#alternative-text"
+      }
     },
     "Contrast": {
-      "text": "Text must have a contrast ratio of 4.5:1. Large text must have a contrast ratio of 3:1. Interactive and meaningful graphical elements must have a contrast ratio of 3:1.<br /><br />Large text is 24px or greater, or 19px bold or greater. In CSS, bold text typically has font-weight:bold, or font-weight:700 or greater."
+      "text": "Text must have a contrast ratio of 4.5:1. Large text must have a contrast ratio of 3:1. Interactive and meaningful graphical elements must have a contrast ratio of 3:1.<br /><br />Large text is 24px or greater, or 19px bold or greater. In CSS, bold text typically has font-weight:bold, or font-weight:700 or greater.",
+      "link": {
+        "text": "More about Contrast",
+        "url": "https://playbook.ebay.com/foundations/accessibility/include-plugin?tab=responsive-web#contrast"
+      }
     },
     "Touch target": {
-      "text": "WCAG SC 2.5.8 Target Size defines the minimum area as 24px by 24px, but allows exceptions for undersize targets with sufficient spacing, links within sentences or blocks of text, or targets like pins on a map, or dots on a chart.<br/><br/>Use this step of <span style=\"font-style: italic;\">Include</span> as a tool to check where needed; it may not be necessary to annotate every target in every design."
+      "text": "WCAG SC 2.5.8 Target Size defines the minimum area as 24px by 24px, but allows exceptions for undersize targets with sufficient spacing, links within sentences or blocks of text, or targets like pins on a map, or dots on a chart.<br/><br/>Use this step of <span style=\"font-style: italic;\">Include</span> as a tool to check where needed; it may not be necessary to annotate every target in every design.",
+      "link": {
+        "text": "More about Touch target",
+        "url": "https://playbook.ebay.com/foundations/accessibility/include-plugin?tab=responsive-web#touch-target"
+      }
     },
     "Text zoom": {
-      "text": "Users must be able to resize text at least 200% without loss of information. Enlarge the text in your design and consider how the content and layout is impacted.<br /><br />This step aligns with WCAG SC 1.4.4 Resize text"
+      "text": "Users must be able to resize text at least 200% without loss of information. Enlarge the text in your design and consider how the content and layout is impacted.<br /><br />This step aligns with WCAG SC 1.4.4 Resize text",
+      "link": {
+        "text": "More about Text resizing",
+        "url": "https://playbook.ebay.com/foundations/accessibility/include-plugin?tab=responsive-web#text-resizing"
+      }
     },
     "Responsive reflow": {
-      "text": "Web content needs to reflow, without horizontal scrolling, at a screen width of 320px, Text does not need to resize to meet this, but if it does, no information must be lost.<br /><br />This step aligns with WCAG SC 1.4.10 Reflow."
+      "text": "Web content needs to reflow, without horizontal scrolling, at a screen width of 320px, Text does not need to resize to meet this, but if it does, no information must be lost.<br /><br />This step aligns with WCAG SC 1.4.10 Reflow.",
+      "link": {
+        "text": "More about Responsive reflow",
+        "url": "https://playbook.ebay.com/foundations/accessibility/include-plugin?tab=responsive-web#responsive-reflow"
+      }
     },
     "Interactive elements": {
       "text": "Naming interactive elements determines what the screen reader is going to read out. Accessibility for each interactive element from the storybook is already coded in the control."
     },
     "Color blindness": {
-      "text": "People may perceive colors differently, and may not be able to differentiate between some or all colors. Ensure a design does not rely only on color to convey meaning."
+      "text": "People may perceive colors differently, and may not be able to differentiate between some or all colors. Ensure a design does not rely only on color to convey meaning.",
+      "link": {
+        "text": "More about Color",
+        "url": "https://playbook.ebay.com/foundations/accessibility/include-plugin?tab=responsive-web#color"
+      }
     },
     "Complex gestures": {
       "text": "When actions can be performed with a <em>gesture</em> ensure there is an alternate and visible way to perform this using only clicks or taps."

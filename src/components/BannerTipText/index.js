@@ -23,6 +23,12 @@ function BannerTipText(props) {
   const [animateClass, setAnimateClass] = React.useState('');
 
   // ui state
+  const tabIndex = tipExpanded ? '0' : '-1';
+  const isLink =
+    helpUrl !== null
+      ? ` <a className="tip-link" href="${helpUrl}" target="_blank" rel="noreferrer" tabIndex="${tabIndex}">${helpText}</a>`
+      : '';
+  const displayText = `${text}${isLink}`;
   const ariaLabel = tipExpanded ? 'collapse' : 'expand';
   const rotateClass = tipExpanded ? ' rotate-right-rev' : ' rotate-left-rev';
   const tipTextClass = tipExpanded ? '' : 'tip-text-collapsed';
@@ -49,13 +55,6 @@ function BannerTipText(props) {
   return (
     <div className="banner-tip">
       <div className="flex-row align-start">
-        <div className="tip-label">tip</div>
-
-        <p
-          className={tipTextClass}
-          dangerouslySetInnerHTML={{ __html: text }}
-        />
-
         <div
           aria-label={`${ariaLabel} tip`}
           className="tip-toggle"
@@ -70,15 +69,16 @@ function BannerTipText(props) {
             <SvgChevronDown size={12} />
           </div>
         </div>
+
+        <div className="tip-label">tip</div>
+
+        <p
+          className={tipTextClass}
+          dangerouslySetInnerHTML={{ __html: displayText }}
+        />
       </div>
 
       {footer && tipExpanded && footer}
-
-      {helpUrl !== null && (
-        <a className="tip-link" href={helpUrl} target="_blank" rel="noreferrer">
-          {helpText}
-        </a>
-      )}
     </div>
   );
 }
