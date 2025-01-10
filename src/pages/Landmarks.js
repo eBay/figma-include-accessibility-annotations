@@ -53,7 +53,6 @@ function Landmarks() {
   const [labelsTemp, setLabelsTemp] = React.useState({});
 
   const [needsLabel, setNeedsLabel] = React.useState([]);
-  const canContinue = needsLabel.length !== Object.keys(labelsTemp).length;
 
   const [dupNeedLabel, setDupNeedLabel] = React.useState([]);
   const showDupWarning = dupNeedLabel.length > 0;
@@ -332,11 +331,10 @@ function Landmarks() {
       return {
         completesStep: true,
         isDisabled:
-          (showDupWarning ||
-            showAlwaysNeedLabel ||
-            showLandmarkWordWarning ||
-            showSameLabelWarning) &&
-          canContinue === false,
+          showDupWarning ||
+          showAlwaysNeedLabel ||
+          showLandmarkWordWarning ||
+          showSameLabelWarning,
         onClick: onDoneWithLandmarks
       };
     }
