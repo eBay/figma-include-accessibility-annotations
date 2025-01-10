@@ -140,7 +140,7 @@ export const createClone = async (msg) => {
   }
 
   // zoom figma view for new cloned page
-  figma.viewport.scrollAndZoomIntoView([clone]);
+  figma.viewport.scrollAndZoomIntoView([pageNode, clone]);
 
   // let the user know the page has been cloned
   figma.notify('Layer cloned with Text Zoom applied!', {
