@@ -3,53 +3,50 @@ import { createRoot } from 'react-dom/client';
 import { MemoryRouter, Routes, Route, useLocation } from 'react-router-dom';
 
 // styles
-import './styles/base.scss';
+import '@/styles/base.scss';
 
 // pages
-import ProgressLoading from './pages/ProgressLoading';
-import PageChange from './pages/PageChange';
-import Dashboard from './pages/Dashboard';
-import ChooseYourOwnAdventure from './pages/ChooseYourOwnAdventure';
-import SelectFrameToStart from './pages/SelectFrameToStart';
-import Landmarks from './pages/Landmarks';
-import Headings from './pages/Headings';
-import ReadingOrder from './pages/ReadingOrder';
-import AltText from './pages/AltText';
-import Contrast from './pages/Contrast';
-import TouchTarget from './pages/TouchTarget';
-import TextZoom from './pages/TextZoom';
-import ResponsiveReflow from './pages/ResponsiveReflow';
-import FocusGrouping from './pages/FocusGrouping';
-import ComplexGestures from './pages/ComplexGestures';
-import ColorBlindness from './pages/ColorBlindness';
-import Settings from './pages/Settings';
+import ProgressLoading from '@/pages/ProgressLoading';
+import PageChange from '@/pages/PageChange';
+import Dashboard from '@/pages/Dashboard';
+import ChooseYourOwnAdventure from '@/pages/ChooseYourOwnAdventure';
+import SelectFrameToStart from '@/pages/SelectFrameToStart';
+import Landmarks from '@/pages/Landmarks';
+import Headings from '@/pages/Headings';
+import ReadingOrder from '@/pages/ReadingOrder';
+import AltText from '@/pages/AltText';
+import Contrast from '@/pages/Contrast';
+import TouchTarget from '@/pages/TouchTarget';
+import TextZoom from '@/pages/TextZoom';
+import ResponsiveReflow from '@/pages/ResponsiveReflow';
+import FocusGrouping from '@/pages/FocusGrouping';
+import ComplexGestures from '@/pages/ComplexGestures';
+import ColorBlindness from '@/pages/ColorBlindness';
+import Settings from '@/pages/Settings';
 
 // components
-import { NavLeft } from './components';
+import { NavLeft } from '@/components';
 
 // app context state
-import AppState from './context/AppState';
+import AppState from '@/context/AppState';
 
 // app state
-import Context from './context';
+import Context from '@/context';
 
 // data
-import routes from './data/routes.json';
-import routesNative from './data/routes-native.json';
-import ErrorBoundary from './components/ErrorBoundary';
+import routes from '@/data/routes.json';
+import routesNative from '@/data/routes-native.json';
+import ErrorBoundary from '@/components/ErrorBoundary';
 
 function App() {
   const cnxt = React.useContext(Context);
-  const { alertMsg, condensedUI, isLoading, leftNavVisible } = cnxt;
+  const { alertMsg, condensedUI, isLoading, loadingMsg, leftNavVisible } = cnxt;
   const { colorBlindnessView, page, pageSelected, pageType } = cnxt;
-  const { steps, stepsNative, stepsCompleted, stepsData } = cnxt;
-  const { showDashboard, showPageChange, showSettings, sendToFigma } = cnxt;
+  const { steps, stepsNative, stepsCompleted, stepsData, showDashboard } = cnxt;
+  const { showPageChange, showSettings, sendToFigma, updateState } = cnxt;
 
   // local state
   const [progressPercent, setPercentage] = React.useState(null);
-  const [loadingMsg, setLoadingMsg] = React.useState(
-    'Scanning for Accessibility layers in Figma document'
-  );
   const [showLoadingWarning, setLoadingWarning] = React.useState(false);
 
   // hook for route changes
@@ -63,13 +60,15 @@ function App() {
 
     if (isLoading === true) {
       timer15 = setTimeout(() => {
-        setLoadingMsg(
+        updateState(
+          'loadingMsg',
           'If you have a lot of pages with annotations, and high-res images, try moving them to their own Figma page to get it to load faster.'
         );
       }, 15000);
 
       timer60 = setTimeout(() => {
-        setLoadingMsg(
+        updateState(
+          'loadingMsg',
           "We couldn't load the annotations. If you have a lot of pages with annotations, and high-res images, try moving them to their own Figma page to get it to load faster."
         );
         setLoadingWarning(true);

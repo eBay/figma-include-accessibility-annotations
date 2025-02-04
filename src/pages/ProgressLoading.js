@@ -2,10 +2,10 @@ import * as React from 'react';
 import PropTypes from 'prop-types';
 
 // components
-import { LoadingSpinner } from '../components';
+import { LoadingSpinner } from '@/components';
 
 // icons
-import { SvgWarning } from '../icons';
+import { SvgWarning } from '@/icons';
 
 function ProgressLoading({
   message = 'Scanning for Accessibility layers in Figma document',

@@ -1,10 +1,8 @@
-import { colors, figmaLayer, utils } from '../../constants';
-import { createTransparentFrame } from '../../constants/figma-layer';
-import gestureTypes from '../../data/gesture-types';
-import config from '../config';
+import { colors, figmaLayer, utils } from '@/constants';
+import { createTransparentFrame } from '@/constants/figma-layer';
+import gestureTypes from '@/data/gesture-types';
+import config from '@/figma-code/config';
 import {
-  createAnnotationFrame,
-  createAnnotationFrameTitleText,
   createAnnotationInfoFrame,
   createAnnotationLabelValueRow,
   createAnnotationNumberFrame,
@@ -12,15 +10,15 @@ import {
   findAndRemovePreviousAnnotationFrame,
   getOrCreateMainA11yFrame,
   getOrCreateMainAnnotationsFrame
-} from '../frame-helpers';
+} from '@/figma-code/frame-helpers';
 
 const complexGesturesLayerName = 'Complex gestures Layer';
 const complexGesturesAnnotationLayerName = 'Complex gesture Annotations';
 
-export const noComplexGestures = (msg) => {
+export const noComplexGestures = async (msg) => {
   const { bounds, name, pageId, page, pageType } = msg;
 
-  const mainPageNode = figma.getNodeById(pageId);
+  const mainPageNode = await figma.getNodeByIdAsync(pageId);
 
   // node not found
   if (mainPageNode === null) {
@@ -40,10 +38,10 @@ export const noComplexGestures = (msg) => {
 
   // get main A11y frame if it exists (or create it)
   const { parent } = mainPageNode;
-  const mainFrame = getOrCreateMainA11yFrame({ page, pageType });
+  const mainFrame = await getOrCreateMainA11yFrame({ page, pageType });
 
   // does Complex gestures exist already?
-  const complexGesturesFrame = utils.frameExistsOrCreate(
+  const complexGesturesFrame = await utils.frameExistsOrCreate(
     mainFrame.id,
     complexGesturesLayerName,
     {
@@ -59,12 +57,12 @@ export const noComplexGestures = (msg) => {
 
   // in case gestures were annotated then removed, remove the complex gesture
   // annotations layer if it exists
-  const mainAnnotationsFrame = getOrCreateMainAnnotationsFrame({
+  const mainAnnotationsFrame = await getOrCreateMainAnnotationsFrame({
     mainFrame,
     page: { bounds }
   });
 
-  findAndRemovePreviousAnnotationFrame({
+  await findAndRemovePreviousAnnotationFrame({
     mainAnnotationsFrame,
     layerName: complexGesturesAnnotationLayerName
   });
@@ -101,10 +99,10 @@ export const noComplexGestures = (msg) => {
   });
 };
 
-export const add = (msg) => {
+export const add = async (msg) => {
   const { bounds, gesture, number, page, pageId, pageType } = msg;
 
-  const mainPageNode = figma.getNodeById(pageId);
+  const mainPageNode = await figma.getNodeByIdAsync(pageId);
 
   // node not found
   if (mainPageNode === null) {
@@ -120,10 +118,14 @@ export const add = (msg) => {
   const { height: pageH, width: pageW } = bounds;
 
   // get main A11y frame if it exists (or create it)
-  const mainFrame = getOrCreateMainA11yFrame({ page, pageType });
+  const mainFrame = await getOrCreateMainA11yFrame({ page, pageType });
+  const mainAnnotationsFrame = await getOrCreateMainAnnotationsFrame({
+    mainFrame,
+    page
+  });
 
   // does Complex gestures exist already?
-  const gestureFrame = utils.frameExistsOrCreate(
+  const gestureFrame = await utils.frameExistsOrCreate(
     mainFrame.id,
     complexGesturesLayerName,
     {
@@ -210,9 +212,11 @@ export const add = (msg) => {
       name: gestureBlockName
     }
   });
+
+  figma.viewport.scrollAndZoomIntoView([mainPageNode, mainAnnotationsFrame]);
 };
 
-export const completed = (msg) => {
+export const completed = async (msg) => {
   const { page, pageType } = msg;
 
   // main data and setup
@@ -224,7 +228,10 @@ export const completed = (msg) => {
   const mainLayerName = `${saniName} ${config.a11ySuffix} | ${pageTypeCap}`;
 
   // does Accessibility layer exists already?
-  const accessExists = utils.checkIfChildNameExists(mainPageId, mainLayerName);
+  const accessExists = await utils.checkIfChildNameExists(
+    mainPageId,
+    mainLayerName
+  );
 
   let mainFrame = null;
 
@@ -238,10 +245,10 @@ export const completed = (msg) => {
     return;
   }
   // already exists, grab by Node ID
-  mainFrame = figma.getNodeById(accessExists);
+  mainFrame = await figma.getNodeByIdAsync(accessExists);
 
   // does Complex gestures exist already?
-  const complexGesturesExists = utils.checkIfChildNameExists(
+  const complexGesturesExists = await utils.checkIfChildNameExists(
     mainFrame.id,
     complexGesturesLayerName
   );
@@ -258,7 +265,9 @@ export const completed = (msg) => {
   }
 
   // already exists, grab by Node ID
-  const complexGesturesFrame = figma.getNodeById(complexGesturesExists);
+  const complexGesturesFrame = await figma.getNodeByIdAsync(
+    complexGesturesExists
+  );
 
   // grab main page a11y scan was for
   const [originalPage] = parent.children.filter((c) => c.name === saniName);
@@ -334,43 +343,40 @@ const createGestureAnnotation = ({ number, id, label, type }) => {
   return gestureAnnotationFrame;
 };
 
-const createComplexGesturesAnnotationFrame = () => {
-  const annotationFrame = createAnnotationFrame({
-    name: complexGesturesAnnotationLayerName
-  });
-  const annotationTitle = createAnnotationFrameTitleText({
-    title: 'Complex gestures'
-  });
-  annotationFrame.appendChild(annotationTitle);
-
-  return annotationFrame;
-};
-
-export const annotateComplexGestures = (msg) => {
+export const annotateComplexGestures = async (msg) => {
   const { gestures, page, pageType } = msg;
 
-  const mainFrame = getOrCreateMainA11yFrame({ page, pageType });
+  const mainFrame = await getOrCreateMainA11yFrame({ page, pageType });
 
   // get current complex gestures frame (it should exist)
-  const complexGesturesFrameId = utils.checkIfChildNameExists(
+  const complexGesturesFrameId = await utils.checkIfChildNameExists(
     mainFrame.id,
     complexGesturesLayerName
   );
-  const complexGesturesFrame = figma.getNodeById(complexGesturesFrameId);
+  const complexGesturesFrame = await figma.getNodeByIdAsync(
+    complexGesturesFrameId
+  );
 
   // get or create main annotations frame
-  const mainAnnotationsFrame = getOrCreateMainAnnotationsFrame({
+  const mainAnnotationsFrame = await getOrCreateMainAnnotationsFrame({
     mainFrame,
     page
   });
 
-  // check for existing annotation frame and remove if found
-  const oldAnnotationFrameId = findAndRemovePreviousAnnotationFrame({
-    mainAnnotationsFrame,
-    layerName: complexGesturesAnnotationLayerName
-  });
+  // get complex gesture annotation frame
+  const annotationFrame = mainAnnotationsFrame.findOne(
+    (n) => n.name === 'Complex gestures line'
+  );
 
-  const annotationFrame = createComplexGesturesAnnotationFrame();
+  // find and remove previous annotation complex gesture frames
+  if (annotationFrame !== null) {
+    annotationFrame.children.forEach((n) => {
+      // remove all complex gesture blocks
+      if (n.name.startsWith('Complex gesture Block')) {
+        n.remove();
+      }
+    });
+  }
 
   // for each gesture...
   for (let i = 0; i < gestures.length; i += 1) {
@@ -401,17 +407,10 @@ export const annotateComplexGestures = (msg) => {
     );
   }
 
-  // add Annotation frame to main Accessibility annotations frame
-  mainAnnotationsFrame.insertChild(0, annotationFrame);
-
   // let the user know layer(s) have been added/updated
-  const notifyMsg = oldAnnotationFrameId !== null ? 'updated' : 'added';
-  figma.notify(
-    `Complex gesture annotations have been ${notifyMsg} successfully!`,
-    {
-      timeout: config.notifyTime
-    }
-  );
+  figma.notify('Complex gesture annotations have been added successfully!', {
+    timeout: config.notifyTime
+  });
 };
 
 export default {

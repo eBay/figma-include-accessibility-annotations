@@ -1,16 +1,16 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
-import { analytics, utils } from '../constants';
+import { analytics, utils } from '@/constants';
 
 // components
-import { Alert } from '../components';
+import { Alert } from '@/components';
 
 // icons
-import { SvgArrowRight, SvgFrame, SvgWarning } from '../icons';
+import { SvgArrowRight, SvgFrame, SvgWarning } from '@/icons';
 
 // app state
-import Context from '../context';
+import Context from '@/context';
 
 function SelectFrameToStart({ alertMsg = null, name = null }) {
   // main app state

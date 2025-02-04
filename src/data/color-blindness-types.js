@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 // color blindness svgs
-import ColorBlindness from '../icons/color-blindness';
+import ColorBlindness from '@/icons/color-blindness';
 
 // setup color blindness options
 export default {

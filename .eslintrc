@@ -29,5 +29,12 @@
     "window": "readonly",
     "Blob": "readonly",
     "Image": "readonly"
+  },
+  "settings": {
+    "import/resolver": {
+      "webpack": {
+        "config": "./webpack.config.js"
+      }
+    }
   }
 }

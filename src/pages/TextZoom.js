@@ -1,10 +1,10 @@
 import * as React from 'react';
 
 // components
-import { AnnotationStepPage, HeadingStep } from '../components';
+import { AnnotationStepPage, HeadingStep } from '@/components';
 
 // app state
-import Context from '../context';
+import Context from '@/context';
 
 function TextZoom() {
   // main app state

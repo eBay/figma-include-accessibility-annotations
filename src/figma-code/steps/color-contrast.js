@@ -1,10 +1,10 @@
-import { contrast } from '../../constants';
+import { contrast } from '@/constants';
 
 // https://github.com/romannurik/Figma-Contrast
 export const scan = async (msg) => {
   const { page } = msg;
 
-  const frameNode = figma.getNodeById(page.id);
+  const frameNode = await figma.getNodeByIdAsync(page.id);
   const duplicate = frameNode.clone();
   const nodeIdMap = contrast.mapNodeIds(frameNode, duplicate);
 

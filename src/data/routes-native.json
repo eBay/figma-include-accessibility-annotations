@@ -3,6 +3,7 @@
     "id": "Headings",
     "label": "Headings",
     "designerCheck": "Headings",
+    "designerEmpty": "Add headings or mark that there is none.",
     "path": "",
     "shouldHide": true,
     "percent": 12
@@ -11,6 +12,7 @@
     "id": "Focus grouping",
     "label": "Focus grouping",
     "designerCheck": "Focus grouping",
+    "designerEmpty": "Add focus groupings or mark that there is none.",
     "path": "focus-grouping",
     "shouldHide": true,
     "percent": 12
@@ -19,6 +21,7 @@
     "id": "Reading order",
     "label": "Reading & focus order",
     "designerCheck": "Reading & focus order",
+    "designerEmpty": "Add reading order and focus order (if different from the reading order).",
     "path": "reading-order",
     "shouldHide": true,
     "percent": 10
@@ -27,6 +30,7 @@
     "id": "Alt text",
     "label": "Alternative text",
     "designerCheck": "Alternative text",
+    "designerEmpty": "Scan for images and add alternative text where appropriate.",
     "path": "alt-text",
     "shouldHide": true,
     "percent": 20
@@ -35,6 +39,7 @@
     "id": "Contrast",
     "label": "Contrast",
     "designerCheck": "Sufficient text color contrast",
+    "designerEmpty": "Scan for potential text contrast issues.",
     "path": "contrast",
     "shouldHide": false,
     "percent": 8
@@ -43,6 +48,7 @@
     "id": "Color blindness",
     "label": "Color",
     "designerCheck": "Color checked",
+    "designerEmpty": "Check how the colors appear to different users.",
     "path": "color-blindness",
     "shouldHide": false,
     "percent": 10
@@ -51,6 +57,7 @@
     "id": "Text zoom",
     "label": "Text resizing",
     "designerCheck": "Text resizing documented",
+    "designerEmpty": "Generate screen with text at 200% and adjust layout and truncation.",
     "path": "text-zoom",
     "shouldHide": false,
     "percent": 10
@@ -59,6 +66,7 @@
     "id": "Complex gestures",
     "label": "Complex gestures",
     "designerCheck": "Complex gestures documented",
+    "designerEmpty": "Add alternatives to complex gestures or mark that there is none.",
     "path": "complex-gestures",
     "shouldHide": true,
     "percent": 10
@@ -67,6 +75,7 @@
     "id": "Touch target",
     "label": "Touch target",
     "designerCheck": "Sufficient touch target sizes",
+    "designerEmpty": "Check for potential touch target issues.",
     "path": "touch-target",
     "shouldHide": true,
     "percent": 8

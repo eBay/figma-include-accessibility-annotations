@@ -1,12 +1,12 @@
-import { colors, figmaLayer, utils } from '../../constants';
-import config from '../config';
-import { getOrCreateMainA11yFrame } from '../frame-helpers';
+import { colors, figmaLayer, utils } from '@/constants';
+import config from '@/figma-code/config';
+import { getOrCreateMainA11yFrame } from '@/figma-code/frame-helpers';
 
 const touchTargetsLayerName = 'Touch target Layer';
 
-export const add = (msg) => {
+export const add = async (msg) => {
   const { bounds, page, pageId, pageType } = msg;
-  const mainPageNode = figma.getNodeById(pageId);
+  const mainPageNode = await figma.getNodeByIdAsync(pageId);
 
   // node not found
   if (mainPageNode === null) {
@@ -22,10 +22,10 @@ export const add = (msg) => {
   const { height: pageH, width: pageW } = bounds;
 
   // get main A11y frame if it exists (or create it)
-  const mainFrame = getOrCreateMainA11yFrame({ page, pageType });
+  const mainFrame = await getOrCreateMainA11yFrame({ page, pageType });
 
   // does touch targets exists already?
-  const touchTargetsFrame = utils.frameExistsOrCreate(
+  const touchTargetsFrame = await utils.frameExistsOrCreate(
     mainFrame.id,
     touchTargetsLayerName,
     {
@@ -57,13 +57,13 @@ export const add = (msg) => {
   // create rectangle
   const size = pageType === 'web' ? 24 : 48;
   const targetNode = figmaLayer.createRectangle({
-    fillColor: colors.purpleDark,
+    fillColor: colors.deepTeal,
     name: `Touch target ${nextTargetNum}`,
     height: size,
     radius: 4,
     opacity: 0.3,
     stroke: 0,
-    strokeColor: colors.purpleDark,
+    strokeColor: colors.deepTeal,
     x: xStart,
     y: yStart,
     width: size
@@ -104,14 +104,16 @@ export const add = (msg) => {
   touchTargetsFrame.expanded = false;
 };
 
-export const checkTouchTargets = (msg) => {
+export const checkTouchTargets = async (msg) => {
   const { touchTargets } = msg;
 
-  const validTargetNodes = Object.keys(touchTargets)
-    .map((nodeId) => figma.getNodeById(nodeId))
-    .filter(Boolean);
+  const validTargetNodes = (
+    await Promise.all(
+      Object.keys(touchTargets).map((nodeId) => figma.getNodeByIdAsync(nodeId))
+    )
+  ).filter(Boolean);
 
-  // Rename the nodes based on how many we now have
+  // rename the nodes based on how many we now have
   validTargetNodes.forEach((targetNode, index) => {
     // eslint-disable-next-line no-param-reassign
     targetNode.name = `Touch target ${index + 1}`;
@@ -130,12 +132,12 @@ export const checkTouchTargets = (msg) => {
     const radius1 = node1.width / 2.0;
     const radius2 = node2.width / 2.0;
 
-    // Calculate the distance between the centers of the two circles
+    // calculate the distance between the centers of the two circles
     const distanceX = node1.x - node2.x;
     const distanceY = node1.y - node2.y;
     const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
 
-    // If the distance is less than the sum of the radii, the circles intersect
+    // if the distance is less than the sum of the radii, the circles intersect
     return distance <= radius1 + radius2;
   }
 
@@ -147,20 +149,20 @@ export const checkTouchTargets = (msg) => {
     const ry = node2.y;
     const { width, height } = node2;
 
-    // Check if circle's center is inside the rectangle
+    // check if circle's center is inside the rectangle
     if (rx <= x && x <= rx + width && ry <= y && y <= ry + height) {
       return true;
     }
 
-    // Find the closest point in the rectangle to the circle's center
+    // find the closest point in the rectangle to the circle's center
     const closestX = Math.max(rx, Math.min(x, rx + width));
     const closestY = Math.max(ry, Math.min(y, ry + height));
 
-    // Calculate the distance between the circle's center and this closest point
+    // calculate the distance between the circle's center and this closest point
     const distanceX = x - closestX;
     const distanceY = y - closestY;
 
-    // If the distance is less than the circle's radius, an intersection occurs
+    // if the distance is less than the circle's radius, an intersection occurs
     return distanceX * distanceX + distanceY * distanceY <= radius * radius;
   }
 
@@ -173,7 +175,7 @@ export const checkTouchTargets = (msg) => {
     return doRectanglesIntersect(node1, node2);
   };
 
-  // In terms of WCAG compliance, this is the same on native and web
+  // in terms of WCAG compliance, this is the same on native and web
   const targetSize = 24;
 
   const checkOverlap = (nodes) => {
@@ -214,7 +216,7 @@ export const checkTouchTargets = (msg) => {
 
     nodes.forEach((node) => {
       if (isUndersized(node)) {
-        // If the node is undersized, we need to see if it passes
+        // if the node is undersized, we need to see if it passes
         // via the spacing exception. We will set up a spacing-circle
         // that is 24x24 centered at the center of mass for the node
         const centerOfMass = {
@@ -230,11 +232,15 @@ export const checkTouchTargets = (msg) => {
           height: targetSize,
           type: 'spacing-circle'
         };
-        undersizedNodes.push(compareNode); // add spacing node to the undersized list
-        nodesToCompare.push(compareNode); // we also need to add the spacing node to the comparison list
+
+        // add spacing node to the undersized list
+        undersizedNodes.push(compareNode);
+
+        // we also need to add the spacing node to the comparison list
+        nodesToCompare.push(compareNode);
       }
 
-      // No matter what, push the original node to the comparison list
+      // no matter what, push the original node to the comparison list
       nodesToCompare.push(node);
     });
 

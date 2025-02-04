@@ -1,6 +1,6 @@
 import * as React from 'react';
 import propTypes from 'prop-types';
-import { utils } from '../constants';
+import { utils } from '@/constants';
 
 // components
 import {
@@ -9,16 +9,16 @@ import {
   BannerSuccess,
   EmptyStepSelection,
   HeadingStep
-} from '../components';
+} from '@/components';
 
 // icons
-import { SvgWarning } from '../icons';
+import { SvgWarning } from '@/icons';
 
 // icons: touch target
-import SvgTouchTarget from '../icons/touch-target';
+import SvgTouchTarget from '@/icons/touch-target';
 
 // app state
-import Context from '../context';
+import Context from '@/context';
 
 function TouchTarget() {
   // main app state

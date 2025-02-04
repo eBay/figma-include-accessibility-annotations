@@ -1,17 +1,17 @@
-import { colors, figmaLayer, utils } from '../../constants';
-import { createTransparentFrame } from '../../constants/figma-layer';
-import config from '../config';
-import { getOrCreateMainA11yFrame } from '../frame-helpers';
+import { colors, figmaLayer, utils } from '@/constants';
+import { createTransparentFrame } from '@/constants/figma-layer';
+import config from '@/figma-code/config';
+import { getOrCreateMainA11yFrame } from '@/figma-code/frame-helpers';
 
 // data
-import landmarksTypesObj from '../../data/landmark-types';
+import landmarksTypesObj from '@/data/landmark-types';
 
 const landmarkLayerName = 'Landmarks Layer';
 
-export const noLandmarks = (msg) => {
+export const noLandmarks = async (msg) => {
   const { bounds, name, page, pageId, pageType } = msg;
 
-  const mainPageNode = figma.getNodeById(pageId);
+  const mainPageNode = await figma.getNodeByIdAsync(pageId);
 
   // node not found
   if (mainPageNode === null) {
@@ -31,10 +31,10 @@ export const noLandmarks = (msg) => {
 
   // get main A11y frame if it exists (or create it)
   const { parent } = mainPageNode;
-  const mainFrame = getOrCreateMainA11yFrame({ page, pageType });
+  const mainFrame = await getOrCreateMainA11yFrame({ page, pageType });
 
   // does Landmarks exists already?
-  const landmarksFrame = utils.frameExistsOrCreate(
+  const landmarksFrame = await utils.frameExistsOrCreate(
     mainFrame.id,
     landmarkLayerName,
     {
@@ -77,11 +77,11 @@ export const noLandmarks = (msg) => {
   });
 };
 
-export const add = (msg) => {
+export const add = async (msg) => {
   const { bounds, landmark, page, pageId, pageType } = msg;
   const { label } = landmarksTypesObj[landmark];
 
-  const mainPageNode = figma.getNodeById(pageId);
+  const mainPageNode = await figma.getNodeByIdAsync(pageId);
 
   // node not found
   if (mainPageNode === null) {
@@ -97,10 +97,10 @@ export const add = (msg) => {
   const { height: pageH, width: pageW } = bounds;
 
   // get main A11y frame if it exists (or create it)
-  const mainFrame = getOrCreateMainA11yFrame({ page, pageType });
+  const mainFrame = await getOrCreateMainA11yFrame({ page, pageType });
 
   // does Landmarks exists already?
-  const landmarksFrame = utils.frameExistsOrCreate(
+  const landmarksFrame = await utils.frameExistsOrCreate(
     mainFrame.id,
     landmarkLayerName,
     {
@@ -190,10 +190,10 @@ export const add = (msg) => {
   // add label node to frame
   labelFrame.appendChild(labelNode);
 
-  // Add label frame to landmark block
+  // add label frame to landmark block
   landmarkBlock.appendChild(labelFrame);
 
-  // Add landmark block to greater landmarks frame
+  // add landmark block to greater landmarks frame
   landmarksFrame.appendChild(landmarkBlock);
 
   // de-selection of layer on Figma document
@@ -226,11 +226,11 @@ export const add = (msg) => {
   landmarkBlock.expanded = false;
 };
 
-export const updateType = (msg) => {
+export const updateType = async (msg) => {
   const { id, landmarkType, prevLandmarkType } = msg;
 
   // get landmark
-  const landmarkNode = figma.getNodeById(id);
+  const landmarkNode = await figma.getNodeByIdAsync(id);
 
   // prevent memory leak (if not found, early return)
   if (landmarkNode === null) {
@@ -268,7 +268,7 @@ export const updateType = (msg) => {
   }
 };
 
-export const completed = (msg) => {
+export const completed = async (msg) => {
   const { page, pageType, landmarks = {} } = msg;
 
   // main data and setup
@@ -281,7 +281,10 @@ export const completed = (msg) => {
   const landmarksLayerName = 'Landmarks Layer';
 
   // does Accessibility layer exists already?
-  const accessExists = utils.checkIfChildNameExists(mainPageId, mainLayerName);
+  const accessExists = await utils.checkIfChildNameExists(
+    mainPageId,
+    mainLayerName
+  );
 
   let mainFrame = null;
 
@@ -295,10 +298,10 @@ export const completed = (msg) => {
     return;
   }
   // already exists, grab by Node ID
-  mainFrame = figma.getNodeById(accessExists);
+  mainFrame = await figma.getNodeByIdAsync(accessExists);
 
   // does Landmarks exists already?
-  const landmarksExists = utils.checkIfChildNameExists(
+  const landmarksExists = await utils.checkIfChildNameExists(
     mainFrame.id,
     landmarksLayerName
   );
@@ -315,7 +318,7 @@ export const completed = (msg) => {
   }
 
   // already exists, grab by Node ID
-  const landmarksFrame = figma.getNodeById(landmarksExists);
+  const landmarksFrame = await figma.getNodeByIdAsync(landmarksExists);
 
   // grab main page a11y scan was for
   const { parent } = mainFrame;
@@ -346,12 +349,12 @@ export const completed = (msg) => {
   });
 };
 
-export const updateWithLabel = (msg) => {
+export const updateWithLabel = async (msg) => {
   const { id, value, landmarkType } = msg;
   const { label } = landmarksTypesObj[landmarkType];
 
   // get landmark
-  const landmarkNode = figma.getNodeById(id);
+  const landmarkNode = await figma.getNodeByIdAsync(id);
 
   // prevent memory leak (if not found, early return)
   if (landmarkNode === null) {
@@ -371,38 +374,39 @@ export const updateWithLabel = (msg) => {
   const labelWidth = Math.floor(newLabel.length * 9.5);
   const newLabelWidth = labelWidth < widthMin ? widthMin : labelWidth;
 
-  const updateName = (node) => {
-    const landmarkNameNode = figma.getNodeById(node.id);
-    landmarkNameNode.characters = newLabel;
-  };
-
   // loop through children and make changes as needed
-  landmarkNode.children.map((childNode) => {
-    const { name } = childNode;
-    const lowerName = name.toLowerCase();
+  await Promise.all(
+    landmarkNode.children.map(async (childNode) => {
+      const { name } = childNode;
+      const lowerName = name.toLowerCase();
 
-    if (lowerName === 'label background') {
-      if (childNode.children.length > 0) {
-        // new version: label is child of background frame
-        const labelChild = childNode.children[0];
-        const labelName = labelChild.name.toLowerCase();
-        if (labelName.includes('landmark name:')) {
-          updateName(labelChild);
+      if (lowerName === 'label background') {
+        if (childNode.children.length > 0) {
+          // new version: label is child of background frame
+          const labelChild = childNode.children[0];
+          const labelName = labelChild.name.toLowerCase();
+          if (labelName.includes('landmark name:')) {
+            const landmarkNameNode = await figma.getNodeByIdAsync(
+              labelChild.id
+            );
+            landmarkNameNode.characters = newLabel;
+          }
+        } else {
+          // old version compatability: resize label based on new width
+          childNode.resize(newLabelWidth, 32);
         }
-      } else {
-        // old version compatability: resize label based on new width
-        childNode.resize(newLabelWidth, 32);
+      } else if (lowerName.includes('landmark name:')) {
+        // old version compatiability: update new label
+        const landmarkNameNode = await figma.getNodeByIdAsync(childNode.id);
+        landmarkNameNode.characters = newLabel;
       }
-    } else if (lowerName.includes('landmark name:')) {
-      // old version compatiability: update new label
-      updateName(childNode);
-    }
 
-    // update name of parent layer for future scanning/pick up where you left off
-    landmarkNode.name = `Landmark: ${landmarkType}:${newValue} | ${landmarkNode.id}`;
+      // update name of parent layer for future scanning/pick up where you left off
+      landmarkNode.name = `Landmark: ${landmarkType}:${newValue} | ${landmarkNode.id}`;
 
-    return null;
-  });
+      return null;
+    })
+  );
 };
 
 export default {

@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 // svg reading order
-import SvgReadingOrder from '../icons/reading-order';
+import SvgReadingOrder from '@/icons/reading-order';
 
 // setup reading order button options
 export default {

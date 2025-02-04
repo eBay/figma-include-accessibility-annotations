@@ -1,6 +1,6 @@
-import { utils } from '../constants';
-import config from './config';
-import { findDescendentOfFrame } from './frame-helpers';
+import { utils } from '@/constants';
+import config from '@/figma-code/config';
+import { findDescendentOfFrame } from '@/figma-code/frame-helpers';
 
 export const preload = async () => {
   // async load fonts
@@ -10,8 +10,9 @@ export const preload = async () => {
   await figma.loadFontAsync({ family: 'Roboto', style: 'Regular' });
 };
 
-const isA11yLayer = (children, childNode, name) => {
+const isA11yLayer = async (children, childNode, name) => {
   const { children: frameChildren } = childNode;
+
   const a11yCompletedLayers = [];
   const stepsData = {};
 
@@ -35,7 +36,7 @@ const isA11yLayer = (children, childNode, name) => {
 
   const existingAnnotationsFrame = frameChildren.find(
     (child) =>
-      utils.nameBeforePipe(child.name) === 'Accessibility annotations Layer'
+      utils.nameBeforePipe(child.name) === config.a11yAnnotationLayerKeyV2
   );
 
   // old landmarks mapper (legacy)
@@ -51,314 +52,317 @@ const isA11yLayer = (children, childNode, name) => {
   };
 
   // loop through a11y layer steps
-  for (let j = 0; j < frameChildren.length; j += 1) {
-    const frameChild = frameChildren[j];
+  await Promise.all(
+    frameChildren.map(async (frameChild) => {
+      // get layer without id/metadata
+      const layerName = utils.nameBeforePipe(frameChild.name);
 
-    // get layer without id/metadata
-    const layerName = utils.nameBeforePipe(frameChild.name);
+      const hasLayer = config.a11yMainLayers.filter((mainLayer) =>
+        layerName.startsWith(mainLayer)
+      );
+      const stepName = layerName.replace(/ Layer/g, '');
 
-    const hasLayer = config.a11yMainLayers.filter((mainLayer) =>
-      layerName.startsWith(mainLayer)
-    );
-    const stepName = layerName.replace(/ Layer/g, '');
-
-    // no layers?
-    if (hasLayer.length === 0) {
-      if (frameChild?.id !== existingAnnotationsFrame?.id) {
-        // eslint-disable-next-line no-console
-        console.error(`no steps found in "${stepName}"`);
-      }
-
-      // eslint-disable-next-line
-      continue;
-    }
-
-    // figure out which layer type it is
-    if (config.a11yCheckboxLayers.includes(layerName)) {
-      // is "checkbox" layer
-      stepsData[stepName] = {
-        id: frameChild.id,
-        visible: frameChild.visible
-      };
-      a11yCompletedLayers.push(stepName);
-    } else if (stepName === 'Landmarks') {
-      // get landmark nodes and format
-      const landmarks = {};
-      for (let l = 0; l < frameChild.children.length; l += 1) {
-        const landmarkObj = frameChild.children[l];
-
-        // make sure it's a frame node OR group node (backwards compatibility)
-        if (landmarkObj.type === 'FRAME' || landmarkObj.type === 'GROUP') {
-          const [nameArray] = landmarkObj.name.split('|');
-          const typeName = nameArray.replace('Landmark: ', '');
-
-          // if we have a label, grab it
-          const [type, label = null] = typeName.split(':');
-          const typeTrim = type.trim();
-          const newType =
-            typeTrim in marksLegacy ? marksLegacy[typeTrim] : typeTrim;
-
-          landmarks[landmarkObj.id] = {
-            id: landmarkObj.id,
-            label: label !== null ? label.trim() : label,
-            name: landmarkObj.name,
-            type: newType
-          };
+      // no layers?
+      if (hasLayer.length === 0) {
+        if (frameChild?.id !== existingAnnotationsFrame?.id) {
+          // eslint-disable-next-line no-console
+          console.error(`no steps found in "${stepName}"`);
         }
+
+        return;
       }
 
-      stepsData[stepName] = {
-        id: frameChild.id,
-        existingData: landmarks,
-        stateKey: 'landmarks',
-        visible: frameChild.visible
-      };
-      a11yCompletedLayers.push(stepName);
-    } else if (stepName === 'Headings') {
-      // get heading nodes and format
-      const headings = {};
+      // figure out which layer type it is
+      if (config.a11yCheckboxLayers.includes(layerName)) {
+        // is "checkbox" layer
+        stepsData[stepName] = {
+          id: frameChild.id,
+          visible: frameChild.visible
+        };
+        a11yCompletedLayers.push(stepName);
+      } else if (stepName === 'Landmarks') {
+        // get landmark nodes and format
+        const landmarks = {};
+        frameChild.children.map((landmarkObj) => {
+          // make sure it's a frame node OR group node (backwards compatibility)
+          if (landmarkObj.type === 'FRAME' || landmarkObj.type === 'GROUP') {
+            const [nameArray] = landmarkObj.name.split('|');
+            const typeName = nameArray.replace('Landmark: ', '');
 
-      for (let l = 0; l < frameChild.children.length; l += 1) {
-        const headingObj = frameChild.children[l];
+            // if we have a label, grab it
+            const [type, label = null] = typeName.split(':');
+            const typeTrim = type.trim();
+            const newType =
+              typeTrim in marksLegacy ? marksLegacy[typeTrim] : typeTrim;
 
-        // make sure it's a group node
-        if (headingObj.type === 'GROUP') {
-          const [nameArray, title, idRaw] = headingObj.name.split('|');
-          const [, typeName = 'h2'] = nameArray.split(':');
-          const id = idRaw.trim();
-          const type = typeName.trim();
+            landmarks[landmarkObj.id] = {
+              id: landmarkObj.id,
+              label: label !== null ? label.trim() : label,
+              name: landmarkObj.name,
+              type: newType
+            };
+          }
 
-          const nodeHeading = figma.getNodeById(id);
+          return null;
+        });
 
-          // make sure previously mapped node, still exists
-          // prevent memory leak (if not found, don't add)
-          if (nodeHeading !== null) {
-            headings[id] = {
-              id,
-              bounds: nodeHeading.absoluteRenderBounds,
-              title,
-              type,
-              value: parseInt(type.replace(/\D+/g, ''), 10)
+        stepsData[stepName] = {
+          id: frameChild.id,
+          existingData: landmarks,
+          stateKey: 'landmarks',
+          visible: frameChild.visible
+        };
+        a11yCompletedLayers.push(stepName);
+      } else if (stepName === 'Headings') {
+        // get heading nodes and format
+        const headings = {};
+
+        await Promise.all(
+          frameChild.children.map(async (headingObj) => {
+            // make sure it's a group node
+            if (headingObj.type === 'GROUP') {
+              const [nameArray, title, idRaw] = headingObj.name.split('|');
+              const [, typeName = 'h2'] = nameArray.split(':');
+              const id = idRaw.trim();
+              const type = typeName.trim();
+
+              const nodeHeading = await figma.getNodeByIdAsync(id);
+
+              // make sure previously mapped node, still exists
+              // prevent memory leak (if not found, don't add)
+              if (nodeHeading !== null) {
+                headings[id] = {
+                  id,
+                  bounds: nodeHeading.absoluteRenderBounds,
+                  title,
+                  type,
+                  value: parseInt(type.replace(/\D+/g, ''), 10)
+                };
+              }
+            }
+          })
+        );
+
+        stepsData[stepName] = {
+          id: frameChild.id,
+          existingData: headings,
+          stateKey: 'headings',
+          visible: frameChild.visible
+        };
+        a11yCompletedLayers.push(stepName);
+      } else if (stepName === 'Reading order') {
+        // set Reading order as completed if exists
+        stepsData[stepName] = {
+          id: frameChild.id,
+          visible: frameChild.visible
+        };
+        a11yCompletedLayers.push(stepName);
+      } else if (stepName === 'Alt text') {
+        // get alt text nodes and format
+        const altTextArray = [];
+
+        await Promise.all(
+          frameChild.children.map(async (altTextObj) => {
+            const { name: nodeName, type: nodeType } = altTextObj;
+
+            // make sure it's a frame node and not annotations layer
+            if (
+              nodeType === 'FRAME' &&
+              nodeName.includes('No Images') === false &&
+              nodeName.includes('Annotations') === false
+            ) {
+              const [labelArray, altTextRaw, originalName, idRaw] =
+                nodeName.split('|');
+              const [, typeName] = labelArray.split(':');
+              const altTextString = altTextRaw.trim();
+              const id = idRaw.trim();
+              const nameString = originalName.trim();
+              const type = typeName.trim();
+
+              const nodeAltText = await figma.getNodeByIdAsync(id);
+
+              // make sure previously mapped node, still exists
+              if (nodeAltText !== null) {
+                // get fills
+                const { fills } = nodeAltText;
+                let imageFill;
+
+                // groups can not have fills set
+                if (fills !== undefined) {
+                  // get the first fill that is an image type
+                  const fillsFilter = fills.filter(
+                    (fill) => fill.type === 'IMAGE'
+                  );
+                  imageFill =
+                    fillsFilter.length > 0 ? fillsFilter[0] : undefined;
+                }
+
+                // prevent memory leak (if not found, don't add)
+                if (typeof imageFill === 'object') {
+                  const { imageHash } = imageFill;
+
+                  imagesScannedArray.push({
+                    altText: altTextString,
+                    hash: imageHash,
+                    bounds: nodeAltText.absoluteRenderBounds,
+                    id,
+                    name: nameString,
+                    displayType: 'scanned'
+                  });
+
+                  altTextArray.push({
+                    id,
+                    altText: altTextString,
+                    bounds: nodeAltText.absoluteRenderBounds,
+                    name: nameString,
+                    type
+                  });
+                } else {
+                  imagesManualArray.push({
+                    altText: altTextString,
+                    bounds: nodeAltText.absoluteRenderBounds,
+                    id,
+                    name: nameString,
+                    displayType: 'manual'
+                  });
+
+                  altTextArray.push({
+                    id,
+                    altText: altTextString,
+                    bounds: nodeAltText.absoluteRenderBounds,
+                    name: nameString,
+                    type
+                  });
+                }
+              }
+            }
+          })
+        );
+
+        stepsData[stepName] = {
+          id: frameChild.id,
+          existingData: altTextArray,
+          stateKey: 'imagesData',
+          visible: frameChild.visible
+        };
+        a11yCompletedLayers.push(stepName);
+      } else if (stepName === 'Focus grouping') {
+        // get focus groups nodes and format
+        const groups = [];
+        for (let l = 0; l < frameChild.children.length; l += 1) {
+          const groupObj = frameChild.children[l];
+          // make sure it's a group
+          if (
+            groupObj.name.startsWith('Group Area') &&
+            groupObj.type === 'RECTANGLE'
+          ) {
+            groups.push(groups.length);
+          }
+        }
+
+        // set Focus grouping as completed if exists
+        stepsData[stepName] = {
+          id: frameChild.id,
+          existingData: groups,
+          stateKey: 'groups',
+          visible: frameChild.visible
+        };
+        a11yCompletedLayers.push(stepName);
+      } else if (stepName === 'Complex gestures') {
+        // get gesture nodes and format
+        const gestures = {};
+        const gesturesAnnotationFrame = findDescendentOfFrame({
+          frame: existingAnnotationsFrame,
+          descendantNames: ['Complex gestures line']
+        });
+
+        for (let l = 0; l < frameChild.children.length; l += 1) {
+          const gestureObj = frameChild.children[l];
+
+          if (
+            (gestureObj.type === 'GROUP' || gestureObj.type === 'FRAME') &&
+            gestureObj.name.includes('Annotations') === false
+          ) {
+            // make sure it's a group node
+            const [nameArray, id] = gestureObj.name.split('|');
+            const typeName = nameArray.replace('Gesture: ', '');
+
+            let label = null;
+
+            // if we have an existing label, grab it from annotations frame
+            if (gesturesAnnotationFrame) {
+              // find annotation block for the id, if it exists
+              const gestureAnnotationBlock =
+                gesturesAnnotationFrame.children.find(
+                  (annotationChild) => annotationChild.name.split('|')[1] === id
+                );
+
+              // get the label node if it exists
+              const labelNode = findDescendentOfFrame({
+                frame: gestureAnnotationBlock,
+                descendantNames: [
+                  'Gesture info',
+                  'Gesture action',
+                  'Gesture action value'
+                ]
+              });
+
+              if (labelNode) {
+                label = labelNode.characters;
+              }
+            }
+
+            gestures[gestureObj.id] = {
+              id: gestureObj.id,
+              label: label !== null ? label.trim() : label,
+              name: gestureObj.name,
+              type: typeName.trim()
             };
           }
         }
-      }
+        stepsData[stepName] = {
+          id: frameChild.id,
+          existingData: gestures,
+          stateKey: 'gestures',
+          visible: frameChild.visible
+        };
+        a11yCompletedLayers.push(stepName);
+      } else if (stepName === 'Touch target') {
+        // get touch target nodes and format
+        const touchTargets = {};
+        for (let l = 0; l < frameChild.children.length; l += 1) {
+          const touchTargetObj = frameChild.children[l];
 
-      stepsData[stepName] = {
-        id: frameChild.id,
-        existingData: headings,
-        stateKey: 'headings',
-        visible: frameChild.visible
-      };
-      a11yCompletedLayers.push(stepName);
-    } else if (stepName === 'Reading order') {
-      // set Reading order as completed if exists
-      stepsData[stepName] = {
-        id: frameChild.id,
-        visible: frameChild.visible
-      };
-      a11yCompletedLayers.push(stepName);
-    } else if (stepName === 'Alt text') {
-      // get alt text nodes and format
-      const altTextArray = [];
+          // make sure it's a frame node
+          if (touchTargetObj.type === 'RECTANGLE') {
+            const [nameArray] = touchTargetObj.name.split('|');
+            const typeName = nameArray.replace('Touch Target: ', '');
 
-      for (let l = 0; l < frameChild.children.length; l += 1) {
-        const altTextObj = frameChild.children[l];
-        const { name: nodeName, type: nodeType } = altTextObj;
+            // if we have a label, grab it
+            const [type] = typeName.split(':');
+            const typeTrim = type.trim();
 
-        // make sure it's a frame node and not annotations layer
-        if (
-          nodeType === 'FRAME' &&
-          nodeName.includes('No Images') === false &&
-          nodeName.includes('Annotations') === false
-        ) {
-          const [labelArray, altTextRaw, originalName, idRaw] =
-            nodeName.split('|');
-          const [, typeName] = labelArray.split(':');
-          const altTextString = altTextRaw.trim();
-          const id = idRaw.trim();
-          const nameString = originalName.trim();
-          const type = typeName.trim();
-
-          const nodeAltText = figma.getNodeById(id);
-
-          // make sure previously mapped node, still exists
-          if (nodeAltText !== null) {
-            // get fills
-            const { fills } = nodeAltText;
-            let imageFill;
-
-            // groups can not have fills set
-            if (fills !== undefined) {
-              // get the first fill that is an image type
-              const fillsFilter = fills.filter((fill) => fill.type === 'IMAGE');
-              imageFill = fillsFilter.length > 0 ? fillsFilter[0] : undefined;
-            }
-
-            // prevent memory leak (if not found, don't add)
-            if (typeof imageFill === 'object') {
-              const { imageHash } = imageFill;
-
-              imagesScannedArray.push({
-                altText: altTextString,
-                hash: imageHash,
-                bounds: nodeAltText.absoluteRenderBounds,
-                id,
-                name: nameString,
-                displayType: 'scanned'
-              });
-
-              altTextArray.push({
-                id,
-                altText: altTextString,
-                bounds: nodeAltText.absoluteRenderBounds,
-                name: nameString,
-                type
-              });
-            } else {
-              imagesManualArray.push({
-                altText: altTextString,
-                bounds: nodeAltText.absoluteRenderBounds,
-                id,
-                name: nameString,
-                displayType: 'manual'
-              });
-
-              altTextArray.push({
-                id,
-                altText: altTextString,
-                bounds: nodeAltText.absoluteRenderBounds,
-                name: nameString,
-                type
-              });
-            }
+            touchTargets[touchTargetObj.id] = {
+              id: touchTargetObj.id,
+              name: touchTargetObj.name,
+              type: typeTrim
+            };
           }
         }
+
+        stepsData[stepName] = {
+          id: frameChild.id,
+          existingData: touchTargets,
+          stateKey: 'touchTargets',
+          visible: frameChild.visible
+        };
+        a11yCompletedLayers.push(stepName);
+      } else {
+        // eslint-disable-next-line
+        console.error(`step "${stepName}" is not accounted for yet`);
       }
-
-      stepsData[stepName] = {
-        id: frameChild.id,
-        existingData: altTextArray,
-        stateKey: 'imagesData',
-        visible: frameChild.visible
-      };
-      a11yCompletedLayers.push(stepName);
-    } else if (stepName === 'Focus grouping') {
-      // get focus groups nodes and format
-      const groups = [];
-      for (let l = 0; l < frameChild.children.length; l += 1) {
-        const groupObj = frameChild.children[l];
-        // make sure it's a group
-        if (
-          groupObj.name.startsWith('Group Area') &&
-          groupObj.type === 'RECTANGLE'
-        ) {
-          groups.push(groups.length);
-        }
-      }
-
-      // set Focus grouping as completed if exists
-      stepsData[stepName] = {
-        id: frameChild.id,
-        existingData: groups,
-        stateKey: 'groups',
-        visible: frameChild.visible
-      };
-      a11yCompletedLayers.push(stepName);
-    } else if (stepName === 'Complex gestures') {
-      // get gesture nodes and format
-      const gestures = {};
-      const gesturesAnnotationFrame = findDescendentOfFrame({
-        frame: existingAnnotationsFrame,
-        descendantNames: ['Complex gesture Annotations']
-      });
-
-      for (let l = 0; l < frameChild.children.length; l += 1) {
-        const gestureObj = frameChild.children[l];
-
-        if (
-          (gestureObj.type === 'GROUP' || gestureObj.type === 'FRAME') &&
-          gestureObj.name.includes('Annotations') === false
-        ) {
-          // make sure it's a group node
-          const [nameArray, id] = gestureObj.name.split('|');
-          const typeName = nameArray.replace('Gesture: ', '');
-
-          let label = null;
-
-          // if we have an existing label, grab it from annotations frame
-          if (gesturesAnnotationFrame) {
-            // Find annotation block for the id, if it exists
-            const gestureAnnotationBlock =
-              gesturesAnnotationFrame.children.find(
-                (annotationChild) => annotationChild.name.split('|')[1] === id
-              );
-
-            // Get the label node if it exists
-            const labelNode = findDescendentOfFrame({
-              frame: gestureAnnotationBlock,
-              descendantNames: [
-                'Gesture info',
-                'Gesture action',
-                'Gesture action value'
-              ]
-            });
-
-            if (labelNode) {
-              label = labelNode.characters;
-            }
-          }
-
-          gestures[gestureObj.id] = {
-            id: gestureObj.id,
-            label: label !== null ? label.trim() : label,
-            name: gestureObj.name,
-            type: typeName.trim()
-          };
-        }
-      }
-      stepsData[stepName] = {
-        id: frameChild.id,
-        existingData: gestures,
-        stateKey: 'gestures',
-        visible: frameChild.visible
-      };
-      a11yCompletedLayers.push(stepName);
-    } else if (stepName === 'Touch target') {
-      // get touch target nodes and format
-      const touchTargets = {};
-      for (let l = 0; l < frameChild.children.length; l += 1) {
-        const touchTargetObj = frameChild.children[l];
-
-        // make sure it's a frame node
-        if (touchTargetObj.type === 'RECTANGLE') {
-          const [nameArray] = touchTargetObj.name.split('|');
-          const typeName = nameArray.replace('Touch Target: ', '');
-
-          // if we have a label, grab it
-          const [type] = typeName.split(':');
-          const typeTrim = type.trim();
-
-          touchTargets[touchTargetObj.id] = {
-            id: touchTargetObj.id,
-            name: touchTargetObj.name,
-            type: typeTrim
-          };
-        }
-      }
-
-      stepsData[stepName] = {
-        id: frameChild.id,
-        existingData: touchTargets,
-        stateKey: 'touchTargets',
-        visible: frameChild.visible
-      };
-      a11yCompletedLayers.push(stepName);
-    } else {
-      // eslint-disable-next-line
-      console.error(`step "${stepName}" is not accounted for yet`);
-    }
-  }
+    })
+  );
 
   const originalPage = ifExists[0];
   return {
@@ -387,6 +391,7 @@ export const getPreviousScanData = async (pageSelected) => {
   const { children: topLevelLayers } = currentPage;
 
   const pages = [];
+  const needsNewLayerKeyV2 = [];
   let hasProgress = false;
 
   // check if has children
@@ -395,41 +400,75 @@ export const getPreviousScanData = async (pageSelected) => {
     const a11yFrames = [];
 
     // loop through frames, grab regular and accessibility types
-    for (let i = 0; i < topLevelLayers.length; i += 1) {
-      const layer = topLevelLayers[i];
-      const name = utils.nameBeforePipe(layer.name);
+    await Promise.all(
+      topLevelLayers.map(async (layer) => {
+        const name = utils.nameBeforePipe(layer.name);
 
-      // is it a section node?
-      if (layer.type === 'SECTION') {
-        const { children: secLayers } = layer;
+        // is it a section node?
+        if (layer.type === 'SECTION') {
+          const { children: secLayers } = layer;
 
-        for (let s = 0; s < secLayers.length; s += 1) {
-          const secLayer = secLayers[s];
+          await Promise.all(
+            secLayers.map(async (secLayer) => {
+              // is accessibility layer?
+              if (secLayer.name.includes(config.a11ySuffix)) {
+                const secLayerName = utils.nameBeforePipe(secLayer.name);
+                const secLayerData = await isA11yLayer(
+                  secLayers,
+                  secLayer,
+                  secLayerName
+                );
 
+                if (typeof secLayerData === 'object' && secLayerData !== null) {
+                  pages.push(secLayerData);
+                  a11yFrames.push(secLayer);
+
+                  // check if we have children
+                  if (secLayer.children.length > 0) {
+                    secLayer.children.forEach((child) => {
+                      // check if we need to update the layer key
+                      if (child.name.includes(config.a11yAnnotationLayerKey)) {
+                        needsNewLayerKeyV2.push({
+                          id: child.id,
+                          name: child.name,
+                          parentId: secLayerData.pageId
+                        });
+                      }
+                    });
+                  }
+                }
+              } else {
+                regularFrames.push(secLayer);
+              }
+            })
+          );
+        } else if (layer.name.includes(config.a11ySuffix)) {
           // is accessibility layer?
-          if (secLayer.name.includes(config.a11ySuffix)) {
-            const secLayerName = utils.nameBeforePipe(secLayer.name);
-            const secLayerData = isA11yLayer(secLayers, secLayer, secLayerName);
+          const layerData = await isA11yLayer(topLevelLayers, layer, name);
 
-            if (typeof secLayerData === 'object' && secLayerData !== null) {
-              pages.push(secLayerData);
-              a11yFrames.push(secLayer);
+          if (typeof layerData === 'object' && layerData !== null) {
+            pages.push(layerData);
+            a11yFrames.push(layer);
+
+            // check if we have children
+            if (layer.children.length > 0) {
+              layer.children.forEach((child) => {
+                // check if we need to update the layer key
+                if (child.name.includes(config.a11yAnnotationLayerKey)) {
+                  needsNewLayerKeyV2.push({
+                    id: child.id,
+                    name: child.name,
+                    parentId: layerData.pageId
+                  });
+                }
+              });
             }
-          } else {
-            regularFrames.push(secLayer);
           }
+        } else {
+          regularFrames.push(layer);
         }
-      } else if (layer.name.includes(config.a11ySuffix)) {
-        // is accessibility layer?
-        const layerData = isA11yLayer(topLevelLayers, layer, name);
-        if (typeof layerData === 'object' && layerData !== null) {
-          pages.push(layerData);
-          a11yFrames.push(layer);
-        }
-      } else {
-        regularFrames.push(layer);
-      }
-    }
+      })
+    );
 
     // do we have Accessibility steps completed?
     if (pages.length > 0) {
@@ -441,7 +480,6 @@ export const getPreviousScanData = async (pageSelected) => {
     if (a11yFrames.length === 0) {
       // no previous data found
       // so let's check if a valid frame is selected off the bat
-
       const { selection } = figma.currentPage;
       const selectionLength = selection.length;
 
@@ -505,7 +543,8 @@ export const getPreviousScanData = async (pageSelected) => {
       hasProgress,
       pages,
       currentUser,
-      sessionId
+      sessionId,
+      newKeyV2: needsNewLayerKeyV2
     }
   });
 

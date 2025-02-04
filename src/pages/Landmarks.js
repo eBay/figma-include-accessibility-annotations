@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { utils } from '../constants';
+import { utils } from '@/constants';
 
 // components
 import {
@@ -8,16 +8,16 @@ import {
   Dropdown,
   EmptyStepSelection,
   HeadingStep
-} from '../components';
+} from '@/components';
 
 // icons
-import { SvgWarning } from '../icons';
+import { SvgWarning } from '@/icons';
 
 // app state
-import Context from '../context';
+import Context from '@/context';
 
 // get landmark types
-import landmarksTypesObj from '../data/landmark-types';
+import landmarksTypesObj from '@/data/landmark-types';
 
 const landmarksTypesArray = Object.keys(landmarksTypesObj);
 const landmarksOnlyOnce = ['main', 'header', 'footer'];
@@ -53,7 +53,6 @@ function Landmarks() {
   const [labelsTemp, setLabelsTemp] = React.useState({});
 
   const [needsLabel, setNeedsLabel] = React.useState([]);
-  const canContinue = needsLabel.length !== Object.keys(labelsTemp).length;
 
   const [dupNeedLabel, setDupNeedLabel] = React.useState([]);
   const showDupWarning = dupNeedLabel.length > 0;
@@ -179,11 +178,9 @@ function Landmarks() {
     Object.values(landmarks).map((row) => {
       const { id, label, type } = row;
 
-      // has duplicate row and no label?
-      const noLabel = label === null || label === '';
-
-      // check if temp label exists
+      // check if temp label exists and if we need to alert user to add one
       const tempLabel = labelsTemp[id]?.value || null;
+      const noLabel = (label === null || label === '') && tempLabel === null;
 
       if (typesDupArray.includes(type) && noLabel) {
         rowsNeedLabelArray.push(id);
@@ -306,6 +303,13 @@ function Landmarks() {
     if (value !== null) {
       // update label on figma document
       sendToFigma('update-landmark-label', { id, landmarkType: type, value });
+
+      // update main state
+      const newLandmarksObj = { ...landmarks };
+      const newLandmark = newLandmarksObj[id];
+      newLandmarksObj[id] = { ...newLandmark, label: value };
+
+      updateState('landmarks', newLandmarksObj);
     }
   };
 
@@ -334,11 +338,10 @@ function Landmarks() {
       return {
         completesStep: true,
         isDisabled:
-          (showDupWarning ||
-            showAlwaysNeedLabel ||
-            showLandmarkWordWarning ||
-            showSameLabelWarning) &&
-          canContinue === false,
+          showDupWarning ||
+          showAlwaysNeedLabel ||
+          showLandmarkWordWarning ||
+          showSameLabelWarning,
         onClick: onDoneWithLandmarks
       };
     }
@@ -412,9 +415,11 @@ function Landmarks() {
               const { id, label, type } = landmarks[key];
               const isOpened = openedDropdown === id;
 
-              const showLabel = label !== null || needsLabel.includes(id);
-
               const hasTempLabel = labelsTemp[id]?.value || label;
+              const showLabel =
+                label !== null ||
+                needsLabel.includes(id) ||
+                hasTempLabel !== null;
 
               // is flagged for not having label (or can't have "Landmark" in the label)
               const warnClass =

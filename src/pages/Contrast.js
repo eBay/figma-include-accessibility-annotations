@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { contrast, utils } from '../constants';
+import { contrast, utils } from '@/constants';
 
 // components
 import {
@@ -9,13 +9,13 @@ import {
   ContrastScreenshot,
   HeadingStep,
   LoadingSpinner
-} from '../components';
+} from '@/components';
 
 // icons
-import { SvgCarrot, SvgText, SvgWarning } from '../icons';
+import { SvgCarrot, SvgText, SvgWarning } from '@/icons';
 
 // app state
-import Context from '../context';
+import Context from '@/context';
 
 function Contrast() {
   // main app state
@@ -365,6 +365,8 @@ function Contrast() {
                 <ContrastScreenshot report={contrastResults} />
               </React.Fragment>
             )}
+
+            <div className="spacer4" />
           </React.Fragment>
         )}
 

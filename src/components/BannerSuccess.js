@@ -2,7 +2,7 @@ import * as React from 'react';
 import PropTypes from 'prop-types';
 
 // icons
-import { SvgCheck } from '../icons';
+import { SvgCheck } from '@/icons';
 
 function BannerSuccess({ text }) {
   return (

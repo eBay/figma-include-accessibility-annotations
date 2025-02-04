@@ -64,12 +64,19 @@ module.exports = (env, argv) => {
         {
           test: /\.s[ac]ss$/i,
           use: [
-            // Creates `style` nodes from JS strings
+            // creates `style` nodes from JS strings
             'style-loader',
-            // Translates CSS into CommonJS
+            // translates CSS into CommonJS
             'css-loader',
-            // Compiles Sass to CSS
-            'sass-loader'
+            // compiles Sass to CSS
+            // 'sass-loader'
+            {
+              loader: 'sass-loader',
+              options: {
+                // Use Dart Sass
+                implementation: require('sass')
+              }
+            }
           ]
         },
         // allows you to use "<%= require('./file.svg') %>" in your HTML code to get a data URI
@@ -82,7 +89,12 @@ module.exports = (env, argv) => {
     },
 
     // webpack tries these extensions for you if you omit the extension like "import './file'"
-    resolve: { extensions: ['.js'] },
+    resolve: {
+      alias: {
+        '@': path.resolve(__dirname, 'src')
+      },
+      extensions: ['.js', '.json']
+    },
 
     output: {
       filename: '[name].js',

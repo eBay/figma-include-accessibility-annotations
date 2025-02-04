@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { utils } from '../constants';
+import { utils } from '@/constants';
 
 // components
 import {
@@ -7,14 +7,16 @@ import {
   AnnotationStepPage,
   EmptyStepSelection,
   HeadingStep
-} from '../components';
+} from '@/components';
+
+// icons
+import { SvgWarning } from '@/icons';
 
 // app state
-import Context from '../context';
+import Context from '@/context';
 
 // get gesture types
-import gestureTypesObj from '../data/gesture-types';
-import { SvgWarning } from '../icons';
+import gestureTypesObj from '@/data/gesture-types';
 
 const gestureTypesArray = Object.keys(gestureTypesObj);
 
@@ -134,7 +136,7 @@ function ComplexGestures() {
         pageType
       });
     } else {
-      // Check that all gestures have annotations
+      // check that all gestures have annotations
       if (labelNeeded) {
         setAnnotateAttempted(true);
         return;
@@ -173,7 +175,7 @@ function ComplexGestures() {
     setLabelsTemp(newLabelsTemp);
   };
 
-  // Needs a label, and user tried to annotate without
+  // needs a label, and user tried to annotate without
   const showWarning = annotateAttempted && labelNeeded;
 
   React.useEffect(() => {
@@ -181,7 +183,7 @@ function ComplexGestures() {
   }, [gestures]);
 
   const getPrimaryAction = () => {
-    // Gestures are set and none are in progress,
+    // gestures are set and none are in progress,
     // allow user to confirm and annotate
     if (gesturesAreSet || noGestures) {
       return {

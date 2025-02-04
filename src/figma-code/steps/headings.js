@@ -1,13 +1,13 @@
-import { colors, figmaLayer, utils } from '../../constants';
-import config from '../config';
-import { getOrCreateMainA11yFrame } from '../frame-helpers';
+import { colors, figmaLayer, utils } from '@/constants';
+import config from '@/figma-code/config';
+import { getOrCreateMainA11yFrame } from '@/figma-code/frame-helpers';
 
 const headingsLayerName = 'Headings Layer';
 
-export const noHeadings = (msg) => {
+export const noHeadings = async (msg) => {
   const { bounds, name, page, pageId, pageType } = msg;
 
-  const mainPageNode = figma.getNodeById(pageId);
+  const mainPageNode = await figma.getNodeByIdAsync(pageId);
 
   // node not found
   if (mainPageNode === null) {
@@ -28,23 +28,23 @@ export const noHeadings = (msg) => {
 
   // get main A11y frame if it exists (or create it)
   const { parent } = mainPageNode;
-  const mainFrame = getOrCreateMainA11yFrame({ page, pageType });
+  const mainFrame = await getOrCreateMainA11yFrame({ page, pageType });
 
   // does Headings exists already?
-  const headingsExists = utils.checkIfChildNameExists(
+  const headingsExists = await utils.checkIfChildNameExists(
     mainFrame.id,
     headingsLayerName
   );
 
   // if Headings exist, delete it
   if (headingsExists !== null) {
-    const oldHeadingsFrame = figma.getNodeById(headingsExists);
+    const oldHeadingsFrame = await figma.getNodeByIdAsync(headingsExists);
     // https://www.figma.com/plugin-docs/api/properties/nodes-remove/
     oldHeadingsFrame.remove();
   }
 
   // does Headings exists already?
-  const headingsFrame = utils.frameExistsOrCreate(
+  const headingsFrame = await utils.frameExistsOrCreate(
     mainFrame.id,
     headingsLayerName,
     {
@@ -87,7 +87,7 @@ export const noHeadings = (msg) => {
   });
 };
 
-export const listener = (msg) => {
+export const listener = async (msg) => {
   const { shouldListen = false, defaultHeadingType = 2 } = msg;
 
   // de-select all before start of listening
@@ -101,7 +101,7 @@ export const listener = (msg) => {
     figma.currentPage.selectedTextRange = { node: textNode, start: 0, end: 0 };
   } else {
     // remove temporary text node if found
-    const textNode = utils.checkIfChildNameExists(
+    const textNode = await utils.checkIfChildNameExists(
       figma.currentPage.id,
       'cursor-focus-node'
     );
@@ -202,15 +202,15 @@ const createHeadingFrameInFigma = ({
   headingsBlock.expanded = false;
 };
 
-export const addHeading = (msg) => {
+export const addHeading = async (msg) => {
   const { heading, page, pageType } = msg;
   const { bounds } = page;
   const { height: pageH, width: pageW } = bounds;
 
   // get main A11y frame if it exists (or create it)
-  const mainFrame = getOrCreateMainA11yFrame({ page, pageType });
+  const mainFrame = await getOrCreateMainA11yFrame({ page, pageType });
 
-  const headingsExists = utils.checkIfChildNameExists(
+  const headingsExists = await utils.checkIfChildNameExists(
     mainFrame.id,
     headingsLayerName
   );
@@ -229,8 +229,8 @@ export const addHeading = (msg) => {
     headingsFrame.name = `${headingsLayerName} | ${headingsFrame.id}`;
     mainFrame.appendChild(headingsFrame);
   } else {
-    // Grab if it does
-    headingsFrame = figma.getNodeById(headingsExists);
+    // grab if it does
+    headingsFrame = await figma.getNodeByIdAsync(headingsExists);
   }
 
   const {
@@ -252,22 +252,22 @@ export const addHeading = (msg) => {
   });
 };
 
-export const removeHeading = (msg) => {
+export const removeHeading = async (msg) => {
   const { heading, page, pageType } = msg;
 
   const { id, title: headingTitle, type: headingType } = heading;
 
   // get main A11y frame
-  const mainFrame = getOrCreateMainA11yFrame({ page, pageType });
+  const mainFrame = await getOrCreateMainA11yFrame({ page, pageType });
 
   // make sure that headings frame exists (it should)
-  const headingsFrameId = utils.checkIfChildNameExists(
+  const headingsFrameId = await utils.checkIfChildNameExists(
     mainFrame.id,
     headingsLayerName
   );
 
   if (headingsFrameId) {
-    const headingsFrame = figma.getNodeById(headingsFrameId);
+    const headingsFrame = await figma.getNodeByIdAsync(headingsFrameId);
     const headingsBlockName = getHeadingBlockName({
       headingTitle,
       headingType,
@@ -286,7 +286,7 @@ export const removeHeading = (msg) => {
   }
 };
 
-export const confirm = (msg) => {
+export const confirm = async (msg) => {
   const { headings, page, pageType } = msg;
 
   const { bounds, mainPageId, name } = page;
@@ -296,17 +296,17 @@ export const confirm = (msg) => {
   const saniName = utils.sanitizeName(name);
 
   // get main A11y frame if it exists (or create it)
-  const mainFrame = getOrCreateMainA11yFrame({ page, pageType });
+  const mainFrame = await getOrCreateMainA11yFrame({ page, pageType });
 
   // does Headings exists already?
-  const headingsExists = utils.checkIfChildNameExists(
+  const headingsExists = await utils.checkIfChildNameExists(
     mainFrame.id,
     headingsLayerName
   );
 
   // if Headings exist, delete it
   if (headingsExists !== null) {
-    const oldHeadingsFrame = figma.getNodeById(headingsExists);
+    const oldHeadingsFrame = await figma.getNodeByIdAsync(headingsExists);
     // https://www.figma.com/plugin-docs/api/properties/nodes-remove/
     oldHeadingsFrame.remove();
   }

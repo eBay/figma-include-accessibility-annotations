@@ -1,22 +1,19 @@
-import { colors, figmaLayer, utils } from '../../constants';
-import config from '../config';
+import { colors, figmaLayer, utils } from '@/constants';
+import config from '@/figma-code/config';
 import {
-  createAnnotationFrame,
-  createAnnotationFrameTitleText,
   createAnnotationInfoFrame,
   createAnnotationLabelValueRow,
   createAnnotationNumberFrame,
   createInnerAnnotationFrame,
-  findAndRemovePreviousAnnotationFrame,
   getOrCreateMainA11yFrame,
   getOrCreateMainAnnotationsFrame
-} from '../frame-helpers';
+} from '@/figma-code/frame-helpers';
 
 export const imageScan = async (msg) => {
   const { id: selectedNodeId, page, pageType } = msg;
 
   // https://www.figma.com/plugin-docs/accessing-document/#traversing-all-nodes-in-the-page
-  const nodeWrapper = figma.getNodeById(selectedNodeId);
+  const nodeWrapper = await figma.getNodeByIdAsync(selectedNodeId);
 
   // find images in selected node/page
   const imageNodes = nodeWrapper.findAll((node) => {
@@ -43,6 +40,15 @@ export const imageScan = async (msg) => {
 
     return imageFills.length > 0;
   });
+
+  // find all svgs in the file
+  // const svgNodes = nodeWrapper.findAll((node) => {
+  //   const nodeName = node.name.toLowerCase();
+
+  //   return nodeName.includes('vector-shape');
+  // });
+  // console.log('svgNodes', svgNodes);
+  // console.log('----------');
 
   // now because of how figma does bottom to top, and we are using the optimized findAll above ^
   // this step is to reverse that order and target any elements that have
@@ -103,17 +109,17 @@ export const imageScan = async (msg) => {
     const altTextLayerName = 'Alt text Layer';
 
     // get main A11y frame if it exists (or create it)
-    const mainFrame = getOrCreateMainA11yFrame({ page, pageType });
+    const mainFrame = await getOrCreateMainA11yFrame({ page, pageType });
 
     // does Alt text exists already?
-    const altTextExists = utils.checkIfChildNameExists(
+    const altTextExists = await utils.checkIfChildNameExists(
       mainFrame.id,
       altTextLayerName
     );
 
     // if Alt text exist, delete it
     if (altTextExists !== null) {
-      const oldAltTextFrame = figma.getNodeById(altTextExists);
+      const oldAltTextFrame = await figma.getNodeByIdAsync(altTextExists);
       // https://www.figma.com/plugin-docs/api/properties/nodes-remove/
       oldAltTextFrame.remove();
     }
@@ -180,16 +186,16 @@ const createAltTextAnnotationInfoFrame = ({ roleType, altText }) => {
     name: 'Alt text info'
   });
 
-  // Append the first row of alt text info
+  // append the first row of alt text info
   altTextInfoFrame.appendChild(
     createAnnotationLabelValueRow({
       rowName: 'Alt text',
       label: 'Alt text:',
-      value: hasAltText ? `"${altText}"` : '""'
+      value: hasAltText ? `"${altText}"` : '" "'
     })
   );
 
-  // Append the second row of alt text info
+  // append the second row of alt text info
   altTextInfoFrame.appendChild(
     createAnnotationLabelValueRow({
       rowName: 'Role',
@@ -209,7 +215,7 @@ const createAltTextAnnotation = ({ number, id, roleType, altText }) => {
     id
   });
 
-  // Add the annotation number
+  // add the annotation number
   altTextAnnotationBlock.appendChild(
     createAnnotationNumberFrame({
       number,
@@ -217,7 +223,7 @@ const createAltTextAnnotation = ({ number, id, roleType, altText }) => {
     })
   );
 
-  // Add the annotation info
+  // add the annotation info
   altTextAnnotationBlock.appendChild(
     createAltTextAnnotationInfoFrame({
       roleType,
@@ -228,17 +234,7 @@ const createAltTextAnnotation = ({ number, id, roleType, altText }) => {
   return altTextAnnotationBlock;
 };
 
-const createAltTextAnnotationFrame = ({ name }) => {
-  // create an annotation frame
-  const frame = createAnnotationFrame({ name });
-
-  // and add the Annotation frame title
-  const annotationTitle = createAnnotationFrameTitleText({ title: 'Images' });
-  frame.appendChild(annotationTitle);
-  return frame;
-};
-
-export const add = (msg) => {
+export const add = async (msg) => {
   const { images, page, pageType } = msg;
 
   // colors
@@ -249,36 +245,27 @@ export const add = (msg) => {
   const { x: pageX, y: pageY, height: pageH, width: pageW } = bounds;
 
   const altTextLayerName = 'Alt text Layer';
-  const altTextAnnotationLayerName = 'Alt text Annotations';
-
-  const mainPageNode = figma.getNodeById(page.id);
+  const mainPageNode = await figma.getNodeByIdAsync(page.id);
 
   // get main A11y frame if it exists (or create it)
-  const mainFrame = getOrCreateMainA11yFrame({ page, pageType });
-  const mainAnnotationsFrame = getOrCreateMainAnnotationsFrame({
+  const mainFrame = await getOrCreateMainA11yFrame({ page, pageType });
+  const mainAnnotationsFrame = await getOrCreateMainAnnotationsFrame({
     mainFrame,
     page
   });
 
   const saniName = utils.sanitizeName(name);
-
-  // Check for existing annotation frame and remove if found
-  findAndRemovePreviousAnnotationFrame({
-    mainAnnotationsFrame,
-    layerName: altTextAnnotationLayerName
-  });
-
   const nodes = [];
 
   // does Alt text exist already?
-  const altTextExists = utils.checkIfChildNameExists(
+  const altTextExists = await utils.checkIfChildNameExists(
     mainFrame.id,
     altTextLayerName
   );
 
   // if Alt text exist, delete it
   if (altTextExists !== null) {
-    const oldAltTextFrame = figma.getNodeById(altTextExists);
+    const oldAltTextFrame = await figma.getNodeByIdAsync(altTextExists);
     // https://www.figma.com/plugin-docs/api/properties/nodes-remove/
     oldAltTextFrame.remove();
   }
@@ -369,10 +356,20 @@ export const add = (msg) => {
     nodes.push(imageLayer);
   }
 
-  // create alt text annotation frame
-  const annotationFrame = createAltTextAnnotationFrame({
-    name: altTextAnnotationLayerName
-  });
+  // get alt text annotation frame
+  const annotationFrame = mainAnnotationsFrame.findOne(
+    (n) => n.name === 'Alternative text line'
+  );
+
+  // find and remove previous annotation alt text frames
+  if (annotationFrame !== null) {
+    annotationFrame.children.forEach((n) => {
+      // remove all alt text blocks
+      if (n.name.startsWith('Alt text Block')) {
+        n.remove();
+      }
+    });
+  }
 
   // loop through images with alt text and add annotation section to Figma Document
   for (let i = 0; i < images.length; i += 1) {
@@ -389,9 +386,6 @@ export const add = (msg) => {
       })
     );
   }
-
-  // add Annotation layer to the main annotations frame
-  mainAnnotationsFrame.insertChild(0, annotationFrame);
 
   // add alt text frame to main Accessibility layer
   mainFrame.appendChild(altTextFrame);

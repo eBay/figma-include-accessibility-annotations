@@ -2,10 +2,10 @@ import * as React from 'react';
 import PropTypes from 'prop-types';
 
 // components
-import BannerTipText from './BannerTipText';
+import BannerTipText from '@/components/BannerTipText';
 
 // data
-import tips from '../data/tips.json';
+import tips from '@/data/tips.json';
 
 function BannerTip({ footer = null, pageType, routeName = 'Landmarks' }) {
   const tip = tips[pageType][routeName];

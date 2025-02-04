@@ -1,5 +1,5 @@
-import { colors, figmaLayer, utils } from '../constants';
-import config from './config';
+import { colors, figmaLayer, utils } from '@/constants';
+import config from '@/figma-code/config';
 
 function getMainA11yLayerName({ pageName, pageType }) {
   const saniName = utils.sanitizeName(pageName);
@@ -8,7 +8,7 @@ function getMainA11yLayerName({ pageName, pageType }) {
   return `${saniName} ${config.a11ySuffix} | ${pageTypeCap}`;
 }
 
-function getOrCreateMainA11yFrame({ page, pageType }) {
+async function getOrCreateMainA11yFrame({ page, pageType }) {
   // main data and setup
   const { bounds, mainPageId, name: pageName } = page;
   const { x: pageX, y: pageY, height: pageH, width: pageW } = bounds;
@@ -16,7 +16,7 @@ function getOrCreateMainA11yFrame({ page, pageType }) {
   // top layer namings
   const mainLayerName = getMainA11yLayerName({ pageName, pageType });
 
-  const mainFrame = utils.frameExistsOrCreate(mainPageId, mainLayerName, {
+  const mainFrame = await utils.frameExistsOrCreate(mainPageId, mainLayerName, {
     x: pageX,
     y: pageY,
     height: pageH,
@@ -26,45 +26,61 @@ function getOrCreateMainA11yFrame({ page, pageType }) {
   return mainFrame;
 }
 
-function getOrCreateMainAnnotationsFrame({ mainFrame, page }) {
+async function getOrCreateMainAnnotationsFrame({ mainFrame, page }) {
   const { bounds } = page;
   const { height: pageH, width: pageW } = bounds;
-  const annotationLayerName = 'Accessibility annotations Layer';
+  const paddingMain = 20;
 
-  const mainAnnotationsFrame = utils.frameExistsOrCreate(
+  const mainAnnoFrame = await utils.frameExistsOrCreate(
     mainFrame.id,
-    annotationLayerName,
+    config.a11yAnnotationLayerKeyV2,
     {
       height: pageH,
       x: pageW + 32,
       width: config.annotationWidth - 32
-    }
+    },
+    false
   );
-  // update with id (for future scanning)
-  mainAnnotationsFrame.name = `${annotationLayerName} | ${mainAnnotationsFrame.id}`;
 
-  // Set up vertical auto-layout so that it looks okay
-  //   with any number of annotations added
-  mainAnnotationsFrame.fills = [
-    { type: 'SOLID', color: colors.grey, opacity: 1 }
-  ];
-  mainAnnotationsFrame.layoutMode = 'VERTICAL';
-  mainAnnotationsFrame.itemSpacing = 4;
+  // set up vertical auto-layout so that it looks okay
+  // with any number of annotations added
+  mainAnnoFrame.cornerRadius = 16;
+  mainAnnoFrame.fills = [{ type: 'SOLID', color: colors.white, opacity: 1 }];
+  mainAnnoFrame.strokes = [{ type: 'SOLID', color: colors.coolGrey }];
+  mainAnnoFrame.strokeWeight = 1;
+  mainAnnoFrame.layoutMode = 'VERTICAL';
+  mainAnnoFrame.counterAxisSizingMode = 'FIXED';
+  mainAnnoFrame.primaryAxisSizingMode = 'AUTO';
+  mainAnnoFrame.itemSpacing = 16;
+  mainAnnoFrame.paddingLeft = paddingMain;
+  mainAnnoFrame.paddingRight = paddingMain;
+  mainAnnoFrame.paddingBottom = paddingMain;
+  mainAnnoFrame.paddingTop = paddingMain;
 
-  return mainAnnotationsFrame;
+  return mainAnnoFrame;
 }
 
-function findAndRemovePreviousAnnotationFrame({
+/**
+ * finds and removes existing annotation layer for the step using the layer name.
+ *
+ * @param {object} mainAnnotationsFrame - the parent annotations frame
+ * @param {string} layerName - the name of the annotations layer for the step
+ * @returns - frame id of the annotation layer removed, if found
+ */
+async function findAndRemovePreviousAnnotationFrame({
   mainAnnotationsFrame,
   layerName
 }) {
-  const prevAnnotationFrameId = utils.checkIfChildNameExists(
+  const prevAnnotationFrameId = await utils.checkIfChildNameExists(
     mainAnnotationsFrame.id,
     layerName,
     false
   );
+
   if (prevAnnotationFrameId !== null) {
-    const oldAnnotationFrame = figma.getNodeById(prevAnnotationFrameId);
+    const oldAnnotationFrame = await figma.getNodeByIdAsync(
+      prevAnnotationFrameId
+    );
     // https://www.figma.com/plugin-docs/api/properties/nodes-remove/
     oldAnnotationFrame.remove();
   }
@@ -79,7 +95,7 @@ function createAnnotationFrame({ name }) {
     width: config.annotationWidth - 32
   });
 
-  // Give it vertical auto-layout formatting
+  // give it vertical auto-layout formatting
   annotationFrame.expanded = false;
   annotationFrame.layoutMode = 'VERTICAL';
   annotationFrame.counterAxisSizingMode = 'FIXED';
@@ -89,6 +105,7 @@ function createAnnotationFrame({ name }) {
   annotationFrame.paddingRight = 20;
   annotationFrame.paddingBottom = 20;
   annotationFrame.paddingTop = 20;
+
   return annotationFrame;
 }
 
@@ -99,9 +116,18 @@ function createAnnotationFrameTitleText({ title }) {
   annotationTitle.characters = title;
   annotationTitle.fills = [{ type: 'SOLID', color: colors.black }];
   annotationTitle.fontName = { family: 'Roboto', style: 'Bold' };
+
   return annotationTitle;
 }
 
+/**
+ * creates and returns an annotation number label for use within an annotation
+ * frame. Label is circular, with color background and white text.
+ *
+ * @param {number} number - The number to use for the annotation number label
+ * @param {string} fillColor - The background color of the number label
+ * @returns - Annotation number label
+ */
 function createAnnotationNumberFrame({ number, fillColor }) {
   // create annotation number frame
   const annotationNumberFrame = figmaLayer.createTransparentFrame({
@@ -136,6 +162,12 @@ function createAnnotationNumberFrame({ number, fillColor }) {
   return annotationNumberFrame;
 }
 
+/**
+ * create annotation info frame with vertical auto-layout
+ *
+ * @param {string} name - desired name of the info frame
+ * @returns Annotation info frame formatted with vertical auto-layout
+ */
 function createAnnotationInfoFrame({ name }) {
   const annotationInfoFrame = figmaLayer.createTransparentFrame({
     name,
@@ -149,6 +181,16 @@ function createAnnotationInfoFrame({ name }) {
   return annotationInfoFrame;
 }
 
+/**
+ * creates a Figma frame with horizontal autolayout that contains two
+ * text nodes. The first text node is the bolded label, and the second
+ * text nod is the value.
+ *
+ * @param {string} rowName - Name of returned Figma frame
+ * @param {string} label - Characters for the label text node in Figma
+ * @param {string} value - Characters for the value text node in Figma
+ * @returns Figma frame containing label and value text nodes side by side.
+ */
 function createAnnotationLabelValueRow({ rowName, label, value }) {
   const labelValueFrame = figmaLayer.createTransparentFrame({
     name: rowName,
@@ -180,6 +222,14 @@ function createAnnotationLabelValueRow({ rowName, label, value }) {
   return labelValueFrame;
 }
 
+/**
+ * create inner annotation frame with horizontal auto-layout
+ *
+ * @param {string} annotationBlockName
+ * @param {number} number - index of the frame
+ * @param {string} id - id of the alt text object
+ * @returns Annotation frame formatted with horizontal auto-layout
+ */
 function createInnerAnnotationFrame({ annotationBlockName, number, id }) {
   const innerAnnotationFrame = figmaLayer.createTransparentFrame({
     name: `${annotationBlockName} Block ${number} | ${id}`,

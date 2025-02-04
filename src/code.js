@@ -1,4 +1,4 @@
-import { utils } from './constants';
+import { utils } from '@/constants';
 import {
   config,
   designerChecks,
@@ -6,7 +6,7 @@ import {
   onSelectionChange,
   step,
   initializePage
-} from './figma-code';
+} from '@/figma-code';
 
 /* *****************************************************************************
  * initial setup
@@ -45,7 +45,7 @@ let listenForAltText = false;
 console.clear();
 
 /* *****************************************************************************
- * Run once on Figma load
+ * run once on Figma load
  * this searches current figma page for any a11y layers, previous data created
  * https://www.figma.com/plugin-docs/api/figma/#once
  **************************************************************************** */
@@ -112,6 +112,11 @@ figma.ui.onmessage = async (msg) => {
     designerChecks.createOrUpdateDesignerChecksFrame(msg);
   }
 
+  // update to v2 annotation key layer
+  if (type === 'update-annotation-key-v2') {
+    designerChecks.updateToAnnotationKeyV2(msg);
+  }
+
   // no landmarks checked
   if (type === 'no-landmark') {
     step.landmarks.noLandmarks(msg);
@@ -145,7 +150,7 @@ figma.ui.onmessage = async (msg) => {
   // listener for headings selection
   if (type === 'headings-listener') {
     const { newListenForHeadings, newDefaultHeadingType } =
-      step.headings.listener(msg);
+      await step.headings.listener(msg);
 
     // global flag for selection change logic
     // see figma.on('selectionchange')
@@ -298,60 +303,64 @@ figma.ui.onmessage = async (msg) => {
     const { nodeIds } = msg;
 
     // loop through node IDs, and remove from Figma document
-    nodeIds.map((nodeId) => {
-      const nodeToRemove = figma.getNodeById(nodeId);
-
-      // prevent memory leak (if not found, can't be removed)
-      if (nodeToRemove !== null) {
-        // get layer name
-        const layerName = utils.nameBeforePipe(nodeToRemove.name);
-
-        // get current page user is on when opening plugin
-        const { currentPage } = figma;
-        const { children } = currentPage;
-
-        children.map(({ id, name }) => {
-          // check if Text Zoom or Responsive reflow layers exists
-          if (
-            name === `${layerName} Text Zoom` ||
-            name.startsWith(`${layerName} | Responsive |`)
-          ) {
-            // get node if still there
-            const nodeToDelete = figma.getNodeById(id);
-
-            // prevent memory leak (if not found, can't be deleted)
-            if (nodeToDelete !== null) {
-              nodeToDelete.remove();
-            }
-          }
-
-          return null;
-        });
-
-        const parentId = nodeToRemove.parent.id;
-        // https://www.figma.com/plugin-docs/api/properties/nodes-remove/
-        nodeToRemove.remove();
-
-        // get parent node if still exists
-        const parentNode = figma.getNodeById(parentId);
+    await Promise.all(
+      nodeIds.map(async (nodeId) => {
+        const nodeToRemove = await figma.getNodeByIdAsync(nodeId);
 
         // prevent memory leak (if not found, can't be removed)
-        if (parentNode !== null) {
-          // are old annotations the only thing left?
-          if (parentNode.children.length === 1) {
-            // annotations clean up
-            const childName = parentNode.children[0].name;
+        if (nodeToRemove !== null) {
+          // get layer name
+          const layerName = utils.nameBeforePipe(nodeToRemove.name);
 
-            // make sure it's an annotation layer
-            if (childName.includes('Annotations')) {
-              parentNode.children[0].remove();
+          // get current page user is on when opening plugin
+          const { currentPage } = figma;
+          const { children } = currentPage;
+
+          await Promise.all(
+            children.map(async ({ id, name }) => {
+              // check if Text Zoom or Responsive reflow layers exists
+              if (
+                name === `${layerName} Text Zoom` ||
+                name.startsWith(`${layerName} | Responsive |`)
+              ) {
+                // get node if still there
+                const nodeToDelete = await figma.getNodeByIdAsync(id);
+
+                // prevent memory leak (if not found, can't be deleted)
+                if (nodeToDelete !== null) {
+                  nodeToDelete.remove();
+                }
+              }
+
+              return null;
+            })
+          );
+
+          const parentId = nodeToRemove.parent.id;
+          // https://www.figma.com/plugin-docs/api/properties/nodes-remove/
+          nodeToRemove.remove();
+
+          // get parent node if still exists
+          const parentNode = await figma.getNodeByIdAsync(parentId);
+
+          // prevent memory leak (if not found, can't be removed)
+          if (parentNode !== null) {
+            // are old annotations the only thing left?
+            if (parentNode.children.length === 1) {
+              // annotations clean up
+              const childName = parentNode.children[0].name;
+
+              // make sure it's an annotation layer
+              if (childName.includes('Annotations')) {
+                parentNode.children[0].remove();
+              }
             }
           }
         }
-      }
 
-      return nodeId;
-    });
+        return nodeId;
+      })
+    );
 
     const addS = nodeIds.length === 1 ? '' : 's';
 
@@ -366,7 +375,9 @@ figma.ui.onmessage = async (msg) => {
     const { nodeIds, selectNodes } = msg;
 
     // get nodes by id
-    const zoomNodes = nodeIds.map((nodeId) => figma.getNodeById(nodeId));
+    const zoomNodes = await Promise.all(
+      nodeIds.map((nodeId) => figma.getNodeByIdAsync(nodeId))
+    );
 
     // also select them in Figma document?
     if (selectNodes) {
@@ -393,19 +404,22 @@ figma.ui.onmessage = async (msg) => {
     const { nodeIds, visible = null } = msg;
 
     // loop through node IDs to show/hide
-    nodeIds.map((nodeId) => {
-      const nodeFound = figma.getNodeById(nodeId);
+    await Promise.all(
+      nodeIds.map(async (nodeId) => {
+        const nodeFound = await figma.getNodeByIdAsync(nodeId);
 
-      // prevent memory leak (if not found, do nothing)
-      if (nodeFound !== null) {
-        // if hard value passed (visible), use that, else toggle visible state
-        const changeVisibleTo = visible !== null ? visible : !nodeFound.visible;
-        nodeFound.visible = changeVisibleTo;
-        nodeFound.expanded = false;
-      }
+        // prevent memory leak (if not found, do nothing)
+        if (nodeFound !== null) {
+          // if hard value passed (visible), use that, else toggle visible state
+          const changeVisibleTo =
+            visible !== null ? visible : !nodeFound.visible;
+          nodeFound.visible = changeVisibleTo;
+          nodeFound.expanded = false;
+        }
 
-      return null;
-    });
+        return null;
+      })
+    );
   }
 
   // set tip expanded preference

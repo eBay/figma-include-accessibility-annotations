@@ -1,3 +1,5 @@
+@use 'variables' as vars;
+
 /*
  * spacing helpers
  */
@@ -6,8 +8,8 @@
 // /////////////////////////////////////////////////////////////////////////////
 $paddings-t: (
   'pt0': 0,
-  'pt1': $spacing-xs,
-  'pt2': $spacing-sm
+  'pt1': vars.$spacing-xs,
+  'pt2': vars.$spacing-sm
 );
 
 @each $padding, $value in $paddings-t {
@@ -19,8 +21,8 @@ $paddings-t: (
 // margin bottom
 // /////////////////////////////////////////////////////////////////////////////
 $margins-b: (
-  'mb1': $spacing-xs,
-  'mb2': $spacing-sm
+  'mb1': vars.$spacing-xs,
+  'mb2': vars.$spacing-sm
 );
 
 @each $margin, $value in $margins-b {
@@ -32,10 +34,10 @@ $margins-b: (
 // margin right
 // /////////////////////////////////////////////////////////////////////////////
 $margins-r: (
-  'mr1': $spacing-xs,
-  'mr2': $spacing-sm,
-  'mr3': $spacing-md,
-  'mr4': $spacing-lg
+  'mr1': vars.$spacing-xs,
+  'mr2': vars.$spacing-sm,
+  'mr3': vars.$spacing-md,
+  'mr4': vars.$spacing-lg
 );
 
 @each $margin, $value in $margins-r {
@@ -47,7 +49,7 @@ $margins-r: (
 // margin left
 // /////////////////////////////////////////////////////////////////////////////
 $margins-l: (
-  'ml1': $spacing-xs
+  'ml1': vars.$spacing-xs
 );
 
 @each $margin, $value in $margins-l {
@@ -59,7 +61,7 @@ $margins-l: (
 // margin top
 // /////////////////////////////////////////////////////////////////////////////
 $margins-t: (
-  'mt1': $spacing-xs
+  'mt1': vars.$spacing-xs
 );
 
 @each $margin, $value in $margins-t {
@@ -70,11 +72,11 @@ $margins-t: (
 
 $spacers: (
   'spacerhalf': 4,
-  'spacer1': $spacing-xs,
-  'spacer2': $spacing-sm,
-  'spacer3': $spacing-md,
-  'spacer4': $spacing-lg,
-  'spacer6': $spacing-xxl
+  'spacer1': vars.$spacing-xs,
+  'spacer2': vars.$spacing-sm,
+  'spacer3': vars.$spacing-md,
+  'spacer4': vars.$spacing-lg,
+  'spacer6': vars.$spacing-xxl
 );
 
 // height spacer

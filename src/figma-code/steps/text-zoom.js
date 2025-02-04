@@ -1,17 +1,17 @@
-import { utils } from '../../constants';
-import config from '../config';
+import { utils } from '@/constants';
+import config from '@/figma-code/config';
 
-export const createClone = (msg) => {
+export const createClone = async (msg) => {
   const { currentPage } = figma;
   const { page, pageType } = msg;
   const { id: pageId } = page;
 
   // get selected page node
-  const pageNode = figma.getNodeById(pageId);
+  const pageNode = await figma.getNodeByIdAsync(pageId);
   const cloneLayerName = `${pageNode.name} Text Zoom`;
 
   // does previous clone exist?
-  const doesExist = utils.checkIfChildNameExists(
+  const doesExist = await utils.checkIfChildNameExists(
     pageNode.parent.id,
     cloneLayerName,
     false
@@ -19,7 +19,7 @@ export const createClone = (msg) => {
 
   // if previous clone frame does exist, delete it
   if (doesExist !== null) {
-    const oldCloneFrame = figma.getNodeById(doesExist);
+    const oldCloneFrame = await figma.getNodeByIdAsync(doesExist);
     oldCloneFrame.remove();
   }
 
@@ -108,10 +108,10 @@ export const createClone = (msg) => {
       if (typeof fontSize === 'number') {
         const { unit, value } = lineHeight;
 
-        // Web: scale everything by 2
+        // web: scale everything by 2
         let scaleFactor = 2;
 
-        // Native: scale based on current fontSize
+        // native: scale based on current fontSize
         if (pageType === 'native') {
           scaleFactor = 1.3;
           if (fontSize < 32) scaleFactor = 1.4;
@@ -140,7 +140,7 @@ export const createClone = (msg) => {
   }
 
   // zoom figma view for new cloned page
-  figma.viewport.scrollAndZoomIntoView([clone]);
+  figma.viewport.scrollAndZoomIntoView([pageNode, clone]);
 
   // let the user know the page has been cloned
   figma.notify('Layer cloned with Text Zoom applied!', {

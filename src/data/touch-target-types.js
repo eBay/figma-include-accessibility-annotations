@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 // svg touch targets
-import SvgTouchTargets from '../icons/touch-target';
+import SvgTouchTargets from '@/icons/touch-target';
 
 // setup touch target options
 export default {

@@ -2,7 +2,7 @@ import * as React from 'react';
 import PropTypes from 'prop-types';
 
 // icons
-import { SvgEmojiCelebrate, SvgEmojiMonocle } from '../icons';
+import { SvgEmojiCelebrate, SvgEmojiMonocle } from '@/icons';
 
 const progressDisplay = {
   'work-to-do': {

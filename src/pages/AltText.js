@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { utils } from '../constants';
+import { utils } from '@/constants';
 
 // components
 import {
@@ -8,13 +8,13 @@ import {
   AnnotationStepPage,
   HeadingStep,
   LoadingSpinner
-} from '../components';
+} from '@/components';
 
 // icons
-import { SvgCheck, SvgImage, SvgWarning } from '../icons';
+import { SvgCheck, SvgImage, SvgWarning } from '@/icons';
 
 // app state
-import Context from '../context';
+import Context from '@/context';
 
 function AltText() {
   // main app state

@@ -1,14 +1,14 @@
-import { figmaLayer, utils } from '../../constants';
-import config from '../config';
-import { getOrCreateMainA11yFrame } from '../frame-helpers';
+import { figmaLayer, utils } from '@/constants';
+import config from '@/figma-code/config';
+import { getOrCreateMainA11yFrame } from '@/figma-code/frame-helpers';
 
 const focusGroupLayerName = 'Focus grouping Layer';
 const focusGroupRectName = 'Group Area';
 
-export const noGroups = (msg) => {
+export const noGroups = async (msg) => {
   const { bounds, name, page, pageId, pageType } = msg;
 
-  const mainPageNode = figma.getNodeById(pageId);
+  const mainPageNode = await figma.getNodeByIdAsync(pageId);
 
   // node not found
   if (mainPageNode === null) {
@@ -28,10 +28,10 @@ export const noGroups = (msg) => {
 
   // get main A11y frame if it exists (or create it)
   const { parent } = mainPageNode;
-  const mainFrame = getOrCreateMainA11yFrame({ page, pageType });
+  const mainFrame = await getOrCreateMainA11yFrame({ page, pageType });
 
   // does Focus grouping exists already?
-  const focusGroupFrame = utils.frameExistsOrCreate(
+  const focusGroupFrame = await utils.frameExistsOrCreate(
     mainFrame.id,
     focusGroupLayerName,
     {
@@ -73,10 +73,10 @@ export const noGroups = (msg) => {
   });
 };
 
-export const add = (msg) => {
+export const add = async (msg) => {
   const { bounds, name, page, pageId, pageType } = msg;
 
-  const mainPageNode = figma.getNodeById(pageId);
+  const mainPageNode = await figma.getNodeByIdAsync(pageId);
 
   // node not found
   if (mainPageNode === null) {
@@ -96,10 +96,10 @@ export const add = (msg) => {
 
   // get main A11y frame if it exists (or create it)
   const { parent } = mainPageNode;
-  const mainFrame = getOrCreateMainA11yFrame({ page, pageType });
+  const mainFrame = await getOrCreateMainA11yFrame({ page, pageType });
 
   // does Focus grouping exists already?
-  const focusGroupFrame = utils.frameExistsOrCreate(
+  const focusGroupFrame = await utils.frameExistsOrCreate(
     mainFrame.id,
     focusGroupLayerName,
     {
@@ -182,10 +182,10 @@ export const add = (msg) => {
   }
 };
 
-export const remove = (msg) => {
+export const remove = async (msg) => {
   const { groupIndex, page, pageType } = msg;
 
-  const mainPageNode = figma.getNodeById(page.id);
+  const mainPageNode = await figma.getNodeByIdAsync(page.id);
 
   // node not found
   if (mainPageNode === null) {
@@ -198,10 +198,10 @@ export const remove = (msg) => {
   }
 
   // get main A11y frame if it exists (or create it)
-  const mainFrame = getOrCreateMainA11yFrame({ page, pageType });
+  const mainFrame = await getOrCreateMainA11yFrame({ page, pageType });
 
   // does Focus grouping exists already?
-  const focusGroupFrame = utils.frameExistsOrCreate(
+  const focusGroupFrame = await utils.frameExistsOrCreate(
     mainFrame.id,
     focusGroupLayerName,
     page

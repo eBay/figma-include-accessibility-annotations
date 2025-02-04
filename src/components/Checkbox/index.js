@@ -1,9 +1,9 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import { utils } from '../../constants';
+import { utils } from '@/constants';
 
 // icons
-import { SvgCheck } from '../../icons';
+import { SvgCheck } from '@/icons';
 
 // styles
 import './styles.scss';
