@@ -2,7 +2,7 @@ import * as React from 'react';
 import { utils } from '@/constants';
 
 // components
-import { AnnotationStepPage, HeadingStep } from '@/components';
+import { AnnotationStepPage, HeadingStep, Toggle } from '@/components';
 
 // icons
 import { SvgCheck } from '@/icons';
@@ -59,7 +59,7 @@ function ReadingOrder() {
 
   return (
     <AnnotationStepPage
-      title="Reading order"
+      title="Reading order & focus order"
       routeName={routeName}
       bannerTipProps={{ pageType, routeName }}
       footerProps={{
@@ -79,22 +79,19 @@ function ReadingOrder() {
             return (
               <div
                 key={readingOrderType.id}
-                className="container-selection-button"
+                className="container-selection-button small"
               >
                 <div
+                  aria-label={`Add ${readingOrderType.label} arrow`}
                   role="button"
                   onClick={onClick}
                   onKeyDown={({ key }) => {
                     if (utils.isEnterKey(key)) onClick();
                   }}
-                  className="selection-button"
-                  tabIndex={-1}
+                  className="selection-button small"
+                  tabIndex="0"
                 >
                   {readingOrderType.icon}
-                </div>
-
-                <div className="selection-button-label">
-                  {readingOrderType.label}
                 </div>
               </div>
             );
@@ -120,6 +117,19 @@ function ReadingOrder() {
             />
           </React.Fragment>
         )}
+
+        {hasArrows === false && <div className="spacer2" />}
+
+        <div className="divider" />
+        <div className="spacer3" />
+
+        <Toggle
+          checked
+          label="Keyboard focus order"
+          onChange={(val) => {
+            console.log('changed', val);
+          }}
+        />
       </React.Fragment>
     </AnnotationStepPage>
   );

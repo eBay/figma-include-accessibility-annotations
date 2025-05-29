@@ -257,6 +257,12 @@ $selection-button-width: 72px;
   scroll-snap-align: center;
   text-align: center;
   width: $selection-button-width; // scrollbar visible or not, still displaying fine
+  
+  &.small {
+    height: 40px;
+    margin-right: 15px;
+    width: 40px;
+  }
 }
 
 .selection-button {
@@ -275,6 +281,16 @@ $selection-button-width: 72px;
   &:active {
     background-color: #8f8f8f;
     border-color: var(--border-accent);
+  }
+
+  &.small {
+    height: 40px;
+    width: 40px;
+
+    svg {
+      height: 50%;
+      width: 50%;
+    }
   }
 
   &.no-events {
