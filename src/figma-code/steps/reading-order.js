@@ -487,6 +487,35 @@ export const addFocusOrder = async (msg) => {
   });
 };
 
+export const removeFocusOrder = async (msg) => {
+  const { focusOrder, page, pageType } = msg;
+  const { id } = focusOrder;
+
+  // get main A11y frame
+  const mainFrame = await getOrCreateMainA11yFrame({ page, pageType });
+
+  // make sure that focus order frame exists (it should)
+  const focusOrderFrameId = await utils.checkIfChildNameExists(
+    mainFrame.id,
+    'Focus order Layer'
+  );
+
+  // if it exists, get the frame
+  if (focusOrderFrameId) {
+    const focusOrderFrame = await figma.getNodeByIdAsync(focusOrderFrameId);
+
+    // find the specific focus order block and remove
+    const focusOrderBlock = focusOrderFrame.children.find(
+      (child) => child.id === id
+    );
+
+    // only remove if it exists
+    if (focusOrderBlock) {
+      focusOrderBlock.remove();
+    }
+  }
+};
+
 export const confirm = async (msg) => {
   const { page, pageType } = msg;
   const { bounds, mainPageId, name } = page;
@@ -534,4 +563,4 @@ export const confirm = async (msg) => {
   });
 };
 
-export default { addArrow, addFocusOrder, confirm };
+export default { addArrow, addFocusOrder, removeFocusOrder, confirm };

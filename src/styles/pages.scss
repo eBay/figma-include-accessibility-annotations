@@ -342,8 +342,14 @@ $selection-button-width: 72px;
 }
 
 .focus-order-line {
+  align-items: center;
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
+
+  & .drag-handle {
+    width: 64px;
+  }
 }
 
 // Color Contrast

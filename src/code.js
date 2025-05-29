@@ -181,6 +181,11 @@ figma.ui.onmessage = async (msg) => {
     step.readingOrder.addFocusOrder(msg);
   }
 
+  // remove focus order
+  if (type === 'remove-focus-order') {
+    step.readingOrder.removeFocusOrder(msg);
+  }
+
   // reading order step confirmed
   if (type === 'confirm-reading-order') {
     step.readingOrder.confirm(msg);

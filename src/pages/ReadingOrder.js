@@ -19,10 +19,17 @@ import readingOrderTypes from '@/data/reading-order-types';
 // app state
 import Context from '@/context';
 
+const focusTypesArray = Object.keys(focusOrderTypes);
+const focusTypesArrayDropdown = focusTypesArray.map((id) => ({
+  id,
+  value: id
+}));
+
 function ReadingOrder() {
   // main app state
   const cnxt = React.useContext(Context);
   const { focusOrders, page, pageType, stepsCompleted, sendToFigma } = cnxt;
+  const { updateState } = cnxt;
 
   // state defaults
   const routeName = 'Reading order';
@@ -30,13 +37,13 @@ function ReadingOrder() {
 
   // ui state
   const focusOrdersKeys = Object.keys(focusOrders);
-  const focusOrdersValues = Object.values(focusOrders);
   const focusOrdersAreSet = focusOrdersKeys.length !== 0;
 
   // local state
   const [hasArrows, setHasArrows] = React.useState(isCompleted);
   const [hasKeyboardFocus, setKeyboardFocus] =
     React.useState(focusOrdersAreSet);
+  const [openedDropdown, setOpenedDropdown] = React.useState(null);
 
   const onAddArrow = (arrowType = 'right') => {
     const { bounds, id, name } = page;
@@ -70,6 +77,31 @@ function ReadingOrder() {
     });
   };
 
+  const onTypeUpdate = (type, key) => {
+    const newFocusOrdersObj = { ...focusOrders };
+    newFocusOrdersObj[key].type = type;
+
+    updateState('focusOrders', newFocusOrdersObj);
+  };
+
+  const onRemoveFocusOrder = (id) => {
+    const focusOrder = focusOrders[id];
+
+    // remove from main state
+    const newFocusOrdersObj = { ...focusOrders };
+    delete newFocusOrdersObj[id];
+
+    // remove from figma (if it exists)
+    sendToFigma('remove-focus-order', {
+      page,
+      pageType,
+      focusOrder
+    });
+
+    // update main state
+    updateState('focusOrders', newFocusOrdersObj);
+  };
+
   const onDoneWithReadingOrder = () => {
     // all is good to go
     sendToFigma('confirm-reading-order', { page, pageType });
@@ -93,16 +125,49 @@ function ReadingOrder() {
       }}
     >
       <React.Fragment>
-        {focusOrdersAreSet && (
-          <div>
-            {focusOrdersValues.map((item) => (
-              <div key={item.id} className="focus-order-line">
-                <SvgReorder />
-                <p>{item.type}</p>
+        {focusOrdersKeys.map((key) => {
+          const { id, number, type } = focusOrders[key];
+          const isOpened = openedDropdown === id;
+
+          return (
+            <div key={id} className="focus-order-line">
+              <div className="flex-row-center">
+                <div className="drag-handle flex-row-center">
+                  <div className="spacer1w" />
+                  <SvgReorder />
+                  <div className="spacer1w" />
+
+                  <p>{number}</p>
+                </div>
+
+                <Dropdown
+                  align="left"
+                  data={focusTypesArrayDropdown}
+                  index={id}
+                  isOpened={isOpened}
+                  onOpen={setOpenedDropdown}
+                  onSelect={onTypeUpdate}
+                  type={type}
+                />
               </div>
-            ))}
-          </div>
-        )}
+
+              <div
+                aria-label="remove focus order"
+                className="btn-remove"
+                onClick={() => onRemoveFocusOrder(id)}
+                onKeyDown={(e) => {
+                  if (utils.isEnterKey(e.key)) onRemoveFocusOrder(id);
+                }}
+                role="button"
+                tabIndex="0"
+              >
+                <div className="remove-dash" />
+              </div>
+            </div>
+          );
+        })}
+
+        <div className="spacer2" />
 
         <HeadingStep number={1} text="Add arrows in chosen direction" />
 
