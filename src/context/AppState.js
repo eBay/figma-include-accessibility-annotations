@@ -57,6 +57,9 @@ function AppState({ children }) {
     headings: {},
     headingTemp: null,
 
+    // focus orders
+    focusOrders: {},
+
     // alt text
     noImages: false,
     imagesData: [],
@@ -238,6 +241,24 @@ function AppState({ children }) {
               name: data.name,
               type: data.landmarkType
             }
+          }
+        }));
+        break;
+
+      // focus order added (reading & focus order)
+      case 'focus-order-added':
+        const { id: focusOrdeId, focusOrderType } = data;
+
+        const newFocusOrder = {
+          id: focusOrdeId,
+          type: focusOrderType
+        };
+
+        setState((prevState) => ({
+          ...prevState,
+          focusOrders: {
+            ...prevState.focusOrders,
+            [focusOrdeId]: newFocusOrder
           }
         }));
         break;

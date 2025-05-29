@@ -359,7 +359,7 @@ export const addFocusOrder = async (msg) => {
 
   // create a container frame for the focus order node and annotation
   const focusOrderContainer = figmaLayer.createTransparentFrame({
-    name: `Focus order ${nextFocusNum} Container`,
+    name: `Focus order ${nextFocusNum} | ${focusOrderType}`,
     x: xStart,
     y: yStart,
     height: 96,
@@ -457,6 +457,15 @@ export const addFocusOrder = async (msg) => {
   // let the user know rectangle has been added
   figma.notify(`Focus order overlay added successfully!`, {
     timeout: config.notifyTime
+  });
+
+  // send message response back to plugin frontend (ui.js)
+  figma.ui.postMessage({
+    type: 'focus-order-added',
+    data: {
+      focusOrderType,
+      id: focusOrderContainer.id
+    }
   });
 };
 

@@ -150,6 +150,34 @@ const isA11yLayer = async (children, childNode, name) => {
           visible: frameChild.visible
         };
         a11yCompletedLayers.push(stepName);
+      } else if (stepName === 'Focus order') {
+        // get focus order nodes and format
+        const focusOrders = {};
+
+        await Promise.all(
+          frameChild.children.map(async (focusOrderObj) => {
+            // make sure it's a frame node
+            if (focusOrderObj.type === 'FRAME') {
+              const [, typeName] = focusOrderObj.name.split('|');
+              const type = typeName.trim();
+
+              // is it a mapped focus order type?
+              if (type === 'tabs' || type === 'arrows') {
+                focusOrders[focusOrderObj.id] = {
+                  id: focusOrderObj.id,
+                  type
+                };
+              }
+            }
+          })
+        );
+
+        stepsData[stepName] = {
+          id: frameChild.id,
+          existingData: focusOrders,
+          stateKey: 'focusOrders',
+          visible: frameChild.visible
+        };
       } else if (stepName === 'Reading order') {
         // set Reading order as completed if exists
         stepsData[stepName] = {
