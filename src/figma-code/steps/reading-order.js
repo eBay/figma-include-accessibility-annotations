@@ -406,7 +406,7 @@ export const addFocusOrder = async (msg) => {
 
   // create background rectangle for annotationGroup
   const numberString = nextFocusNum.toString();
-  const widthAdj = numberString.length * 4;
+  const widthAdj = numberString.length * 7 + 6;
   const backgroundRect = figmaLayer.createRectangle({
     name: 'Label background',
     x: 0,
@@ -444,8 +444,8 @@ export const addFocusOrder = async (msg) => {
   numberNode.fills = [{ type: 'SOLID', color: colors.white }];
   numberNode.fontName = { family: 'Roboto', style: 'Bold' };
   numberNode.textAutoResize = 'WIDTH_AND_HEIGHT';
-  numberNode.x = 24;
-  numberNode.y = 2;
+  numberNode.x = 28;
+  numberNode.y = 3;
 
   // add within focus order container first
   focusOrderContainer.appendChild(backgroundRect);
@@ -481,7 +481,8 @@ export const addFocusOrder = async (msg) => {
     type: 'focus-order-added',
     data: {
       focusOrderType,
-      id: focusOrderContainer.id
+      id: focusOrderContainer.id,
+      number: nextFocusNum
     }
   });
 };
