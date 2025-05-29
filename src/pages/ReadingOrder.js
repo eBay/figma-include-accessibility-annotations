@@ -26,6 +26,7 @@ function ReadingOrder() {
 
   // local state
   const [hasArrows, setHasArrows] = React.useState(isCompleted);
+  const [hasKeyboardFocus, setKeyboardFocus] = React.useState(false);
 
   const onAddArrow = (arrowType = 'right') => {
     const { bounds, id, name } = page;
@@ -124,10 +125,10 @@ function ReadingOrder() {
         <div className="spacer3" />
 
         <Toggle
-          checked
+          checked={hasKeyboardFocus}
           label="Keyboard focus order"
           onChange={(val) => {
-            console.log('changed', val);
+            setKeyboardFocus(val);
           }}
         />
       </React.Fragment>
