@@ -449,11 +449,11 @@ export const addFocusOrder = async (msg) => {
 
   // add within focus order container first
   focusOrderContainer.appendChild(backgroundRect);
-  focusOrderContainer.appendChild(vectorNode);
   focusOrderContainer.appendChild(numberNode);
+  focusOrderContainer.appendChild(vectorNode);
 
   // group vector and number nodes
-  const toGroupArray = [backgroundRect, vectorNode, numberNode];
+  const toGroupArray = [backgroundRect, numberNode, vectorNode];
   const annotationGroup = figma.group(toGroupArray, focusOrderContainer);
   annotationGroup.name = 'Label group';
   annotationGroup.expanded = false;
@@ -577,7 +577,7 @@ export const updateFocusOrders = async (msg) => {
           if (arrowLayer) {
             arrowLayer.remove();
 
-            // create vector (e.g., an arrow) with fallback
+            // create vector
             const vectorNode = figma.createVector();
             vectorNode.name = 'Arrow';
 
