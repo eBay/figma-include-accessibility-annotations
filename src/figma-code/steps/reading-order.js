@@ -342,7 +342,7 @@ export const addFocusOrder = async (msg) => {
   focusOrdersFrame.name = `${focusOrderLayerName} | ${focusOrdersFrame.id}`;
 
   const itemsCount = focusOrdersFrame.children.length;
-  const nextFocusNum = itemsCount + 1;
+  let nextFocusNum = itemsCount + 1;
   const isFirst = nextFocusNum === 1;
 
   let xStart = 0;
@@ -355,11 +355,28 @@ export const addFocusOrder = async (msg) => {
     // set new yStart below last target
     xStart = lastFocusOrder.x;
     yStart = lastFocusOrder.y + lastFocusOrder.height;
+
+    // arrows are a child navigation action
+    // const lastType = lastFocusOrder.name.split('|')[1].trim();
+    const labelGroupLayer = lastFocusOrder.findChild(
+      (n) => n.name === 'Label group'
+    );
+    const lastNumberLayer = labelGroupLayer.findChild(
+      (n) => n.name === 'Number'
+    );
+    const lastNumber = parseFloat(lastNumberLayer.characters);
+
+    // set next focus number
+    if (focusOrderType === 'arrows') {
+      nextFocusNum = parseFloat((lastNumber + 0.1).toFixed(1));
+    } else {
+      nextFocusNum = parseInt(lastNumber, 10) + 1;
+    }
   }
 
   // create a container frame for the focus order node and annotation
   const focusOrderContainer = figmaLayer.createTransparentFrame({
-    name: `Focus order ${nextFocusNum} | ${focusOrderType}`,
+    name: `Focus order | ${focusOrderType}`,
     x: xStart,
     y: yStart,
     height: 96,
@@ -370,7 +387,7 @@ export const addFocusOrder = async (msg) => {
   // create rectangle
   const focusOrderNode = figmaLayer.createRectangle({
     fillColor: colors.deepTeal,
-    name: `Focus order ${nextFocusNum}`,
+    name: 'Focus order dimensions',
     height: 96,
     radius: 4,
     opacity: 0,
@@ -391,7 +408,7 @@ export const addFocusOrder = async (msg) => {
   const numberString = nextFocusNum.toString();
   const widthAdj = numberString.length * 4;
   const backgroundRect = figmaLayer.createRectangle({
-    name: 'Annotation Background',
+    name: 'Label background',
     x: 0,
     y: 0,
     fillColor: colors.deepTeal,
@@ -406,7 +423,7 @@ export const addFocusOrder = async (msg) => {
 
   // create vector (e.g., an arrow) with fallback
   const vectorNode = figma.createVector();
-  vectorNode.name = `Arrow ${nextFocusNum}`;
+  vectorNode.name = 'Arrow';
 
   // define the arrow shape
   const isArrows = focusOrderType === 'arrows';
@@ -421,7 +438,7 @@ export const addFocusOrder = async (msg) => {
 
   // create text node for the number
   const numberNode = figma.createText();
-  numberNode.name = `Number ${nextFocusNum}`;
+  numberNode.name = 'Number';
   numberNode.characters = `${nextFocusNum}`;
   numberNode.fontSize = 16;
   numberNode.fills = [{ type: 'SOLID', color: colors.white }];
@@ -438,7 +455,7 @@ export const addFocusOrder = async (msg) => {
   // group vector and number nodes
   const toGroupArray = [backgroundRect, vectorNode, numberNode];
   const annotationGroup = figma.group(toGroupArray, focusOrderContainer);
-  annotationGroup.name = 'Annotation Number';
+  annotationGroup.name = 'Label group';
   annotationGroup.expanded = false;
 
   // append nodes to container
