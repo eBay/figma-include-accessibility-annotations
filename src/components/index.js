@@ -13,3 +13,4 @@ export { default as Footer } from './Footer';
 export { default as HeadingStep } from './HeadingStep';
 export { default as LoadingSpinner } from './LoadingSpinner';
 export { default as NavLeft } from './NavLeft';
+export { default as Toggle } from './Toggle';
