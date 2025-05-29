@@ -2,10 +2,15 @@ import * as React from 'react';
 import { utils } from '@/constants';
 
 // components
-import { AnnotationStepPage, HeadingStep, Toggle } from '@/components';
+import {
+  AnnotationStepPage,
+  Dropdown,
+  HeadingStep,
+  Toggle
+} from '@/components';
 
 // icons
-import { SvgCheck } from '@/icons';
+import { SvgCheck, SvgReorder } from '@/icons';
 
 // data
 import focusOrderTypes from '@/data/focus-order-types';
@@ -17,16 +22,21 @@ import Context from '@/context';
 function ReadingOrder() {
   // main app state
   const cnxt = React.useContext(Context);
-  const { page, pageType, sendToFigma } = cnxt;
-  const { stepsCompleted } = cnxt;
+  const { focusOrders, page, pageType, stepsCompleted, sendToFigma } = cnxt;
 
   // state defaults
   const routeName = 'Reading order';
   const isCompleted = stepsCompleted.includes(routeName);
 
+  // ui state
+  const focusOrdersKeys = Object.keys(focusOrders);
+  const focusOrdersValues = Object.values(focusOrders);
+  const focusOrdersAreSet = focusOrdersKeys.length !== 0;
+
   // local state
   const [hasArrows, setHasArrows] = React.useState(isCompleted);
-  const [hasKeyboardFocus, setKeyboardFocus] = React.useState(false);
+  const [hasKeyboardFocus, setKeyboardFocus] =
+    React.useState(focusOrdersAreSet);
 
   const onAddArrow = (arrowType = 'right') => {
     const { bounds, id, name } = page;
@@ -83,6 +93,17 @@ function ReadingOrder() {
       }}
     >
       <React.Fragment>
+        {focusOrdersAreSet && (
+          <div>
+            {focusOrdersValues.map((item) => (
+              <div key={item.id} className="focus-order-line">
+                <SvgReorder />
+                <p>{item.type}</p>
+              </div>
+            ))}
+          </div>
+        )}
+
         <HeadingStep number={1} text="Add arrows in chosen direction" />
 
         <div className="button-group">

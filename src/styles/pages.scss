@@ -341,6 +341,11 @@ $selection-button-width: 72px;
   max-width: 194px;
 }
 
+.focus-order-line {
+  display: flex;
+  flex-direction: row;
+}
+
 // Color Contrast
 // /////////////////////////////////////////////////////////////////////////////
 .contrast-row {
