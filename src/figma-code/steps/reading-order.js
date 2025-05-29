@@ -2,6 +2,139 @@ import { colors, figmaLayer, utils } from '@/constants';
 import config from '@/figma-code/config';
 import { getOrCreateMainA11yFrame } from '@/figma-code/frame-helpers';
 
+const arrowsNetwork = {
+  vertices: [
+    // first path: right arrow
+    { x: 9, y: 5 },
+    { x: 12, y: 8 },
+    { x: 9, y: 11 },
+
+    // first path: left arrow
+    { x: 7, y: 11 },
+    { x: 4, y: 8 },
+    { x: 7, y: 5 },
+
+    // second path: horizontal top lines
+    { x: 12, y: 0.5 },
+    { x: 9, y: 0.5 },
+    { x: 16, y: 0.5 },
+    { x: 14, y: 0.5 },
+    { x: 7, y: 0.5 },
+    { x: 4, y: 0.5 },
+    { x: 2, y: 0.5 },
+    { x: 0, y: 0.5 },
+
+    // second path: vertical lines
+    { x: 0.5, y: 2 },
+    { x: 0.5, y: 0 },
+    { x: 0.5, y: 7 },
+    { x: 0.5, y: 4 },
+    { x: 15.5, y: 7 },
+    { x: 15.5, y: 4 },
+    { x: 0.5, y: 12 },
+    { x: 0.5, y: 9 },
+    { x: 15.5, y: 12 },
+    { x: 15.5, y: 9 },
+    { x: 0.5, y: 16 },
+    { x: 0.5, y: 14 },
+    { x: 15.5, y: 16 },
+    { x: 15.5, y: 14 },
+    { x: 15.5, y: 2 },
+    { x: 15.5, y: 0 },
+
+    // second path: horizontal bottom lines
+    { x: 0, y: 15.5 },
+    { x: 2, y: 15.5 },
+    { x: 4, y: 15.5 },
+    { x: 7, y: 15.5 },
+    { x: 9, y: 15.5 },
+    { x: 12, y: 15.5 },
+    { x: 14, y: 15.5 },
+    { x: 16, y: 15.5 }
+  ],
+  segments: [
+    // first path: right arrow
+    { start: 0, end: 1 },
+    { start: 1, end: 2 },
+
+    // first path: left arrow
+    { start: 3, end: 4 },
+    { start: 4, end: 5 },
+
+    // second path: horizontal top lines
+    { start: 6, end: 7 },
+    { start: 8, end: 9 },
+    { start: 10, end: 11 },
+    { start: 12, end: 13 },
+
+    // second path: vertical lines
+    { start: 14, end: 15 },
+    { start: 16, end: 17 },
+    { start: 18, end: 19 },
+    { start: 20, end: 21 },
+    { start: 22, end: 23 },
+    { start: 24, end: 25 },
+    { start: 26, end: 27 },
+    { start: 28, end: 29 },
+
+    // second path: horizontal bottom lines
+    { start: 30, end: 31 },
+    { start: 32, end: 33 },
+    { start: 34, end: 35 },
+    { start: 36, end: 37 }
+  ],
+  regions: []
+};
+
+const tabsNetwork = {
+  vertices: [
+    // arrow (first path)
+    { x: 24, y: 10 },
+    { x: 28.6, y: 14.6 },
+    { x: 24, y: 19.2 },
+
+    // rectangle outline (second path, first subpath)
+    { x: 29, y: 6 },
+    { x: 29, y: 3 },
+    { x: 27, y: 1 },
+    { x: 3, y: 1 },
+    { x: 1, y: 3 },
+    { x: 1, y: 27 },
+    { x: 3, y: 29 },
+    { x: 27, y: 29 },
+    { x: 29, y: 27 },
+    { x: 29, y: 23 },
+
+    // vertical line (second path, second subpath)
+    { x: 29, y: 10 },
+    { x: 29, y: 19 },
+
+    // horizontal line (second path, third subpath)
+    { x: 27.5, y: 14.5 },
+    { x: 14.5, y: 14.5 }
+  ],
+  segments: [
+    // arrow
+    { start: 0, end: 1 },
+    { start: 1, end: 2 },
+
+    // rectangle outline
+    { start: 3, end: 4 },
+    { start: 4, end: 5 },
+    { start: 5, end: 6 },
+    { start: 6, end: 7 },
+    { start: 7, end: 8 },
+    { start: 8, end: 9 },
+    { start: 9, end: 10 },
+    { start: 10, end: 11 },
+    { start: 11, end: 12 },
+
+    // horizontal line
+    { start: 15, end: 16 }
+  ],
+  regions: []
+};
+
 export const addArrow = async (msg) => {
   const { bounds, arrowType, name, pageId, pageType } = msg;
 
@@ -271,194 +404,31 @@ export const addFocusOrder = async (msg) => {
     radiusMixed: [{ bottomRightRadius: 2 }]
   });
 
-  // Create vector (e.g., an arrow) with fallback
+  // create vector (e.g., an arrow) with fallback
   const vectorNode = figma.createVector();
   vectorNode.name = `Arrow ${nextFocusNum}`;
 
   // define the arrow shape
   const isArrows = focusOrderType === 'arrows';
-  const vectorNetwork = isArrows
-    ? {
-        vertices: [
-          // First path: Right arrow
-          { x: 9, y: 5 }, // 0: Right arrow start
-          { x: 12, y: 8 }, // 1: Right arrow middle
-          { x: 9, y: 11 }, // 2: Right arrow end
-
-          // First path: Left arrow
-          { x: 7, y: 11 }, // 3: Left arrow start
-          { x: 4, y: 8 }, // 4: Left arrow middle
-          { x: 7, y: 5 }, // 5: Left arrow end
-
-          // Second path: Horizontal top lines
-          { x: 12, y: 0.5 }, // 6: Horizontal top 1 start
-          { x: 9, y: 0.5 }, // 7: Horizontal top 1 end
-          { x: 16, y: 0.5 }, // 8: Horizontal top 2 start
-          { x: 14, y: 0.5 }, // 9: Horizontal top 2 end
-          { x: 7, y: 0.5 }, // 10: Horizontal top 3 start
-          { x: 4, y: 0.5 }, // 11: Horizontal top 3 end
-          { x: 2, y: 0.5 }, // 12: Horizontal top 4 start
-          { x: 0, y: 0.5 }, // 13: Horizontal top 4 end
-
-          // Second path: Vertical lines
-          { x: 0.5, y: 2 }, // 14: Vertical line 1 start
-          { x: 0.5, y: 0 }, // 15: Vertical line 1 end
-          { x: 0.5, y: 7 }, // 16: Vertical line 2 start
-          { x: 0.5, y: 4 }, // 17: Vertical line 2 end
-          { x: 15.5, y: 7 }, // 18: Vertical line 3 start
-          { x: 15.5, y: 4 }, // 19: Vertical line 3 end
-          { x: 0.5, y: 12 }, // 20: Vertical line 4 start
-          { x: 0.5, y: 9 }, // 21: Vertical line 4 end
-          { x: 15.5, y: 12 }, // 22: Vertical line 5 start
-          { x: 15.5, y: 9 }, // 23: Vertical line 5 end
-          { x: 0.5, y: 16 }, // 24: Vertical line 6 start
-          { x: 0.5, y: 14 }, // 25: Vertical line 6 end
-          { x: 15.5, y: 16 }, // 26: Vertical line 7 start
-          { x: 15.5, y: 14 }, // 27: Vertical line 7 end
-          { x: 15.5, y: 2 }, // 28: Vertical line 8 start
-          { x: 15.5, y: 0 }, // 29: Vertical line 8 end
-
-          // Second path: Horizontal bottom lines
-          { x: 0, y: 15.5 }, // 30: Horizontal bottom 1 start
-          { x: 2, y: 15.5 }, // 31: Horizontal bottom 1 end
-          { x: 4, y: 15.5 }, // 32: Horizontal bottom 2 start
-          { x: 7, y: 15.5 }, // 33: Horizontal bottom 2 end
-          { x: 9, y: 15.5 }, // 34: Horizontal bottom 3 start
-          { x: 12, y: 15.5 }, // 35: Horizontal bottom 3 end
-          { x: 14, y: 15.5 }, // 36: Horizontal bottom 4 start
-          { x: 16, y: 15.5 } // 37: Horizontal bottom 4 end
-        ],
-        segments: [
-          // First path: Right arrow
-          { start: 0, end: 1 }, // Line from (9, 5) to (12, 8)
-          { start: 1, end: 2 }, // Line from (12, 8) to (9, 11)
-
-          // First path: Left arrow
-          { start: 3, end: 4 }, // Line from (7, 11) to (4, 8)
-          { start: 4, end: 5 }, // Line from (4, 8) to (7, 5)
-
-          // Second path: Horizontal top lines
-          { start: 6, end: 7 }, // Line from (12, 0.5) to (9, 0.5)
-          { start: 8, end: 9 }, // Line from (16, 0.5) to (14, 0.5)
-          { start: 10, end: 11 }, // Line from (7, 0.5) to (4, 0.5)
-          { start: 12, end: 13 }, // Line from (2, 0.5) to (0, 0.5)
-
-          // Second path: Vertical lines
-          { start: 14, end: 15 }, // Line from (0.5, 2) to (0.5, 0)
-          { start: 16, end: 17 }, // Line from (0.5, 7) to (0.5, 4)
-          { start: 18, end: 19 }, // Line from (15.5, 7) to (15.5, 4)
-          { start: 20, end: 21 }, // Line from (0.5, 12) to (0.5, 9)
-          { start: 22, end: 23 }, // Line from (15.5, 12) to (15.5, 9)
-          { start: 24, end: 25 }, // Line from (0.5, 16) to (0.5, 14)
-          { start: 26, end: 27 }, // Line from (15.5, 16) to (15.5, 14)
-          { start: 28, end: 29 }, // Line from (15.5, 2) to (15.5, 0)
-
-          // Second path: Horizontal bottom lines
-          { start: 30, end: 31 }, // Line from (0, 15.5) to (2, 15.5)
-          { start: 32, end: 33 }, // Line from (4, 15.5) to (7, 15.5)
-          { start: 34, end: 35 }, // Line from (9, 15.5) to (12, 15.5)
-          { start: 36, end: 37 } // Line from (14, 15.5) to (16, 15.5)
-        ],
-        regions: [] // No filled regions (stroke only)
-      }
-    : {
-        vertices: [
-          // Arrow (first path)
-          { x: 24, y: 10 }, // 0: Arrow start
-          { x: 28.6, y: 14.6 }, // 1: Arrow middle
-          { x: 24, y: 19.2 }, // 2: Arrow end
-
-          // Rectangle outline (second path, first subpath)
-          { x: 29, y: 6 }, // 3: Start of rectangle
-          { x: 29, y: 3 }, // 4: Top-right before arc
-          { x: 27, y: 1 }, // 5: Top-right after arc
-          { x: 3, y: 1 }, // 6: Top-left before arc
-          { x: 1, y: 3 }, // 7: Top-left after arc
-          { x: 1, y: 27 }, // 8: Bottom-left before arc
-          { x: 3, y: 29 }, // 9: Bottom-left after arc
-          { x: 27, y: 29 }, // 10: Bottom-right before arc
-          { x: 29, y: 27 }, // 11: Bottom-right after arc
-          { x: 29, y: 23 }, // 12: End of rectangle
-
-          // Vertical line (second path, second subpath)
-          { x: 29, y: 10 }, // 13: Vertical line start
-          { x: 29, y: 19 }, // 14: Vertical line end
-
-          // Horizontal line (second path, third subpath)
-          { x: 27.5, y: 14.5 }, // 15: Horizontal line start
-          { x: 14.5, y: 14.5 } // 16: Horizontal line end
-        ],
-        segments: [
-          // Arrow
-          { start: 0, end: 1 }, // Line from (24, 10) to (28.6, 14.6)
-          { start: 1, end: 2 }, // Line from (28.6, 14.6) to (24, 19.2)
-
-          // Rectangle outline
-          { start: 3, end: 4 }, // Line from (29, 6) to (29, 3)
-          { start: 4, end: 5 }, // Approximate arc from (29, 3) to (27, 1)
-          { start: 5, end: 6 }, // Line from (27, 1) to (3, 1)
-          { start: 6, end: 7 }, // Approximate arc from (3, 1) to (1, 3)
-          { start: 7, end: 8 }, // Line from (1, 3) to (1, 27)
-          { start: 8, end: 9 }, // Approximate arc from (1, 27) to (3, 29)
-          { start: 9, end: 10 }, // Line from (3, 29) to (27, 29)
-          { start: 10, end: 11 }, // Approximate arc from (27, 29) to (29, 27)
-          { start: 11, end: 12 }, // Line from (29, 27) to (29, 23)
-
-          // Horizontal line
-          { start: 15, end: 16 } // Line from (27.5, 14.5) to (14.5, 14.5)
-        ],
-        regions: [] // No filled regions (stroke only)
-      };
-
-  // Try setVectorNetworkAsync, fallback to vectorPaths
-  try {
-    if (typeof vectorNode.setVectorNetworkAsync === 'function') {
-      await vectorNode.setVectorNetworkAsync(vectorNetwork);
-    } else {
-      // Fallback to vectorPaths for older API versions
-      vectorNode.vectorPaths = [
-        {
-          windingRule: 'NONZERO',
-          data: 'M0 0 L8 8 L0 16' // Matches the VectorNetwork shape
-        }
-      ];
-      figma.notify(
-        'Warning: Using deprecated vectorPaths API as setVectorNetworkAsync is unavailable',
-        {
-          timeout: config.notifyTime
-        }
-      );
-    }
-  } catch (error) {
-    figma.notify(`Error creating vector: ${error.message}`, {
-      error: true,
-      timeout: config.notifyTime
-    });
-    // Fallback to vectorPaths in case of error
-    vectorNode.vectorPaths = [
-      {
-        windingRule: 'NONZERO',
-        data: 'M0 0 L8 8 L0 16'
-      }
-    ];
-  }
+  const vectorNetwork = isArrows ? arrowsNetwork : tabsNetwork;
+  await vectorNode.setVectorNetworkAsync(vectorNetwork);
 
   vectorNode.strokes = [{ type: 'SOLID', color: colors.white }];
-  vectorNode.strokeWeight = 2;
-  vectorNode.resize(16, 16); // Small size for the vector
-  vectorNode.x = 3; // Position left of focusOrderNode, relative to container
-  vectorNode.y = 3; // Position above focusOrderNode, relative to container
+  vectorNode.strokeWeight = 1;
+  vectorNode.resize(16, 16);
+  vectorNode.x = 3;
+  vectorNode.y = 3;
 
   // create text node for the number
   const numberNode = figma.createText();
   numberNode.name = `Number ${nextFocusNum}`;
   numberNode.characters = `${nextFocusNum}`;
-  numberNode.fontSize = 16; // Match add function
+  numberNode.fontSize = 16;
   numberNode.fills = [{ type: 'SOLID', color: colors.white }]; // Match add function
   numberNode.fontName = { family: 'Roboto', style: 'Bold' };
   numberNode.textAutoResize = 'WIDTH_AND_HEIGHT';
-  numberNode.x = 24; // Relative to container
-  numberNode.y = 2; // Relative to container
+  numberNode.x = 24;
+  numberNode.y = 2;
 
   // group vector and number nodes
   const toGroupArray = [backgroundRect, vectorNode, numberNode];
