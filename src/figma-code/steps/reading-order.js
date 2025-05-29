@@ -455,7 +455,6 @@ export const addFocusOrder = async (msg) => {
   const toGroupArray = [backgroundRect, numberNode, vectorNode];
   const annotationGroup = figma.group(toGroupArray, focusOrderContainer);
   annotationGroup.name = 'Label group';
-  annotationGroup.expanded = false;
 
   // append nodes to container
   focusOrderContainer.appendChild(focusOrderNode);
@@ -473,7 +472,7 @@ export const addFocusOrder = async (msg) => {
   // collapse all layers
   focusOrdersFrame.expanded = false;
   focusOrderContainer.expanded = false;
-  focusOrderNode.expanded = false;
+  annotationGroup.expanded = false;
 
   // let the user know rectangle has been added
   figma.notify(`Focus order overlay added successfully!`, {
