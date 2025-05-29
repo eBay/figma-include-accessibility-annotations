@@ -46,8 +46,9 @@ function Dropdown(props) {
       </div>
 
       <ul className={`dropdown-options${alignClass}`}>
-        {data.map(({ id, value }) => {
+        {data.map(({ id, label = null, value }) => {
           const disabled = disabledValues.includes(value);
+          const displayLabel = label !== null ? label : value;
 
           return (
             <li
@@ -77,7 +78,7 @@ function Dropdown(props) {
                 role="button"
                 tabIndex={isOpened ? 0 : -1}
               >
-                {value}
+                {displayLabel}
               </div>
             </li>
           );
@@ -106,6 +107,7 @@ Dropdown.propTypes = {
     PropTypes.shape({
       id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
       disabled: PropTypes.bool,
+      label: PropTypes.string,
       value: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
         .isRequired
     })
