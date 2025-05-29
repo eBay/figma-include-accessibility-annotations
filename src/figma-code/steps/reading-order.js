@@ -621,6 +621,7 @@ export const confirm = async (msg) => {
   // top layer namings
   const saniName = utils.sanitizeName(name);
   const readingOrderLayerName = 'Reading order Layer';
+  const focusOrderLayerName = 'Focus order Layer';
 
   // get main A11y frame if it exists (or create it)
   const mainFrame = await getOrCreateMainA11yFrame({ page, pageType });
@@ -631,14 +632,24 @@ export const confirm = async (msg) => {
     readingOrderLayerName
   );
 
+  const focusOrderExists = await utils.checkIfChildNameExists(
+    mainFrame.id,
+    focusOrderLayerName
+  );
+
+  // data exists (this handles if only focus order exists)
+  const hasReadingOrder = readingOrderExists !== null;
+  const dataExists = hasReadingOrder ? readingOrderExists : focusOrderExists;
+  const key = hasReadingOrder ? 'Reading order' : 'Focus order';
+
   // update pagesData
   figma.ui.postMessage({
     type: 'update-pages-data',
     data: {
       status: 'add',
-      stepKey: 'Reading order',
-      'Reading order': {
-        id: readingOrderExists
+      stepKey: key,
+      [key]: {
+        id: dataExists
       },
       main: {
         id: mainFrame.id,
