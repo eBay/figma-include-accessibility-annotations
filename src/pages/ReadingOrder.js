@@ -7,8 +7,8 @@ import { AnnotationStepPage, HeadingStep, Toggle } from '@/components';
 // icons
 import { SvgCheck } from '@/icons';
 
-// icons: reading order
-// import SvgReadingOrder from '@/icons/reading-order';
+// data
+import focusOrderTypes from '@/data/focus-order-types';
 import readingOrderTypes from '@/data/reading-order-types';
 
 // app state
@@ -44,6 +44,20 @@ function ReadingOrder() {
     // update ui to show step 2
     setHasArrows(true);
     utils.scrollToBottomOfAnnotationStep();
+  };
+
+  const onAddFocusOrder = (focusOrderType = 'tabs') => {
+    const { bounds, id, name } = page;
+
+    // let figma side know, time to place that new focus order
+    sendToFigma('add-focus-order', {
+      bounds,
+      focusOrderType,
+      name,
+      page,
+      pageId: id,
+      pageType
+    });
   };
 
   const onDoneWithReadingOrder = () => {
@@ -131,6 +145,42 @@ function ReadingOrder() {
             setKeyboardFocus(val);
           }}
         />
+
+        {hasKeyboardFocus && (
+          <React.Fragment>
+            <div className="spacer2" />
+
+            <HeadingStep
+              number={1}
+              text="Mark focus order where different from the reading order."
+            />
+
+            <div className="button-group">
+              {Object.values(focusOrderTypes).map((item) => {
+                const onClick = () => {
+                  onAddFocusOrder(item.id);
+                };
+
+                return (
+                  <div key={item.id} className="container-selection-button">
+                    <div
+                      aria-label={`Add ${item.label} focus order`}
+                      role="button"
+                      onClick={onClick}
+                      onKeyDown={({ key }) => {
+                        if (utils.isEnterKey(key)) onClick();
+                      }}
+                      className="selection-button"
+                      tabIndex="0"
+                    >
+                      {item.icon}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </React.Fragment>
+        )}
       </React.Fragment>
     </AnnotationStepPage>
   );
