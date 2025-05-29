@@ -288,8 +288,10 @@ function AppState({ children }) {
         }));
         break;
 
-      // no need for this yet, but a msg hook is here
+      // no need for these yet, but a msg hook is here
       case 'selection-change':
+      case 'touch-targets-checked':
+        // console.log('msg type fired but not used yet');
         break;
 
       // handle any new messages we've yet to setup
