@@ -107,9 +107,17 @@ function Dashboard() {
 
       // loop through routes
       for (let i = 0; i < routeKeys.length; i += 1) {
+        let skip = false;
         const key = routeKeys[i];
+
+        // case for steps that have multiple data layers
+        // - 'Focus order' step data exists
+        if (stepsDataArray.includes('Focus order') && key === 'Reading order') {
+          skip = true;
+        }
+
         // get the path of the first step that's incomplete
-        if (stepsDataArray.includes(key) === false) {
+        if (stepsDataArray.includes(key) === false && skip === false) {
           newPath = routeData[key].path;
           break;
         }
