@@ -175,6 +175,14 @@ function App() {
     }
   }, [showDashboard]);
 
+  React.useEffect(() => {
+    // fix the "No <!doctype html> found." because of Figma + iFrame
+    if (!document.doctype) {
+      const docT = document.implementation.createDocumentType('html', '', '');
+      document.insertBefore(docT, document.documentElement);
+    }
+  }, []);
+
   // loading/scanning for a11y progress on current Figma document
   if (isLoading) {
     return (
