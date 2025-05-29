@@ -22,6 +22,7 @@ export { default as SvgInfoFill } from './SvgInfoFill';
 export { default as SvgLoadingSpinner } from './SvgLoadingSpinner';
 export { default as SvgMobile } from './SvgMobile';
 export { default as SvgPlus } from './SvgPlus';
+export { default as SvgReorder } from './SvgReorder';
 export { default as SvgSettings } from './SvgSettings';
 export { default as SvgText } from './SvgText';
 export { default as SvgVector } from './SvgVector';
