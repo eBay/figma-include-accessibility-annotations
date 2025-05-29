@@ -526,6 +526,7 @@ export const updateFocusOrders = async (msg) => {
       error: true,
       timeout: config.notifyTime
     });
+
     return;
   }
 
@@ -534,6 +535,7 @@ export const updateFocusOrders = async (msg) => {
     focusOrderKeys.map(async (key) => {
       const { id, number, type: itemType } = focusOrderObject[key];
       const focusOrderNode = await figma.getNodeByIdAsync(id);
+      const isArrows = itemType === 'arrows';
 
       // make sure focus order node exists
       if (focusOrderNode) {
@@ -546,15 +548,63 @@ export const updateFocusOrders = async (msg) => {
 
         // make sure labelGroupLayer exists
         if (labelGroupLayer) {
-          const lastNumberLayer = labelGroupLayer.findChild(
+          const numberLayer = labelGroupLayer.findChild(
             (n) => n.name === 'Number'
           );
 
-          // make sure lastNumberLayer exists
-          if (lastNumberLayer) {
-            lastNumberLayer.characters = number.toString();
+          // make sure numberLayer exists
+          if (numberLayer) {
+            numberLayer.characters = number.toString();
+          }
+
+          const labelBgLayer = labelGroupLayer.findChild(
+            (n) => n.name === 'Label background'
+          );
+
+          // make sure labelBgLayer exists
+          if (labelBgLayer) {
+            const numberString = number.toString();
+            const widthAdj = numberString.length * 7 + 38;
+
+            labelBgLayer.resize(widthAdj, 24);
+          }
+
+          // remove arrow if it exists
+          const arrowLayer = labelGroupLayer.findChild(
+            (n) => n.name === 'Arrow'
+          );
+
+          if (arrowLayer) {
+            arrowLayer.remove();
+
+            // create vector (e.g., an arrow) with fallback
+            const vectorNode = figma.createVector();
+            vectorNode.name = 'Arrow';
+
+            const vectorNetwork = isArrows ? arrowsNetwork : tabsNetwork;
+            await vectorNode.setVectorNetworkAsync(vectorNetwork);
+
+            vectorNode.strokes = [{ type: 'SOLID', color: colors.white }];
+            vectorNode.strokeWeight = 1;
+            vectorNode.x = 4;
+            vectorNode.y = 4;
+            vectorNode.resize(16, 16);
+
+            labelGroupLayer.appendChild(vectorNode);
           }
         }
+      }
+
+      const focusOrderDimsLayer = focusOrderNode.findChild(
+        (n) => n.name === 'Focus order dimensions'
+      );
+
+      // make sure focusOrderDimsLayer exists
+      if (focusOrderDimsLayer) {
+        // dashed lines
+        // https://www.figma.com/plugin-docs/api/RectangleNode/#dashpattern
+        const dashedVal = isArrows ? [5, 5] : [];
+        focusOrderDimsLayer.dashPattern = dashedVal;
       }
     })
   );
