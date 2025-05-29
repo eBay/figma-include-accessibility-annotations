@@ -181,9 +181,14 @@ const isA11yLayer = async (children, childNode, name) => {
           })
         );
 
+        const reorderByNumber = (obj) =>
+          Object.fromEntries(
+            Object.entries(obj).sort((a, b) => a[1].number - b[1].number)
+          );
+
         stepsData[stepName] = {
           id: frameChild.id,
-          existingData: focusOrders,
+          existingData: reorderByNumber(focusOrders),
           stateKey: 'focusOrders',
           visible: frameChild.visible
         };
