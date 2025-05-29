@@ -26,6 +26,7 @@ import Settings from '@/pages/Settings';
 
 // components
 import { NavLeft } from '@/components';
+import ErrorBoundary from '@/components/ErrorBoundary';
 
 // app context state
 import AppState from '@/context/AppState';
@@ -36,7 +37,19 @@ import Context from '@/context';
 // data
 import routes from '@/data/routes.json';
 import routesNative from '@/data/routes-native.json';
-import ErrorBoundary from '@/components/ErrorBoundary';
+
+// suppress warnings for Droppable (react-beautiful-dnd)
+/* eslint-disable no-console */
+const originalWarn = console.error;
+console.error = (message, ...args) => {
+  const str = 'Connect(Droppable)';
+  const hasDroppableWarning = args.some((arg) => arg.includes(str));
+
+  if (hasDroppableWarning) return;
+
+  originalWarn(message, ...args);
+};
+/* eslint-enable no-console */
 
 function App() {
   const cnxt = React.useContext(Context);
