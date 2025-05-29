@@ -150,6 +150,7 @@ export const addArrow = async (msg) => {
         timeout: config.notifyTime
       }
     );
+
     return;
   }
 
@@ -341,6 +342,7 @@ export const addFocusOrder = async (msg) => {
   // update with id (for future scanning)
   focusOrdersFrame.name = `${focusOrderLayerName} | ${focusOrdersFrame.id}`;
 
+  const isArrows = focusOrderType === 'arrows';
   const itemsCount = focusOrdersFrame.children.length;
   let nextFocusNum = itemsCount + 1;
   const isFirst = nextFocusNum === 1;
@@ -352,26 +354,26 @@ export const addFocusOrder = async (msg) => {
     // get last focus order placed
     const lastFocusOrder = focusOrdersFrame.children[itemsCount - 1];
 
+    // get the highest number label, this cases for a designer maybe changing
+    // the figma layer ordering, so we shouldn't rely on that
+    let topLabel = 0;
+    focusOrdersFrame.children.forEach((child) => {
+      const labelGroupLayer = child.findChild((n) => n.name === 'Label group');
+      const numberLayer = labelGroupLayer.findChild((n) => n.name === 'Number');
+      const number = parseFloat(numberLayer.characters);
+      if (number > topLabel) {
+        topLabel = number;
+      }
+    });
+
+    // set next focus label number
+    nextFocusNum = isArrows
+      ? parseFloat((topLabel + 0.1).toFixed(1))
+      : parseInt(topLabel, 10) + 1;
+
     // set new yStart below last target
     xStart = lastFocusOrder.x;
     yStart = lastFocusOrder.y + lastFocusOrder.height;
-
-    // arrows are a child navigation action
-    // const lastType = lastFocusOrder.name.split('|')[1].trim();
-    const labelGroupLayer = lastFocusOrder.findChild(
-      (n) => n.name === 'Label group'
-    );
-    const lastNumberLayer = labelGroupLayer.findChild(
-      (n) => n.name === 'Number'
-    );
-    const lastNumber = parseFloat(lastNumberLayer.characters);
-
-    // set next focus number
-    if (focusOrderType === 'arrows') {
-      nextFocusNum = parseFloat((lastNumber + 0.1).toFixed(1));
-    } else {
-      nextFocusNum = parseInt(lastNumber, 10) + 1;
-    }
   }
 
   // create a container frame for the focus order node and annotation
@@ -390,7 +392,7 @@ export const addFocusOrder = async (msg) => {
     height: 96,
     radius: 4,
     opacity: 0,
-    dashed: focusOrderType === 'arrows',
+    dashed: isArrows,
     stroke: 2,
     strokeColor: colors.deepTeal,
     x: 0,
@@ -425,7 +427,6 @@ export const addFocusOrder = async (msg) => {
   vectorNode.name = 'Arrow';
 
   // define the arrow shape
-  const isArrows = focusOrderType === 'arrows';
   const vectorNetwork = isArrows ? arrowsNetwork : tabsNetwork;
   await vectorNode.setVectorNetworkAsync(vectorNetwork);
 
