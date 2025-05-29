@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { utils } from '@/constants';
 
 // components
@@ -31,16 +32,18 @@ function ReadingOrder() {
   const { focusOrders, page, pageType, stepsCompleted, sendToFigma } = cnxt;
   const { updateState } = cnxt;
 
-  // state defaults
-  const routeName = 'Reading order';
-  const isCompleted = stepsCompleted.includes(routeName);
-
   // ui state
   const focusOrdersKeys = Object.keys(focusOrders);
   const focusOrdersAreSet = focusOrdersKeys.length !== 0;
 
+  // state defaults
+  const routeName = 'Reading order';
+  const isCompletedInitial =
+    stepsCompleted.includes(routeName) || focusOrdersAreSet;
+
   // local state
-  const [hasArrows, setHasArrows] = React.useState(isCompleted);
+  const [isCompleted, setIsCompleted] = React.useState(isCompletedInitial);
+  const [hasArrows, setHasArrows] = React.useState(false);
   const [hasKeyboardFocus, setKeyboardFocus] =
     React.useState(focusOrdersAreSet);
   const [openedDropdown, setOpenedDropdown] = React.useState(null);
@@ -60,11 +63,16 @@ function ReadingOrder() {
 
     // update ui to show step 2
     setHasArrows(true);
+    setIsCompleted(true);
+
     utils.scrollToBottomOfAnnotationStep();
   };
 
   const onAddFocusOrder = (focusOrderType = 'tabs') => {
     const { bounds, id, name } = page;
+
+    // scroll down to always show the focus order options
+    utils.scrollToBottomOfAnnotationStep();
 
     // let figma side know, time to place that new focus order
     sendToFigma('add-focus-order', {
@@ -75,13 +83,55 @@ function ReadingOrder() {
       pageId: id,
       pageType
     });
+
+    setIsCompleted(true);
+  };
+
+  const updateNumbers = (obj) => {
+    const entries = Object.entries(obj).sort(
+      (a, b) => a[1].number - b[1].number
+    );
+
+    let baseNumber = 1;
+    let subNumber = 0;
+
+    entries.forEach(([, item]) => {
+      if (item.type === 'tabs') {
+        item.number = baseNumber;
+        baseNumber += 1;
+        subNumber = 0;
+      } else if (item.type === 'arrows') {
+        subNumber += 0.1;
+        item.number = parseFloat((baseNumber - 1 + subNumber).toFixed(1));
+      }
+    });
+
+    return obj;
   };
 
   const onTypeUpdate = (type, key) => {
     const newFocusOrdersObj = { ...focusOrders };
     newFocusOrdersObj[key].type = type;
 
-    updateState('focusOrders', newFocusOrdersObj);
+    // check if no tabs are present
+    const hasTabs = Object.values(newFocusOrdersObj).some(
+      (item) => item.type === 'tabs'
+    );
+
+    // don't allow to remove the last tab
+    if (hasTabs === false) {
+      newFocusOrdersObj[key].type = 'tabs';
+    }
+
+    // update numbers per new types being set
+    const resortedNumbers = updateNumbers(newFocusOrdersObj);
+
+    updateState('focusOrders', resortedNumbers);
+
+    // update the figma side with the new type
+    sendToFigma('update-focus-orders', {
+      focusOrderObject: resortedNumbers
+    });
   };
 
   const onRemoveFocusOrder = (id) => {
@@ -91,6 +141,9 @@ function ReadingOrder() {
     const newFocusOrdersObj = { ...focusOrders };
     delete newFocusOrdersObj[id];
 
+    // update numbers per type removal
+    const resortedNumbers = updateNumbers(newFocusOrdersObj);
+
     // remove from figma (if it exists)
     sendToFigma('remove-focus-order', {
       page,
@@ -99,7 +152,12 @@ function ReadingOrder() {
     });
 
     // update main state
-    updateState('focusOrders', newFocusOrdersObj);
+    updateState('focusOrders', resortedNumbers);
+
+    // update the figma side with the new type
+    sendToFigma('update-focus-orders', {
+      focusOrderObject: resortedNumbers
+    });
   };
 
   const onDoneWithReadingOrder = () => {
@@ -108,10 +166,85 @@ function ReadingOrder() {
   };
 
   const getPrimaryAction = () => {
-    if (hasArrows) {
+    if (isCompleted) {
       return { completesStep: true, onClick: onDoneWithReadingOrder };
     }
+
     return null;
+  };
+
+  const handleDragEnd = (result) => {
+    const { source, destination, draggableId } = result;
+
+    if (!destination) return;
+
+    const sourceIndex = source.index;
+    const destinationIndex = destination.index;
+    const draggedItem = focusOrders[draggableId];
+
+    // ensure that "tabs" items cannot be removed from the first position
+    if (draggedItem.type === 'tabs' && sourceIndex === 0) return;
+
+    // ensure that "arrows" items cannot be placed before the first "tabs" item
+    if (draggedItem.type === 'arrows' && destinationIndex === 0) return;
+
+    const newFocusOrders = { ...focusOrders };
+    const focusOrderKeys = Object.keys(newFocusOrders);
+
+    // remove the dragged item from its original position
+    focusOrderKeys.splice(sourceIndex, 1);
+
+    // insert the dragged item at the new position
+    focusOrderKeys.splice(destinationIndex, 0, draggableId);
+
+    const reorderedFocusOrders = {};
+    focusOrderKeys.forEach((key) => {
+      reorderedFocusOrders[key] = newFocusOrders[key];
+    });
+
+    // reassign the "number" values based on new order
+    let currentNumber = 1;
+    let currentSubNumber = 1.1;
+
+    focusOrderKeys.forEach((key) => {
+      const item = reorderedFocusOrders[key];
+
+      if (item.type === 'tabs') {
+        item.number = currentNumber;
+        currentNumber += 1;
+        currentSubNumber = 1.1;
+      } else if (item.type === 'arrows') {
+        const previousTabIndex = focusOrderKeys
+          .slice(0, focusOrderKeys.indexOf(key))
+          .reverse()
+          .findIndex((k) => reorderedFocusOrders[k].type === 'tabs');
+
+        const previousTab =
+          focusOrderKeys[focusOrderKeys.indexOf(key) - previousTabIndex - 1];
+
+        if (previousTab) {
+          const tabNumber = reorderedFocusOrders[previousTab].number;
+          item.number = parseFloat(`${tabNumber}.${currentSubNumber}`);
+          currentSubNumber += 1;
+        }
+      }
+    });
+
+    updateState('focusOrders', reorderedFocusOrders);
+
+    // update the figma side with the new order and labels
+    sendToFigma('update-focus-orders', {
+      focusOrderObject: reorderedFocusOrders
+    });
+  };
+
+  const getChildCount = (parentNumber) => {
+    const children = Object.values(focusOrders).filter((item) => {
+      const itemNumber = item.number.toString();
+      return itemNumber.startsWith(`${parentNumber}.`);
+    });
+
+    return children.length;
   };
 
   return (
@@ -125,49 +258,77 @@ function ReadingOrder() {
       }}
     >
       <React.Fragment>
-        {focusOrdersKeys.map((key) => {
-          const { id, number, type } = focusOrders[key];
-          const isOpened = openedDropdown === id;
+        {focusOrdersAreSet && (
+          <div>
+            <DragDropContext onDragEnd={handleDragEnd}>
+              <Droppable droppableId="tabs">
+                {(p1) => (
+                  <div {...p1.droppableProps} ref={p1.innerRef}>
+                    {Object.keys(focusOrders).map((key, index) => {
+                      const { id, number, type } = focusOrders[key];
+                      const isOpened = openedDropdown === id;
+                      const allowDelete = getChildCount(number) === 0;
 
-          return (
-            <div key={id} className="focus-order-line">
-              <div className="flex-row-center">
-                <div className="drag-handle flex-row-center">
-                  <div className="spacer1w" />
-                  <SvgReorder />
-                  <div className="spacer1w" />
+                      return (
+                        <Draggable key={id} draggableId={id} index={index}>
+                          {(p2) => (
+                            <div
+                              ref={p2.innerRef}
+                              {...p2.draggableProps}
+                              {...p2.dragHandleProps}
+                              className="focus-order-line"
+                              data-number={number}
+                              data-type={type}
+                            >
+                              <div className="flex-row-center">
+                                <div className="drag-handle flex-row-center">
+                                  <div className="spacer1w" />
+                                  <SvgReorder />
+                                  <div className="spacer1w" />
 
-                  <p>{number}</p>
-                </div>
+                                  <p>{number}</p>
+                                </div>
 
-                <Dropdown
-                  align="left"
-                  data={focusTypesArrayDropdown}
-                  index={id}
-                  isOpened={isOpened}
-                  onOpen={setOpenedDropdown}
-                  onSelect={onTypeUpdate}
-                  type={type}
-                />
-              </div>
+                                <Dropdown
+                                  align="left"
+                                  data={focusTypesArrayDropdown}
+                                  index={id}
+                                  isOpened={isOpened}
+                                  onOpen={setOpenedDropdown}
+                                  onSelect={onTypeUpdate}
+                                  type={type}
+                                />
+                              </div>
 
-              <div
-                aria-label="remove focus order"
-                className="btn-remove"
-                onClick={() => onRemoveFocusOrder(id)}
-                onKeyDown={(e) => {
-                  if (utils.isEnterKey(e.key)) onRemoveFocusOrder(id);
-                }}
-                role="button"
-                tabIndex="0"
-              >
-                <div className="remove-dash" />
-              </div>
-            </div>
-          );
-        })}
+                              {allowDelete && (
+                                <div
+                                  aria-label="remove focus order"
+                                  className="btn-remove"
+                                  onClick={() => onRemoveFocusOrder(id)}
+                                  onKeyDown={(e) => {
+                                    if (utils.isEnterKey(e.key))
+                                      onRemoveFocusOrder(id);
+                                  }}
+                                  role="button"
+                                  tabIndex="0"
+                                >
+                                  <div className="remove-dash" />
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </Draggable>
+                      );
+                    })}
 
-        <div className="spacer2" />
+                    {p1.placeholder}
+                  </div>
+                )}
+              </Droppable>
+            </DragDropContext>
+            <div className="spacer2" />
+          </div>
+        )}
 
         <HeadingStep number={1} text="Add arrows in chosen direction" />
 
