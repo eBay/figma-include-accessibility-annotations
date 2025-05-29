@@ -116,6 +116,19 @@ function App() {
         }
       }
 
+      // handle any steps with multiple data layers
+      // ///////////////////////////////////////////////////////////////////////
+
+      // do we have focus order data?
+      if (stepsData['Focus order'] !== undefined) {
+        // if not on reading order step: hide it
+        if (currentPath !== 'reading-order') {
+          layerIdsToHide.push(stepsData['Focus order'].id);
+        } else {
+          layerIdsToShow.push(stepsData['Focus order'].id);
+        }
+      }
+
       // hide other steps we have data for
       sendToFigma('visible', { nodeIds: layerIdsToHide, visible: false });
       // show current layer for step
