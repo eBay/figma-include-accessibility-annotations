@@ -346,6 +346,7 @@ $selection-button-width: 72px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  min-height: 32px;
 
   & .drag-handle {
     width: 64px;
