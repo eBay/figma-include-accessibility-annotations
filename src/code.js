@@ -176,6 +176,11 @@ figma.ui.onmessage = async (msg) => {
     step.readingOrder.addArrow(msg);
   }
 
+  // add focus order
+  if (type === 'add-focus-order') {
+    step.readingOrder.addFocusOrder(msg);
+  }
+
   // reading order step confirmed
   if (type === 'confirm-reading-order') {
     step.readingOrder.confirm(msg);

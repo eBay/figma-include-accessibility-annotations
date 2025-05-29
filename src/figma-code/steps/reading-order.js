@@ -162,6 +162,14 @@ export const addArrow = async (msg) => {
   });
 };
 
+export const addFocusOrder = async (msg) => {
+  const { bounds, arrowType, name, page, pageId, pageType } = msg;
+
+  const mainPageNode = await figma.getNodeByIdAsync(pageId);
+
+  console.log('mainPageNode', mainPageNode);
+};
+
 export const confirm = async (msg) => {
   const { page, pageType } = msg;
   const { bounds, mainPageId, name } = page;
@@ -209,4 +217,4 @@ export const confirm = async (msg) => {
   });
 };
 
-export default { addArrow, confirm };
+export default { addArrow, addFocusOrder, confirm };
