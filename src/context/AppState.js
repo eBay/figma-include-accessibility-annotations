@@ -216,6 +216,21 @@ function AppState({ children }) {
                   visible: true
                 };
               }
+
+              // edge casing for focus order
+              if (stepKey === 'Focus order') {
+                updatedPage.stepsCompleted.push('Reading order');
+                updatedPage.stepsData[stepKey] = {
+                  ...data[stepKey],
+                  stateKey: stepKey.toLowerCase(),
+                  visible: true
+                };
+                updatedStepsData['Focus order'] = {
+                  id: data[stepKey].id,
+                  stateKey: stepKey.toLowerCase(),
+                  visible: true
+                };
+              }
             }
 
             updatedPages[pageIndex] = updatedPage;
