@@ -401,7 +401,7 @@ export const addFocusOrder = async (msg) => {
     strokeColor: colors.deepTeal,
     opacity: 1,
     radius: 0,
-    radiusMixed: [{ bottomRightRadius: 2 }]
+    radiusMixed: [{ bottomRightRadius: 2 }, { topLeftRadius: 2 }]
   });
 
   // create vector (e.g., an arrow) with fallback
@@ -424,7 +424,7 @@ export const addFocusOrder = async (msg) => {
   numberNode.name = `Number ${nextFocusNum}`;
   numberNode.characters = `${nextFocusNum}`;
   numberNode.fontSize = 16;
-  numberNode.fills = [{ type: 'SOLID', color: colors.white }]; // Match add function
+  numberNode.fills = [{ type: 'SOLID', color: colors.white }];
   numberNode.fontName = { family: 'Roboto', style: 'Bold' };
   numberNode.textAutoResize = 'WIDTH_AND_HEIGHT';
   numberNode.x = 24;
