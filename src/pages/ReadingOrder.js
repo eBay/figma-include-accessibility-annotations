@@ -74,7 +74,7 @@ function ReadingOrder() {
 
   return (
     <AnnotationStepPage
-      title="Reading order & focus order"
+      title="Reading order"
       routeName={routeName}
       bannerTipProps={{ pageType, routeName }}
       footerProps={{
