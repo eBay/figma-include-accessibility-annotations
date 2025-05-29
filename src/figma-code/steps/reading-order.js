@@ -516,6 +516,50 @@ export const removeFocusOrder = async (msg) => {
   }
 };
 
+export const updateFocusOrders = async (msg) => {
+  const { focusOrderObject = null } = msg;
+
+  // node not found
+  if (focusOrderObject === null) {
+    // let the user know an error occurred
+    figma.notify('Error occurred (update-focus-orders::dataNotFound)', {
+      error: true,
+      timeout: config.notifyTime
+    });
+    return;
+  }
+
+  const focusOrderKeys = Object.keys(focusOrderObject);
+  await Promise.all(
+    focusOrderKeys.map(async (key) => {
+      const { id, number, type: itemType } = focusOrderObject[key];
+      const focusOrderNode = await figma.getNodeByIdAsync(id);
+
+      // make sure focus order node exists
+      if (focusOrderNode) {
+        // update the focus order node type
+        focusOrderNode.name = `Focus order | ${itemType}`;
+
+        const labelGroupLayer = focusOrderNode.findChild(
+          (n) => n.name === 'Label group'
+        );
+
+        // make sure labelGroupLayer exists
+        if (labelGroupLayer) {
+          const lastNumberLayer = labelGroupLayer.findChild(
+            (n) => n.name === 'Number'
+          );
+
+          // make sure lastNumberLayer exists
+          if (lastNumberLayer) {
+            lastNumberLayer.characters = number.toString();
+          }
+        }
+      }
+    })
+  );
+};
+
 export const confirm = async (msg) => {
   const { page, pageType } = msg;
   const { bounds, mainPageId, name } = page;
@@ -563,4 +607,10 @@ export const confirm = async (msg) => {
   });
 };
 
-export default { addArrow, addFocusOrder, removeFocusOrder, confirm };
+export default {
+  addArrow,
+  addFocusOrder,
+  removeFocusOrder,
+  updateFocusOrders,
+  confirm
+};
