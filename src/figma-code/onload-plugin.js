@@ -192,13 +192,22 @@ const isA11yLayer = async (children, childNode, name) => {
           stateKey: 'focusOrders',
           visible: frameChild.visible
         };
+
+        // don't add multiple Reading order steps
+        if (a11yCompletedLayers.includes('Reading order') === false) {
+          a11yCompletedLayers.push('Reading order');
+        }
       } else if (stepName === 'Reading order') {
         // set Reading order as completed if exists
         stepsData[stepName] = {
           id: frameChild.id,
           visible: frameChild.visible
         };
-        a11yCompletedLayers.push(stepName);
+
+        // don't add multiple Reading order steps
+        if (a11yCompletedLayers.includes(stepName) === false) {
+          a11yCompletedLayers.push(stepName);
+        }
       } else if (stepName === 'Alt text') {
         // get alt text nodes and format
         const altTextArray = [];
