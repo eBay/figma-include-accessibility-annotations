@@ -415,9 +415,9 @@ export const addFocusOrder = async (msg) => {
 
   vectorNode.strokes = [{ type: 'SOLID', color: colors.white }];
   vectorNode.strokeWeight = 1;
+  vectorNode.x = 4;
+  vectorNode.y = 4;
   vectorNode.resize(16, 16);
-  vectorNode.x = 3;
-  vectorNode.y = 3;
 
   // create text node for the number
   const numberNode = figma.createText();
@@ -429,6 +429,11 @@ export const addFocusOrder = async (msg) => {
   numberNode.textAutoResize = 'WIDTH_AND_HEIGHT';
   numberNode.x = 24;
   numberNode.y = 2;
+
+  // add within focus order container first
+  focusOrderContainer.appendChild(backgroundRect);
+  focusOrderContainer.appendChild(vectorNode);
+  focusOrderContainer.appendChild(numberNode);
 
   // group vector and number nodes
   const toGroupArray = [backgroundRect, vectorNode, numberNode];
