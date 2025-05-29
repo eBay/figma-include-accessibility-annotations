@@ -1,4 +1,4 @@
-import { figmaLayer, utils } from '@/constants';
+import { colors, figmaLayer, utils } from '@/constants';
 import config from '@/figma-code/config';
 import { getOrCreateMainA11yFrame } from '@/figma-code/frame-helpers';
 
@@ -163,11 +163,101 @@ export const addArrow = async (msg) => {
 };
 
 export const addFocusOrder = async (msg) => {
-  const { bounds, arrowType, name, page, pageId, pageType } = msg;
+  const { bounds, focusOrderType, name, pageId, pageType } = msg;
 
   const mainPageNode = await figma.getNodeByIdAsync(pageId);
 
-  console.log('mainPageNode', mainPageNode);
+  // node not found
+  if (mainPageNode === null) {
+    // let the user know an error occurred
+    figma.notify('Error occurred (add-focus-order::mainPageNodeNotFound)', {
+      error: true,
+      timeout: config.notifyTime
+    });
+
+    return;
+  }
+
+  // main data and setup
+  const { x, y, height, width } = bounds;
+
+  // top layer namings
+  const saniName = utils.sanitizeName(name);
+  const pageTypeCap = utils.capitalize(pageType);
+  const mainLayerName = `${saniName} ${config.a11ySuffix} | ${pageTypeCap}`;
+  const focusOrderLayerName = 'Focus order Layer';
+
+  // get main A11y frame if it exists (or create it)
+  const { parent } = mainPageNode;
+  const dims = { x, y, height, width };
+  const mainFrame = await utils.frameExistsOrCreate(
+    parent.id,
+    mainLayerName,
+    dims
+  );
+
+  // does focus orders exists already?
+  const focusOrdersFrame = await utils.frameExistsOrCreate(
+    mainFrame.id,
+    focusOrderLayerName,
+    {
+      height,
+      width
+    }
+  );
+
+  // update with id (for future scanning)
+  focusOrdersFrame.name = `${focusOrderLayerName} | ${focusOrdersFrame.id}`;
+
+  const itemsCount = focusOrdersFrame.children.length;
+  const nextFocusNum = itemsCount + 1;
+  const isFirst = nextFocusNum === 1;
+
+  let xStart = 0;
+  let yStart = 0;
+
+  if (isFirst === false) {
+    // get last focus order placed
+    const lastFocusOrder = focusOrdersFrame.children[itemsCount - 1];
+
+    // set new yStart below last target
+    xStart = lastFocusOrder.x;
+    yStart = lastFocusOrder.y + lastFocusOrder.height;
+  }
+
+  // create rectangle
+  const focusOrderNode = figmaLayer.createRectangle({
+    fillColor: colors.deepTeal,
+    name: `Focus order ${nextFocusNum}`,
+    height: 96,
+    radius: 4,
+    opacity: 0,
+    dashed: focusOrderType === 'arrows',
+    stroke: 2,
+    strokeColor: colors.deepTeal,
+    x: xStart,
+    y: yStart,
+    width: 120
+  });
+
+  focusOrderNode.constraints = {
+    horizontal: 'SCALE',
+    vertical: 'SCALE'
+  };
+
+  // add focus order block to greater focus order frame
+  focusOrdersFrame.appendChild(focusOrderNode);
+
+  // add focus order frame within main Accessibility layer
+  mainFrame.appendChild(focusOrdersFrame);
+
+  // set selection of new focus order layer
+  figma.currentPage.selection = [focusOrderNode];
+
+  // let the user know rectangle has been added
+  figma.notify(`Focus order overlay added successfully!`, {
+    timeout: config.notifyTime
+  });
 };
 
 export const confirm = async (msg) => {

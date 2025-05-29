@@ -164,7 +164,7 @@ function ReadingOrder() {
                 return (
                   <div key={item.id} className="container-selection-button">
                     <div
-                      aria-label={`Add ${item.label} focus order`}
+                      aria-label="Add focus order"
                       role="button"
                       onClick={onClick}
                       onKeyDown={({ key }) => {
@@ -175,6 +175,8 @@ function ReadingOrder() {
                     >
                       {item.icon}
                     </div>
+
+                    <div className="selection-button-label">{item.label}</div>
                   </div>
                 );
               })}
