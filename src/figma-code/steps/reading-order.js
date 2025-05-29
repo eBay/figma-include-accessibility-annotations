@@ -382,7 +382,6 @@ export const addFocusOrder = async (msg) => {
     height: 96,
     width: 120
   });
-  focusOrderContainer.expanded = false;
 
   // create rectangle
   const focusOrderNode = figmaLayer.createRectangle({
@@ -470,6 +469,11 @@ export const addFocusOrder = async (msg) => {
 
   // set selection of new focus order container
   figma.currentPage.selection = [focusOrderContainer];
+
+  // collapse all layers
+  focusOrdersFrame.expanded = false;
+  focusOrderContainer.expanded = false;
+  focusOrderNode.expanded = false;
 
   // let the user know rectangle has been added
   figma.notify(`Focus order overlay added successfully!`, {
