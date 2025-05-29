@@ -64,7 +64,10 @@ const isA11yLayer = async (children, childNode, name) => {
 
       // no layers?
       if (hasLayer.length === 0) {
-        if (frameChild?.id !== existingAnnotationsFrame?.id) {
+        if (
+          frameChild?.id !== existingAnnotationsFrame?.id &&
+          stepName !== 'Annotation overlay'
+        ) {
           // eslint-disable-next-line no-console
           console.error(`no steps found in "${stepName}"`);
         }
