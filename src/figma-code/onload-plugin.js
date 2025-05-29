@@ -163,8 +163,17 @@ const isA11yLayer = async (children, childNode, name) => {
 
               // is it a mapped focus order type?
               if (type === 'tabs' || type === 'arrows') {
+                const labelGroupLayer = focusOrderObj.findChild(
+                  (n) => n.name === 'Label group'
+                );
+                const lastNumberLayer = labelGroupLayer.findChild(
+                  (n) => n.name === 'Number'
+                );
+                const lastNumber = parseFloat(lastNumberLayer.characters);
+
                 focusOrders[focusOrderObj.id] = {
                   id: focusOrderObj.id,
+                  number: lastNumber,
                   type
                 };
               }
@@ -393,6 +402,7 @@ const isA11yLayer = async (children, childNode, name) => {
   );
 
   const originalPage = ifExists[0];
+
   return {
     id: childNode.id,
     name,

@@ -247,10 +247,11 @@ function AppState({ children }) {
 
       // focus order added (reading & focus order)
       case 'focus-order-added':
-        const { id: focusOrdeId, focusOrderType } = data;
+        const { id: focusOrdeId, focusOrderType, number } = data;
 
         const newFocusOrder = {
           id: focusOrdeId,
+          number,
           type: focusOrderType
         };
 
