@@ -61,6 +61,7 @@
     "dotenv": "^16.5.0",
     "prop-types": "^15.8.1",
     "react": "^18.3.1",
+    "react-beautiful-dnd": "^13.1.1",
     "react-dev-utils": "^12.0.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.30.0"
