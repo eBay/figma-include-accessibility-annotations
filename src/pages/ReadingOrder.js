@@ -8,33 +8,11 @@ import { AnnotationStepPage, HeadingStep } from '@/components';
 import { SvgCheck } from '@/icons';
 
 // icons: reading order
-import SvgReadingOrder from '@/icons/reading-order';
+// import SvgReadingOrder from '@/icons/reading-order';
 import readingOrderTypes from '@/data/reading-order-types';
 
 // app state
 import Context from '@/context';
-
-const customFooter = (
-  <React.Fragment>
-    <div className="spacer2" />
-
-    <div className="flex-row justify-center">
-      <SvgReadingOrder.SvgHelp1 />
-      <div className="spacer1w" />
-      <SvgReadingOrder.SvgHelp2 />
-    </div>
-
-    <div className="flex-row justify-center">
-      <div className="reading-order-text font-10">
-        ex. z-pattern: left-to-right, top-to-bottom
-      </div>
-      <div className="spacer1w" />
-      <div className="reading-order-text font-10">
-        ex. by column, top-to-bottom, left-to-right
-      </div>
-    </div>
-  </React.Fragment>
-);
 
 function ReadingOrder() {
   // main app state
@@ -83,7 +61,7 @@ function ReadingOrder() {
     <AnnotationStepPage
       title="Reading order"
       routeName={routeName}
-      bannerTipProps={{ pageType, routeName, footer: customFooter }}
+      bannerTipProps={{ pageType, routeName }}
       footerProps={{
         primaryAction: getPrimaryAction(),
         secondaryAction: null
