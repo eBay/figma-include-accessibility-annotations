@@ -340,7 +340,7 @@ function Dashboard() {
 
           const progress = Math.ceil(
             stepsCompleted.reduce(
-              (accum, step) => accum + routeData[step].percent,
+              (accum, step) => accum + (routeData[step]?.percent ?? 0),
               0
             )
           );

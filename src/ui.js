@@ -161,8 +161,10 @@ function App() {
 
     const newPercentage = stepsCompleted.reduce((accum, step) => {
       const routeData = pageType === 'web' ? routes : routesNative;
-      return accum + routeData[step].percent;
+
+      return accum + (routeData[step]?.percent ?? 0);
     }, 0);
+
     setPercentage(newPercentage);
   }, [stepsCompleted]);
 
