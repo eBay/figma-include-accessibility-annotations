@@ -200,7 +200,8 @@ function createAnnotationLabelValueRow({ rowName, label, value }) {
   labelValueFrame.layoutMode = 'HORIZONTAL';
   labelValueFrame.itemSpacing = 4;
   labelValueFrame.counterAxisSizingMode = 'AUTO';
-  labelValueFrame.counterAxisAlignItems = 'MAX';
+  labelValueFrame.counterAxisAlignItems = 'MIN';
+  labelValueFrame.primaryAxisSizingMode = 'AUTO';
 
   const gestureTypeLabel = figma.createText();
   gestureTypeLabel.name = `${rowName} label`;
@@ -217,6 +218,11 @@ function createAnnotationLabelValueRow({ rowName, label, value }) {
   gestureTypeValue.characters = value;
   gestureTypeValue.fills = [{ type: 'SOLID', color: colors.black }];
   gestureTypeValue.fontName = { family: 'Roboto', style: 'Regular' };
+
+  // set width and enable text wrapping
+  gestureTypeValue.resizeWithoutConstraints(326, gestureTypeValue.height);
+  gestureTypeValue.textAutoResize = 'HEIGHT';
+
   labelValueFrame.appendChild(gestureTypeValue);
 
   return labelValueFrame;

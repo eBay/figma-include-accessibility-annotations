@@ -64,7 +64,10 @@ const isA11yLayer = async (children, childNode, name) => {
 
       // no layers?
       if (hasLayer.length === 0) {
-        if (frameChild?.id !== existingAnnotationsFrame?.id) {
+        if (
+          frameChild?.id !== existingAnnotationsFrame?.id &&
+          stepName !== 'Annotation overlay'
+        ) {
           // eslint-disable-next-line no-console
           console.error(`no steps found in "${stepName}"`);
         }
@@ -150,13 +153,64 @@ const isA11yLayer = async (children, childNode, name) => {
           visible: frameChild.visible
         };
         a11yCompletedLayers.push(stepName);
+      } else if (stepName === 'Focus order') {
+        // get focus order nodes and format
+        const focusOrders = {};
+
+        await Promise.all(
+          frameChild.children.map(async (focusOrderObj) => {
+            // make sure it's a frame node
+            if (focusOrderObj.type === 'FRAME') {
+              const [, typeName] = focusOrderObj.name.split('|');
+              const type = typeName.trim();
+
+              // is it a mapped focus order type?
+              if (type === 'tabs' || type === 'arrows') {
+                const labelGroupLayer = focusOrderObj.findChild(
+                  (n) => n.name === 'Label group'
+                );
+                const lastNumberLayer = labelGroupLayer.findChild(
+                  (n) => n.name === 'Number'
+                );
+                const lastNumber = parseFloat(lastNumberLayer.characters);
+
+                focusOrders[focusOrderObj.id] = {
+                  id: focusOrderObj.id,
+                  number: lastNumber,
+                  type
+                };
+              }
+            }
+          })
+        );
+
+        const reorderByNumber = (obj) =>
+          Object.fromEntries(
+            Object.entries(obj).sort((a, b) => a[1].number - b[1].number)
+          );
+
+        stepsData[stepName] = {
+          id: frameChild.id,
+          existingData: reorderByNumber(focusOrders),
+          stateKey: 'focusOrders',
+          visible: frameChild.visible
+        };
+
+        // don't add multiple Reading order steps
+        if (a11yCompletedLayers.includes('Reading order') === false) {
+          a11yCompletedLayers.push('Reading order');
+        }
       } else if (stepName === 'Reading order') {
         // set Reading order as completed if exists
         stepsData[stepName] = {
           id: frameChild.id,
           visible: frameChild.visible
         };
-        a11yCompletedLayers.push(stepName);
+
+        // don't add multiple Reading order steps
+        if (a11yCompletedLayers.includes(stepName) === false) {
+          a11yCompletedLayers.push(stepName);
+        }
       } else if (stepName === 'Alt text') {
         // get alt text nodes and format
         const altTextArray = [];
@@ -365,6 +419,7 @@ const isA11yLayer = async (children, childNode, name) => {
   );
 
   const originalPage = ifExists[0];
+
   return {
     id: childNode.id,
     name,

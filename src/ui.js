@@ -26,6 +26,7 @@ import Settings from '@/pages/Settings';
 
 // components
 import { NavLeft } from '@/components';
+import ErrorBoundary from '@/components/ErrorBoundary';
 
 // app context state
 import AppState from '@/context/AppState';
@@ -36,7 +37,19 @@ import Context from '@/context';
 // data
 import routes from '@/data/routes.json';
 import routesNative from '@/data/routes-native.json';
-import ErrorBoundary from '@/components/ErrorBoundary';
+
+// suppress warnings for Droppable (react-beautiful-dnd)
+/* eslint-disable no-console */
+const originalWarn = console.error;
+console.error = (message, ...args) => {
+  const str = 'Connect(Droppable)';
+  const hasDroppableWarning = args.some((arg) => arg.includes(str));
+
+  if (hasDroppableWarning) return;
+
+  originalWarn(message, ...args);
+};
+/* eslint-enable no-console */
 
 function App() {
   const cnxt = React.useContext(Context);
@@ -116,6 +129,19 @@ function App() {
         }
       }
 
+      // handle any steps with multiple data layers
+      // ///////////////////////////////////////////////////////////////////////
+
+      // do we have focus order data?
+      if (stepsData['Focus order'] !== undefined) {
+        // if not on reading order step: hide it
+        if (currentPath !== 'reading-order') {
+          layerIdsToHide.push(stepsData['Focus order'].id);
+        } else {
+          layerIdsToShow.push(stepsData['Focus order'].id);
+        }
+      }
+
       // hide other steps we have data for
       sendToFigma('visible', { nodeIds: layerIdsToHide, visible: false });
       // show current layer for step
@@ -148,6 +174,14 @@ function App() {
       sendToFigma('page-selected', { isSelected: false });
     }
   }, [showDashboard]);
+
+  React.useEffect(() => {
+    // fix the "No <!doctype html> found." because of Figma + iFrame
+    if (!document.doctype) {
+      const docT = document.implementation.createDocumentType('html', '', '');
+      document.insertBefore(docT, document.documentElement);
+    }
+  }, []);
 
   // loading/scanning for a11y progress on current Figma document
   if (isLoading) {
@@ -235,7 +269,9 @@ const root = createRoot(container);
 
 root.render(
   <AppState>
-    <MemoryRouter>
+    <MemoryRouter
+      future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
+    >
       <ErrorBoundary>
         <App />
       </ErrorBoundary>

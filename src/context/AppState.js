@@ -57,6 +57,9 @@ function AppState({ children }) {
     headings: {},
     headingTemp: null,
 
+    // focus orders
+    focusOrders: {},
+
     // alt text
     noImages: false,
     imagesData: [],
@@ -213,6 +216,21 @@ function AppState({ children }) {
                   visible: true
                 };
               }
+
+              // edge casing for focus order
+              if (stepKey === 'Focus order') {
+                updatedPage.stepsCompleted.push('Reading order');
+                updatedPage.stepsData[stepKey] = {
+                  ...data[stepKey],
+                  stateKey: stepKey.toLowerCase(),
+                  visible: true
+                };
+                updatedStepsData['Focus order'] = {
+                  id: data[stepKey].id,
+                  stateKey: stepKey.toLowerCase(),
+                  visible: true
+                };
+              }
             }
 
             updatedPages[pageIndex] = updatedPage;
@@ -238,6 +256,25 @@ function AppState({ children }) {
               name: data.name,
               type: data.landmarkType
             }
+          }
+        }));
+        break;
+
+      // focus order added (reading & focus order)
+      case 'focus-order-added':
+        const { id: focusOrdeId, focusOrderType, number } = data;
+
+        const newFocusOrder = {
+          id: focusOrdeId,
+          number,
+          type: focusOrderType
+        };
+
+        setState((prevState) => ({
+          ...prevState,
+          focusOrders: {
+            ...prevState.focusOrders,
+            [focusOrdeId]: newFocusOrder
           }
         }));
         break;
@@ -288,8 +325,10 @@ function AppState({ children }) {
         }));
         break;
 
-      // no need for this yet, but a msg hook is here
+      // no need for these yet, but a msg hook is here
       case 'selection-change':
+      case 'touch-targets-checked':
+        // console.log('msg type fired but not used yet');
         break;
 
       // handle any new messages we've yet to setup

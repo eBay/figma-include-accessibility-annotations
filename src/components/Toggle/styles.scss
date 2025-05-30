@@ -1,0 +1,42 @@
+.toggle-wrapper {
+  align-items: center;
+  display: flex;
+  gap: 16px;
+  width: fit-content;
+}
+
+.toggle-label {
+  cursor: pointer;
+  font-size: 14px;
+  user-select: none;
+}
+
+.toggle-container {
+  background: var(--figma-color-bg-disabled-secondary);
+  border-radius: 6px;
+  cursor: pointer;
+  height: 12px;
+  position: relative;
+  transition: background 400ms ease-in-out;
+  width: 24px;
+
+  .toggle-slider {
+    background: var(--figma-color-bg);
+    border-radius: 5px;
+    height: 10px;
+    left: 1px;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    transition: left 400ms ease-in-out;
+    width: 10px;
+  }
+
+  &.checked {
+    background: var(--figma-color-bg-inverse);
+
+    .toggle-slider {
+      left: 13px;
+    }
+  }
+}

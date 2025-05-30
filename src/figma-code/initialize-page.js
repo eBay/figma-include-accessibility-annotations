@@ -44,8 +44,8 @@ async function createAnnotationDefaultKeyV2({ data, page, type }) {
       allSteps.reverse();
 
       const layersForOverlay = [];
-      const ignoreNative = ['Landmarks', 'Responsive reflow'];
-      const ignoreWeb = ['Focus grouping'];
+      const ignoreNative = ['Focus order', 'Landmarks', 'Responsive reflow'];
+      const ignoreWeb = ['Focus order', 'Focus grouping'];
       const overlaySteps = [
         'Landmarks',
         'Headings',

@@ -32,6 +32,9 @@ export default React.createContext({
   headings: {},
   headingTemp: null,
 
+  // focus orders
+  focusOrders: {},
+
   // alt text
   noImages: false,
   imagesData: [],

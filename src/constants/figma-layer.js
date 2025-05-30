@@ -253,6 +253,7 @@ export function createLine(props) {
  * @param {float} rectangle.opacity - opacity of new Rectangle node
  * @param {number} rectangle.radius - radius of new Rectangle node
  * @param {array} rectangle.radiusMixed - array of overrides for radius of new Rectangle node
+ * @param {boolean} rectangle.dashed - dashed stroke of new Rectangle node
  * @param {number} rectangle.stroke - stroke of new Rectangle node
  * @param {string} rectangle.strokeColor - stroke color of new Rectangle node
  *
@@ -263,7 +264,7 @@ export function createRectangle(props) {
   const { name, x = 0, y = 0, height, width } = props;
 
   // strokes
-  const { stroke = 3, strokeColor = colors.pink } = props;
+  const { dashed = false, stroke = 3, strokeColor = colors.pink } = props;
 
   // radius
   const { radius = 8, radiusMixed = [] } = props;
@@ -302,6 +303,14 @@ export function createRectangle(props) {
 
   rectangle.strokes = [{ type: 'SOLID', color: strokeColor }];
   rectangle.strokeWeight = stroke;
+
+  // dashed lines
+  if (dashed) {
+    // dashed lines
+    // https://www.figma.com/plugin-docs/api/RectangleNode/#dashpattern
+    rectangle.dashPattern = [5, 5];
+  }
+
   rectangle.fills = [{ type: 'SOLID', color: fillColor, opacity }];
   rectangle.resizeWithoutConstraints(width, height);
 
