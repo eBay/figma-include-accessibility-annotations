@@ -423,6 +423,10 @@ figma.ui.onmessage = async (msg) => {
       nodeIds.map(async (nodeId) => {
         const nodeFound = await figma.getNodeByIdAsync(nodeId);
 
+        // edge casing for one or the other
+        const isFocusOrder = nodeFound.name.includes('Focus order');
+        const isReadingOrder = nodeFound.name.includes('Reading order');
+
         // prevent memory leak (if not found, do nothing)
         if (nodeFound !== null) {
           // if hard value passed (visible), use that, else toggle visible state
@@ -430,6 +434,31 @@ figma.ui.onmessage = async (msg) => {
             visible !== null ? visible : !nodeFound.visible;
           nodeFound.visible = changeVisibleTo;
           nodeFound.expanded = false;
+
+          // handle reading order/focus order layers
+          if (isFocusOrder || isReadingOrder) {
+            const { parent } = nodeFound;
+
+            if (isFocusOrder) {
+              const readingOrderExists = parent.children.find((c) =>
+                c.name.includes('Reading order')
+              );
+
+              if (readingOrderExists !== undefined) {
+                readingOrderExists.visible = changeVisibleTo;
+                readingOrderExists.expanded = false;
+              }
+            } else if (isReadingOrder) {
+              const focusOrderExists = parent.children.find((c) =>
+                c.name.includes('Focus order')
+              );
+
+              if (focusOrderExists !== undefined) {
+                focusOrderExists.visible = changeVisibleTo;
+                focusOrderExists.expanded = false;
+              }
+            }
+          }
         }
 
         return null;

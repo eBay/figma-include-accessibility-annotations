@@ -225,12 +225,13 @@ function AppState({ children }) {
                   stateKey: stepKey.toLowerCase(),
                   visible: true
                 };
-                updatedStepsData['Focus order'] = {
-                  id: data[stepKey].id,
-                  stateKey: stepKey.toLowerCase(),
-                  visible: true
-                };
               }
+
+              updatedStepsData[stepKey] = {
+                id: data[stepKey].id,
+                stateKey: stepKey.toLowerCase(),
+                visible: true
+              };
             }
 
             updatedPages[pageIndex] = updatedPage;

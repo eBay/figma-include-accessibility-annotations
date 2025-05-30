@@ -640,15 +640,14 @@ export const confirm = async (msg) => {
   // data exists (this handles if only focus order exists)
   const hasReadingOrder = readingOrderExists !== null;
   const dataExists = hasReadingOrder ? readingOrderExists : focusOrderExists;
-  const key = hasReadingOrder ? 'Reading order' : 'Focus order';
 
   // update pagesData
   figma.ui.postMessage({
     type: 'update-pages-data',
     data: {
       status: 'add',
-      stepKey: key,
-      [key]: {
+      stepKey: 'Reading order',
+      'Reading order': {
         id: dataExists
       },
       main: {
