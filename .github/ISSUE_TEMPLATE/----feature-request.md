@@ -3,7 +3,7 @@ name: "\U0001F4BB  Feature request"
 about: Suggest an idea for this project
 title: ''
 labels: ''
-assignees: calebnance, megan-woodruff
+assignees: calebnance
 
 ---
 

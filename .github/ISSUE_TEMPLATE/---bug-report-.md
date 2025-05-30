@@ -3,7 +3,7 @@ name: "\U0001F41B Bug report "
 about: Something isn't working right
 title: "[BUG]"
 labels: bug
-assignees: calebnance, megan-woodruff
+assignees: calebnance
 
 ---
 
