@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import { utils } from '@/constants';
+import { getPluginMessage, getPluginResizeMessage, utils } from '@/constants';
 
 // data
 import responsiveDefaultBreakpoints from '@/data/responsive-reflow-default-breakpoints.json';
@@ -94,253 +94,257 @@ function AppState({ children }) {
     setState((prevState) => ({ ...prevState, [key]: value }));
   }, []);
 
-  const messageFromFigma = useCallback(async (event) => {
-    const { data, type } = event.data.pluginMessage;
+  const messageFromFigma = useCallback(
+    async (event) => {
+      const pluginMessage = getPluginMessage(event, {
+        isDevMode: state.isDevMode
+      });
+      if (!pluginMessage) return;
 
-    switch (type) {
-      // loading/scanning for a11y progress on current Figma document
-      case 'loading-complete':
-        // boost the wait time a bit
-        await utils.sleep(200);
+      const { data, type } = pluginMessage;
 
-        setState((prevState) => ({
-          ...prevState,
-          isLoading: false,
-          pages: data.pages,
-          hasDashboard: data.hasProgress,
-          showDashboard: data.hasProgress,
-          currentUser: data.currentUser,
-          sessionId: data.sessionId
-        }));
+      switch (type) {
+        // loading/scanning for a11y progress on current Figma document
+        case 'loading-complete':
+          // boost the wait time a bit
+          await utils.sleep(200);
 
-        await utils.sleep(200);
-
-        // do we need to update old annotation key layers
-        if (data.newKeyV2.length > 0) {
-          sendToFigma('update-annotation-key-v2', {
-            layers: data.newKeyV2,
-            pages: data.pages
-          });
-        }
-        break;
-
-      case 'load-user-preferences':
-        const { breakpoints, newFeaturesIntro } = data;
-        const { figmaDevMode, prefCondensedUI, prefTipExpanded } = data;
-
-        // if custom breakpoints are set, use those
-        const newBreakpoints = breakpoints || responsiveDefaultBreakpoints;
-
-        setState((prevState) => ({
-          ...prevState,
-          responsiveBreakpoints: newBreakpoints,
-          condensedUI: prefCondensedUI,
-          isDevMode: figmaDevMode,
-          leftNavVisible: !prefCondensedUI,
-          newFeaturesIntro,
-          tipExpanded: prefTipExpanded
-        }));
-
-        // resize plugin onload if user pref is set
-        if (prefCondensedUI) {
-          sendToFigma('resize-plugin', {
-            condensed: true,
-            height: 518,
-            width: 516
-          });
-        }
-        break;
-
-      // pre-load base64 images
-      case 'base64-response':
-        setState((prevState) => ({
-          ...prevState,
-          imagesScanned: data.newImagesScanned
-        }));
-        break;
-
-      // show alert
-      case 'alert-page-change':
-        setState((prevState) => ({
-          ...prevState,
-          showPageChange: data.showAlert
-        }));
-        break;
-
-      // user selected the start frame
-      case 'start-frame':
-        setState((prevState) => ({
-          ...prevState,
-          alertMsg: data?.msg || null,
-          pageSelected: data?.msg ? null : data
-        }));
-        break;
-
-      case 'initialize-pages-data':
-        setState((prevState) => {
-          const updatedPages = [
-            ...prevState.pages,
-            {
-              ...data.main,
-              stepsCompleted: [],
-              stepsData: {},
-              imagesScanned: [],
-              type: prevState.pageType
-            }
-          ];
-
-          return {
+          setState((prevState) => ({
             ...prevState,
-            hasDashboard: updatedPages.length > 0,
-            pages: updatedPages
-          };
-        });
-        break;
+            isLoading: false,
+            pages: data.pages,
+            hasDashboard: data.hasProgress,
+            showDashboard: data.hasProgress,
+            currentUser: data.currentUser,
+            sessionId: data.sessionId
+          }));
 
-      // update pages data
-      case 'update-pages-data':
-        setState((prevState) => {
-          const { stepsData, pages } = prevState;
-          const { main, status, stepKey } = data;
-          const updatedPages = [...pages];
-          const updatedStepsData = { ...stepsData };
-          const pageIndex = updatedPages.findIndex((p) => p.id === main.id);
+          await utils.sleep(200);
 
-          if (pageIndex > -1) {
-            const updatedPage = { ...updatedPages[pageIndex] };
+          // do we need to update old annotation key layers
+          if (data.newKeyV2.length > 0) {
+            sendToFigma('update-annotation-key-v2', {
+              layers: data.newKeyV2,
+              pages: data.pages
+            });
+          }
+          break;
 
-            if (status === 'add') {
-              if (!updatedPage.stepsCompleted.includes(stepKey)) {
-                updatedPage.stepsCompleted.push(stepKey);
-                updatedPage.stepsData[stepKey] = {
-                  ...data[stepKey],
+        case 'load-user-preferences':
+          const { breakpoints, newFeaturesIntro } = data;
+          const { figmaDevMode, prefCondensedUI, prefTipExpanded } = data;
+
+          // if custom breakpoints are set, use those
+          const newBreakpoints = breakpoints || responsiveDefaultBreakpoints;
+
+          setState((prevState) => ({
+            ...prevState,
+            responsiveBreakpoints: newBreakpoints,
+            condensedUI: prefCondensedUI,
+            isDevMode: figmaDevMode,
+            leftNavVisible: !prefCondensedUI,
+            newFeaturesIntro,
+            tipExpanded: prefTipExpanded
+          }));
+
+          // resize plugin onload if user pref is set
+          if (prefCondensedUI) {
+            sendToFigma('resize-plugin', getPluginResizeMessage(true));
+          }
+          break;
+
+        // pre-load base64 images
+        case 'base64-response':
+          setState((prevState) => ({
+            ...prevState,
+            imagesScanned: data.newImagesScanned
+          }));
+          break;
+
+        // show alert
+        case 'alert-page-change':
+          setState((prevState) => ({
+            ...prevState,
+            showPageChange: data.showAlert
+          }));
+          break;
+
+        // user selected the start frame
+        case 'start-frame':
+          setState((prevState) => ({
+            ...prevState,
+            alertMsg: data?.msg || null,
+            pageSelected: data?.msg ? null : data
+          }));
+          break;
+
+        case 'initialize-pages-data':
+          setState((prevState) => {
+            const updatedPages = [
+              ...prevState.pages,
+              {
+                ...data.main,
+                stepsCompleted: [],
+                stepsData: {},
+                imagesScanned: [],
+                type: prevState.pageType
+              }
+            ];
+
+            return {
+              ...prevState,
+              hasDashboard: updatedPages.length > 0,
+              pages: updatedPages
+            };
+          });
+          break;
+
+        // update pages data
+        case 'update-pages-data':
+          setState((prevState) => {
+            const { stepsData, pages } = prevState;
+            const { main, status, stepKey } = data;
+            const updatedPages = [...pages];
+            const updatedStepsData = { ...stepsData };
+            const pageIndex = updatedPages.findIndex((p) => p.id === main.id);
+
+            if (pageIndex > -1) {
+              const updatedPage = { ...updatedPages[pageIndex] };
+
+              if (status === 'add') {
+                if (!updatedPage.stepsCompleted.includes(stepKey)) {
+                  updatedPage.stepsCompleted.push(stepKey);
+                  updatedPage.stepsData[stepKey] = {
+                    ...data[stepKey],
+                    stateKey: stepKey.toLowerCase(),
+                    visible: true
+                  };
+                }
+
+                // edge casing for focus order
+                if (stepKey === 'Focus order') {
+                  updatedPage.stepsCompleted.push('Reading order');
+                  updatedPage.stepsData[stepKey] = {
+                    ...data[stepKey],
+                    stateKey: stepKey.toLowerCase(),
+                    visible: true
+                  };
+                }
+
+                updatedStepsData[stepKey] = {
+                  id: data[stepKey].id,
                   stateKey: stepKey.toLowerCase(),
                   visible: true
                 };
               }
 
-              // edge casing for focus order
-              if (stepKey === 'Focus order') {
-                updatedPage.stepsCompleted.push('Reading order');
-                updatedPage.stepsData[stepKey] = {
-                  ...data[stepKey],
-                  stateKey: stepKey.toLowerCase(),
-                  visible: true
-                };
-              }
-
-              updatedStepsData[stepKey] = {
-                id: data[stepKey].id,
-                stateKey: stepKey.toLowerCase(),
-                visible: true
-              };
+              updatedPages[pageIndex] = updatedPage;
             }
 
-            updatedPages[pageIndex] = updatedPage;
-          }
+            return {
+              ...prevState,
+              pages: updatedPages,
+              stepsData: updatedStepsData
+            };
+          });
+          break;
 
-          return {
+        // landmark confirmed (landmarks)
+        case 'landmark-confirmed':
+          setState((prevState) => ({
             ...prevState,
-            pages: updatedPages,
-            stepsData: updatedStepsData
+            landmarks: {
+              ...prevState.landmarks,
+              [data.id]: {
+                id: data.id,
+                label: null,
+                name: data.name,
+                type: data.landmarkType
+              }
+            }
+          }));
+          break;
+
+        // focus order added (reading & focus order)
+        case 'focus-order-added':
+          const { id: focusOrdeId, focusOrderType, number } = data;
+
+          const newFocusOrder = {
+            id: focusOrdeId,
+            number,
+            type: focusOrderType
           };
-        });
-        break;
 
-      // landmark confirmed (landmarks)
-      case 'landmark-confirmed':
-        setState((prevState) => ({
-          ...prevState,
-          landmarks: {
-            ...prevState.landmarks,
-            [data.id]: {
-              id: data.id,
-              label: null,
-              name: data.name,
-              type: data.landmarkType
+          setState((prevState) => ({
+            ...prevState,
+            focusOrders: {
+              ...prevState.focusOrders,
+              [focusOrdeId]: newFocusOrder
             }
-          }
-        }));
-        break;
+          }));
+          break;
 
-      // focus order added (reading & focus order)
-      case 'focus-order-added':
-        const { id: focusOrdeId, focusOrderType, number } = data;
-
-        const newFocusOrder = {
-          id: focusOrdeId,
-          number,
-          type: focusOrderType
-        };
-
-        setState((prevState) => ({
-          ...prevState,
-          focusOrders: {
-            ...prevState.focusOrders,
-            [focusOrdeId]: newFocusOrder
-          }
-        }));
-        break;
-
-      // gesture confirmed (complex gestures)
-      case 'gesture-confirmed':
-        setState((prevState) => ({
-          ...prevState,
-          gestures: {
-            ...prevState.gestures,
-            [data.id]: {
-              id: data.id,
-              label: null,
-              name: data.name,
-              type: data.gestureType
+        // gesture confirmed (complex gestures)
+        case 'gesture-confirmed':
+          setState((prevState) => ({
+            ...prevState,
+            gestures: {
+              ...prevState.gestures,
+              [data.id]: {
+                id: data.id,
+                label: null,
+                name: data.name,
+                type: data.gestureType
+              }
             }
-          }
-        }));
-        break;
+          }));
+          break;
 
-      // touch target confirmed (touch targets)
-      case 'touch-target-confirmed':
-        setState((prevState) => ({
-          ...prevState,
-          touchTargets: {
-            ...prevState.touchTargets,
-            [data.id]: {
-              id: data.id,
-              name: data.name
+        // touch target confirmed (touch targets)
+        case 'touch-target-confirmed':
+          setState((prevState) => ({
+            ...prevState,
+            touchTargets: {
+              ...prevState.touchTargets,
+              [data.id]: {
+                id: data.id,
+                name: data.name
+              }
             }
-          }
-        }));
-        break;
+          }));
+          break;
 
-      // images found from scan (alt text)
-      case 'images-found':
-        setState((prevState) => ({
-          ...prevState,
-          imagesScanned: data.images
-        }));
-        break;
+        // images found from scan (alt text)
+        case 'images-found':
+          setState((prevState) => ({
+            ...prevState,
+            imagesScanned: data.images
+          }));
+          break;
 
-      // listening for headings selected
-      case 'headings-selected':
-        setState((prevState) => ({
-          ...prevState,
-          headingTemp: data.selected[0]
-        }));
-        break;
+        // listening for headings selected
+        case 'headings-selected':
+          setState((prevState) => ({
+            ...prevState,
+            headingTemp: data.selected[0]
+          }));
+          break;
 
-      // no need for these yet, but a msg hook is here
-      case 'selection-change':
-      case 'touch-targets-checked':
-        // console.log('msg type fired but not used yet');
-        break;
+        // no need for these yet, but a msg hook is here
+        case 'selection-change':
+        case 'touch-targets-checked':
+          // console.log('msg type fired but not used yet');
+          break;
 
-      // handle any new messages we've yet to setup
-      default:
-        // eslint-disable-next-line
+        // handle any new messages we've yet to setup
+        default:
+          // eslint-disable-next-line
         console.warn(`unknown type "${type}" message from Figma`);
-        break;
-    }
-  }, []);
+          break;
+      }
+    },
+    [state.isDevMode]
+  );
 
   const imageScan = useCallback(() => {
     const { page, pageType } = state;

@@ -1,13 +1,11 @@
-import { utils } from '@/constants';
+import { PRELOAD_FONTS, utils } from '@/constants';
 import config from '@/figma-code/config';
 import { findDescendentOfFrame } from '@/figma-code/frame-helpers';
 
 export const preload = async () => {
   // async load fonts
   // https://www.figma.com/plugin-docs/api/properties/figma-loadfontasync/
-  await figma.loadFontAsync({ family: 'Inter', style: 'Regular' });
-  await figma.loadFontAsync({ family: 'Roboto', style: 'Bold' });
-  await figma.loadFontAsync({ family: 'Roboto', style: 'Regular' });
+  await Promise.all(PRELOAD_FONTS.map((font) => figma.loadFontAsync(font)));
 };
 
 const isA11yLayer = async (children, childNode, name) => {

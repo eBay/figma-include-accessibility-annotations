@@ -1,4 +1,4 @@
-import { utils } from '@/constants';
+import { PLUGIN_HEIGHT, PLUGIN_WIDTH_FULL, utils } from '@/constants';
 import {
   config,
   designerChecks,
@@ -13,7 +13,11 @@ import {
  **************************************************************************** */
 
 // https://www.figma.com/plugin-docs/api/properties/figma-showui/
-figma.showUI(__html__, { height: 518, width: 700, themeColors: true });
+figma.showUI(__html__, {
+  height: PLUGIN_HEIGHT,
+  width: PLUGIN_WIDTH_FULL,
+  themeColors: true
+});
 
 // de-select all layers on plugin open
 // turned this off per Anna's request

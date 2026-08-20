@@ -9,6 +9,7 @@ export { default as Checkbox } from './Checkbox';
 export { default as ContrastScreenshot } from './ContrastScreenshot';
 export { default as Dropdown } from './Dropdown';
 export { default as EmptyStepSelection } from './EmptyStepSelection';
+export { default as ErrorBoundary } from './ErrorBoundary';
 export { default as Footer } from './Footer';
 export { default as HeadingStep } from './HeadingStep';
 export { default as LoadingSpinner } from './LoadingSpinner';

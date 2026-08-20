@@ -1,7 +1,7 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import { Link, useLocation } from 'react-router-dom';
-import { analytics, utils } from '@/constants';
+import { analytics, getPluginResizeMessage, utils } from '@/constants';
 
 // components
 import FooterActionButton from '@/components/FooterActionButton';
@@ -42,12 +42,10 @@ function Footer({ primaryAction = null, secondaryAction = null, routeName }) {
     updateState('colorBlindnessView', false);
 
     // resize plugin (go back to their pref)
-    const pluginWidth = leftNavVisible === false ? 516 : 700;
-    sendToFigma('resize-plugin', {
-      condensed: leftNavVisible === false,
-      height: 518,
-      width: pluginWidth
-    });
+    sendToFigma(
+      'resize-plugin',
+      getPluginResizeMessage(leftNavVisible === false)
+    );
 
     // reset main state and return to dashboard
     updateState('showDashboard', true);

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { contrast, utils } from '@/constants';
+import { contrast, getPluginMessage, utils } from '@/constants';
 
 // components
 import {
@@ -20,7 +20,7 @@ import Context from '@/context';
 function Contrast() {
   // main app state
   const cnxt = React.useContext(Context);
-  const { contrastResults, page, pageType, stepsCompleted } = cnxt;
+  const { contrastResults, isDevMode, page, pageType, stepsCompleted } = cnxt;
   const { sendToFigma, updateState, zoomTo } = cnxt;
 
   // local state
@@ -68,7 +68,10 @@ function Contrast() {
   };
 
   const onMessageListen = async (event) => {
-    const { data, type } = event.data.pluginMessage;
+    const pluginMessage = getPluginMessage(event, { isDevMode });
+    if (!pluginMessage) return;
+
+    const { data, type } = pluginMessage;
 
     // only listen for this response type on this step
     if (type === 'color-contrast-result') {

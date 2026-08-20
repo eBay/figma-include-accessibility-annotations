@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { contrast, utils } from '@/constants';
+import { contrast, getPluginMessage, utils } from '@/constants';
 
 // components
 import { AnnotationStepPage, HeadingStep, LoadingSpinner } from '@/components';
@@ -19,7 +19,7 @@ const colorBlindnessTypesArray = Object.keys(colorBlindnessTypesObj);
 function ColorBlindness() {
   // main app state
   const cnxt = React.useContext(Context);
-  const { colorBlindnessView, page, pageType } = cnxt;
+  const { colorBlindnessView, isDevMode, page, pageType } = cnxt;
   const { sendToFigma, stepsCompleted, updateState } = cnxt;
 
   // ui state
@@ -77,7 +77,10 @@ function ColorBlindness() {
   };
 
   const onMessageListen = async (event) => {
-    const { data, type } = event.data.pluginMessage;
+    const pluginMessage = getPluginMessage(event, { isDevMode });
+    if (!pluginMessage) return;
+
+    const { data, type } = pluginMessage;
 
     // only listen for this response type on this step
     if (type === 'color-blindness-design-image') {

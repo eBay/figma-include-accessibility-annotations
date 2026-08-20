@@ -1,7 +1,7 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import { NavLink } from 'react-router-dom';
-import { utils } from '@/constants';
+import { getPluginResizeMessage, utils } from '@/constants';
 
 // components
 import ProgressPieChart from '@/components/ProgressPieChart';
@@ -32,12 +32,7 @@ function NavLeft({ progress = null }) {
 
   const toggleLeftNav = () => {
     // resize plugin
-    const pluginWidth = leftNavVisible ? 516 : 700;
-    sendToFigma('resize-plugin', {
-      condensed: leftNavVisible,
-      height: 518,
-      width: pluginWidth
-    });
+    sendToFigma('resize-plugin', getPluginResizeMessage(leftNavVisible));
 
     // set condense UI
     updateState('condensedUI', leftNavVisible);

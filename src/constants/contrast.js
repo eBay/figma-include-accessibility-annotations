@@ -3,6 +3,13 @@
  * @module contrast
  */
 
+import {
+  WCAG_AA_LARGE,
+  WCAG_AA_NORMAL,
+  WCAG_AAA_LARGE,
+  WCAG_AAA_NORMAL
+} from './plugin';
+
 const walk = (node, fn, context) => {
   const passdown = fn(node, context);
   if (passdown === 'skipchildren') {
@@ -228,8 +235,12 @@ const computeTypeContrast = (textNodeInfo, bgImageData) => {
   textStyleSamples.map(({ textSize, isBold, color }) => {
     const pointSize = textSize / 1.333333333; // CSS px -> pt
     const isLargeText = pointSize >= 18 || (isBold && pointSize >= 14);
-    const passingAAContrastForLayer = isLargeText ? 3 : 4.5;
-    const passingAAAContrastForLayer = isLargeText ? 4.5 : 7;
+    const passingAAContrastForLayer = isLargeText
+      ? WCAG_AA_LARGE
+      : WCAG_AA_NORMAL;
+    const passingAAAContrastForLayer = isLargeText
+      ? WCAG_AAA_LARGE
+      : WCAG_AAA_NORMAL;
 
     samplePoints.map(([x_, y_]) => {
       let bgColor = getImageDataPixel(bgImageData, x_, y_);

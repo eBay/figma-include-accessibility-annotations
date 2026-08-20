@@ -25,14 +25,15 @@ import ColorBlindness from '@/pages/ColorBlindness';
 import Settings from '@/pages/Settings';
 
 // components
-import { NavLeft } from '@/components';
-import ErrorBoundary from '@/components/ErrorBoundary';
+import { ErrorBoundary, NavLeft } from '@/components';
 
 // app context state
 import AppState from '@/context/AppState';
 
 // app state
 import Context from '@/context';
+
+import { LOADING_SLOW_HINT_MS, LOADING_TIMEOUT_MS } from '@/constants';
 
 // data
 import routes from '@/data/routes.json';
@@ -78,7 +79,7 @@ function App() {
           'loadingMsg',
           'If you have a lot of pages with annotations, and high-res images, try moving them to their own Figma page to get it to load faster.'
         );
-      }, 15000);
+      }, LOADING_SLOW_HINT_MS);
 
       timer60 = setTimeout(() => {
         updateState(
@@ -86,7 +87,7 @@ function App() {
           "We couldn't load the annotations. If you have a lot of pages with annotations, and high-res images, try moving them to their own Figma page to get it to load faster."
         );
         setLoadingWarning(true);
-      }, 60000);
+      }, LOADING_TIMEOUT_MS);
     }
 
     return () => {

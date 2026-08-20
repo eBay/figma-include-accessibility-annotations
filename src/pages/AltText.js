@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { utils } from '@/constants';
+import { getPluginMessage, utils } from '@/constants';
 
 // components
 import {
@@ -19,7 +19,7 @@ import Context from '@/context';
 function AltText() {
   // main app state
   const cnxt = React.useContext(Context);
-  const { imagesData, imageScan, imagesScanned, page } = cnxt;
+  const { imagesData, imageScan, imagesScanned, isDevMode, page } = cnxt;
   const { pageType, sendToFigma, updateState, zoomTo } = cnxt;
 
   // local state
@@ -201,7 +201,10 @@ function AltText() {
   };
 
   const onMessageListen = async (event) => {
-    const { data, type } = event.data.pluginMessage;
+    const pluginMessage = getPluginMessage(event, { isDevMode });
+    if (!pluginMessage) return;
+
+    const { data, type } = pluginMessage;
 
     // only listen for this response type on this step
     if (type === 'alt-text-image-selected') {

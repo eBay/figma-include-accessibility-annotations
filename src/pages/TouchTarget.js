@@ -1,6 +1,6 @@
 import * as React from 'react';
 import propTypes from 'prop-types';
-import { utils } from '@/constants';
+import { getPluginMessage, utils } from '@/constants';
 
 // components
 import {
@@ -23,7 +23,7 @@ import Context from '@/context';
 function TouchTarget() {
   // main app state
   const cnxt = React.useContext(Context);
-  const { page, pageType, stepsCompleted, sendToFigma } = cnxt;
+  const { isDevMode, page, pageType, stepsCompleted, sendToFigma } = cnxt;
   const { touchTargets, updateState, zoomTo } = cnxt;
 
   // ui state
@@ -86,7 +86,10 @@ function TouchTarget() {
   };
 
   const onMessageListen = async (event) => {
-    const { data, type } = event.data.pluginMessage;
+    const pluginMessage = getPluginMessage(event, { isDevMode });
+    if (!pluginMessage) return;
+
+    const { data, type } = pluginMessage;
 
     // only listen for this response type on this step
     if (type === 'touch-targets-checked') {
