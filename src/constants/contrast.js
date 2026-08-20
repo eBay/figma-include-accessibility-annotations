@@ -213,7 +213,7 @@ const computeTypeContrast = (textNodeInfo, bgImageData) => {
     // as of last testing, runtime diff. sampling 4 vs. 1 points only took ~5% longer
     [x + w - 1, y],
     [x, y + h - 1],
-    [x + h - 1, y + h - 1]
+    [x + w - 1, y + h - 1]
   ];
 
   const stats = {
