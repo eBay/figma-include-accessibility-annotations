@@ -638,6 +638,7 @@ export const getUserPreferences = async () => {
     type: 'load-user-preferences',
     data: {
       breakpoints,
+      figmaDevMode: figma.editorType === 'dev',
       newFeaturesIntro,
       prefCondensedUI: condensedUI,
       prefTipExpanded: tipExpanded

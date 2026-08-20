@@ -30,6 +30,7 @@ function AppState({ children }) {
     // global ui
     alertMsg: null,
     condensedUI: false,
+    isDevMode: false,
     isLoading: true,
     leftNavVisible: true,
     tipExpanded: true,
@@ -125,7 +126,7 @@ function AppState({ children }) {
 
       case 'load-user-preferences':
         const { breakpoints, newFeaturesIntro } = data;
-        const { prefCondensedUI, prefTipExpanded } = data;
+        const { figmaDevMode, prefCondensedUI, prefTipExpanded } = data;
 
         // if custom breakpoints are set, use those
         const newBreakpoints = breakpoints || responsiveDefaultBreakpoints;
@@ -134,6 +135,7 @@ function AppState({ children }) {
           ...prevState,
           responsiveBreakpoints: newBreakpoints,
           condensedUI: prefCondensedUI,
+          isDevMode: figmaDevMode,
           leftNavVisible: !prefCondensedUI,
           newFeaturesIntro,
           tipExpanded: prefTipExpanded

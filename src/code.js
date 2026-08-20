@@ -62,15 +62,15 @@ figma.once('run', async () => {
   // setting this global for "currentpagechange" listener
   currentPageID = currentPage.id;
 
+  // load user preferences first so isDevMode is set before UI route effects run
+  await onloadPlugin.getUserPreferences();
+
   // get any previous scanned data on current figma page
   // if found, populates dashboard on plugin load
   const { newPageSelected } = onloadPlugin.getPreviousScanData(pageSelected);
 
   // if dashboard data is found, don't listen for new page selection yet
   pageSelected = newPageSelected;
-
-  // load any user preferences
-  await onloadPlugin.getUserPreferences();
 });
 
 /* *****************************************************************************
@@ -563,8 +563,6 @@ figma.on('close', () => {
   // eslint-disable-next-line no-console
   console.log('plugin has closed');
 
-  // make all accessibility layers visible
-  // this is to case for when developers have read-only access,
-  // they can still see all the a11y layers
+  // make all accessibility layers visible (no-op when document is read-only)
   utils.showAllLayers(config.a11ySuffix);
 });

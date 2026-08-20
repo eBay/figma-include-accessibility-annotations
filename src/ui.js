@@ -53,7 +53,8 @@ console.error = (message, ...args) => {
 
 function App() {
   const cnxt = React.useContext(Context);
-  const { alertMsg, condensedUI, isLoading, loadingMsg, leftNavVisible } = cnxt;
+  const { alertMsg, condensedUI, isDevMode, isLoading, loadingMsg } = cnxt;
+  const { leftNavVisible } = cnxt;
   const { colorBlindnessView, page, pageSelected, pageType } = cnxt;
   const { steps, stepsNative, stepsCompleted, stepsData, showDashboard } = cnxt;
   const { showPageChange, showSettings, sendToFigma, updateState } = cnxt;
@@ -96,6 +97,11 @@ function App() {
 
   // listen for route change, adjust show/hide layers in Figma document
   React.useEffect(() => {
+    // if we are in dev mode, do not hide/show layers
+    if (isDevMode) {
+      return;
+    }
+
     // remove starting slash from path
     const currentPath = location.pathname.replace(/[/]/g, '');
     const stepsDataKeysArray = Object.keys(stepsData);
@@ -134,7 +140,7 @@ function App() {
       // show current layer for step
       sendToFigma('visible', { nodeIds: layerIdsToShow, visible: true });
     }
-  }, [location, stepsData]);
+  }, [isDevMode, location, stepsData]);
 
   // listen for steps completed change, adjust progress state
   React.useEffect(() => {
