@@ -148,7 +148,16 @@ function AppState({ children }) {
             isDevMode: figmaDevMode,
             leftNavVisible: !prefCondensedUI,
             newFeaturesIntro,
-            tipExpanded: prefTipExpanded
+            tipExpanded: prefTipExpanded,
+            // exclude the color blindness step from the dev mode flow
+            ...(figmaDevMode && {
+              steps: prevState.steps.filter(
+                (step) => step !== 'Color blindness'
+              ),
+              stepsNative: prevState.stepsNative.filter(
+                (step) => step !== 'Color blindness'
+              )
+            })
           }));
 
           // resize plugin onload if user pref is set
@@ -343,7 +352,7 @@ function AppState({ children }) {
         // handle any new messages we've yet to setup
         default:
           // eslint-disable-next-line
-        console.warn(`unknown type "${type}" message from Figma`);
+          console.warn(`unknown type "${type}" message from Figma`);
           break;
       }
     },

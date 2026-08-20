@@ -285,6 +285,17 @@
   text-transform: capitalize;
 }
 
+.row-landmark-dev {
+  margin-bottom: 8px;
+}
+
+.landmark-block {
+  background: var(--figma-color-bg-hover);
+  border-radius: 4px;
+  height: 32px;
+  width: 32px;
+}
+
 // Button selection containers (gestures, landmarks, headings, focus groups)
 // /////////////////////////////////////////////////////////////////////////////
 $selection-button-width: 72px;
@@ -303,7 +314,7 @@ $selection-button-width: 72px;
   scroll-snap-align: center;
   text-align: center;
   width: $selection-button-width; // scrollbar visible or not, still displaying fine
-  
+
   &.small {
     height: 40px;
     margin-right: 12px;
@@ -379,6 +390,23 @@ $selection-button-width: 72px;
   width: 260px;
 }
 
+.row-heading-dev {
+  margin-bottom: 8px;
+
+  .heading-level {
+    min-width: 20px;
+  }
+
+  .heading-title-dev {
+    flex: 1;
+    font-size: 12px;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
 // Reading Order
 // /////////////////////////////////////////////////////////////////////////////
 .reading-order-text {
@@ -396,6 +424,39 @@ $selection-button-width: 72px;
 
   & .drag-handle {
     width: 64px;
+  }
+}
+
+.row-reading-order-dev {
+  margin-bottom: 8px;
+
+  .reading-order-number {
+    min-width: 24px;
+  }
+
+  .reading-order-type {
+    font-size: 12px;
+    text-transform: capitalize;
+  }
+}
+
+// Touch Target
+// /////////////////////////////////////////////////////////////////////////////
+.row-touch-target-dev {
+  margin-bottom: 8px;
+
+  .touch-target-name {
+    font-size: 12px;
+  }
+}
+
+// Focus Grouping
+// /////////////////////////////////////////////////////////////////////////////
+.row-focus-group-dev {
+  margin-bottom: 8px;
+
+  .focus-group-name {
+    font-size: 12px;
   }
 }
 
@@ -504,35 +565,35 @@ $selection-button-width: 72px;
 }
 
 .protanopia {
-  filter: url("#protanopia");
+  filter: url('#protanopia');
 }
 
 .protanomaly {
-  filter: url("#protanomaly");
+  filter: url('#protanomaly');
 }
 
 .deuteranopia {
-  filter: url("#deuteranopia");
+  filter: url('#deuteranopia');
 }
 
 .deuteranomaly {
-  filter: url("#deuteranomaly");
+  filter: url('#deuteranomaly');
 }
 
 .tritanopia {
-  filter: url("#tritanopia");
+  filter: url('#tritanopia');
 }
 
 .tritanomaly {
-  filter: url("#tritanomaly");
+  filter: url('#tritanomaly');
 }
 
 .achromatopsia {
-  filter: url("#achromatopsia");
+  filter: url('#achromatopsia');
 }
 
 .achromatomaly {
-  filter: url("#achromatomaly");
+  filter: url('#achromatomaly');
 }
 
 // Settings

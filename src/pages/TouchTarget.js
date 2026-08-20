@@ -7,6 +7,7 @@ import {
   Alert,
   AnnotationStepPage,
   BannerSuccess,
+  DevStepIncomplete,
   EmptyStepSelection,
   HeadingStep
 } from '@/components';
@@ -125,6 +126,14 @@ function TouchTarget() {
     errors.length > 0 && hasCheckedTouchTargets ? 'Re-check' : 'Check';
 
   const getPrimaryAction = () => {
+    if (isDevMode) {
+      return {
+        buttonText: pageType === 'web' ? 'Next' : 'Done',
+        completesStep: true,
+        onClick: () => null
+      };
+    }
+
     if (!numTargets && !hasSelectedNoTargets) return null;
     if (numTargets && (errors.length > 0 || !hasCheckedTouchTargets)) {
       return {
@@ -141,6 +150,14 @@ function TouchTarget() {
   };
 
   const getSecondaryAction = () => {
+    if (isDevMode) {
+      return {
+        buttonText: 'Prev',
+        onClick: () => null,
+        isPrev: true
+      };
+    }
+
     if (!numTargets || (numTargets && !hasCheckedTouchTargets)) return null;
     if (errors.length > 0) {
       return {
@@ -159,6 +176,7 @@ function TouchTarget() {
   return (
     <AnnotationStepPage
       title="Touch target checks"
+      completed={isCompleted}
       bannerTipProps={{ pageType, routeName }}
       routeName={routeName}
       footerProps={{
@@ -167,85 +185,164 @@ function TouchTarget() {
       }}
     >
       <React.Fragment>
-        <HeadingStep
-          number={1}
-          text={`<p style="display: inline">Place annotations for targets. <span style="font-style: italic;">Include</span> will flag where these overlap or have insufficient spacing.</p>`}
-        />
-
-        {!numTargets && (
-          <EmptyStepSelection
-            id="all-touch-targets-clear"
-            isSelected={hasSelectedNoTargets}
-            onClick={onEmptySelected}
-            text="No targets to check"
-          />
-        )}
-
-        {hasSelectedNoTargets === false && (
-          <div className="button-group" role="radiogroup">
-            <div key="Add target" className="container-selection-button">
-              <div
-                aria-label="add touch target"
-                className="selection-button"
-                onClick={onAddTouchTarget}
-                onKeyDown={(e) => {
-                  if (utils.isEnterKey(e.key)) onAddTouchTarget();
-                }}
-                role="button"
-                tabIndex={0}
-              >
-                <div>
-                  <SvgTouchTarget.SvgCustom />
-                </div>
-              </div>
-
-              <div className="selection-button-label">add target</div>
-            </div>
-          </div>
-        )}
-
-        {numTargets > 0 && (
+        {isDevMode === false && (
           <React.Fragment>
-            <div className="spacer1" />
-            <HeadingStep number={2} text="Check the touch targets" />
-          </React.Fragment>
-        )}
-
-        {hasCheckedTouchTargets === true && errors.length === 0 && (
-          <BannerSuccess text="All touch targets meet minimum size and spacing requirements" />
-        )}
-
-        {errors.length > 0 && (
-          <React.Fragment>
-            <Alert
-              icon={<SvgWarning />}
-              style={{ padding: 0 }}
-              text="Some of your touch targets are overlapping or do not meet the minimum size or spacing requirements."
-              type="warning"
+            <HeadingStep
+              number={1}
+              text={`<p style="display: inline">Place annotations for targets. <span style="font-style: italic;">Include</span> will flag where these overlap or have insufficient spacing.</p>`}
             />
 
-            <div className="spacer2" />
-
-            {errors.length > 0 && (
-              <>
-                <HeadingStep
-                  number={3}
-                  text="Increase the size of the target or the spacing from other targets (24px by 24px minimum requirement)"
-                />
-                {errors.map((error) => (
-                  <TouchTargetError
-                    zoomTo={zoomTo}
-                    key={`error-${error.nodeIds.join(',')}`}
-                    error={error}
-                  />
-                ))}
-              </>
+            {!numTargets && (
+              <EmptyStepSelection
+                id="all-touch-targets-clear"
+                isSelected={hasSelectedNoTargets}
+                onClick={onEmptySelected}
+                text="No targets to check"
+              />
             )}
 
-            <div className="divider" />
+            {hasSelectedNoTargets === false && (
+              <div className="button-group" role="radiogroup">
+                <div key="Add target" className="container-selection-button">
+                  <div
+                    aria-label="add touch target"
+                    className="selection-button"
+                    onClick={onAddTouchTarget}
+                    onKeyDown={(e) => {
+                      if (utils.isEnterKey(e.key)) onAddTouchTarget();
+                    }}
+                    role="button"
+                    tabIndex={0}
+                  >
+                    <div>
+                      <SvgTouchTarget.SvgCustom />
+                    </div>
+                  </div>
+
+                  <div className="selection-button-label">add target</div>
+                </div>
+              </div>
+            )}
+
+            {numTargets > 0 && (
+              <React.Fragment>
+                <div className="spacer1" />
+                <HeadingStep number={2} text="Check the touch targets" />
+              </React.Fragment>
+            )}
+
+            {hasCheckedTouchTargets === true && errors.length === 0 && (
+              <BannerSuccess text="All touch targets meet minimum size and spacing requirements" />
+            )}
+
+            {errors.length > 0 && (
+              <React.Fragment>
+                <Alert
+                  icon={<SvgWarning />}
+                  style={{ padding: 0 }}
+                  text="Some of your touch targets are overlapping or do not meet the minimum size or spacing requirements."
+                  type="warning"
+                />
+
+                <div className="spacer2" />
+
+                {errors.length > 0 && (
+                  <>
+                    <HeadingStep
+                      number={3}
+                      text="Increase the size of the target or the spacing from other targets (24px by 24px minimum requirement)"
+                    />
+                    {errors.map((error) => (
+                      <TouchTargetError
+                        zoomTo={zoomTo}
+                        key={`error-${error.nodeIds.join(',')}`}
+                        error={error}
+                      />
+                    ))}
+                  </>
+                )}
+
+                <div className="divider" />
+              </React.Fragment>
+            )}
+            <div className="spacer3" />
           </React.Fragment>
         )}
-        <div className="spacer3" />
+
+        {isDevMode === true && isCompleted === false && (
+          <DevStepIncomplete label="touch targets" />
+        )}
+
+        {isDevMode === true && isCompleted && (
+          <React.Fragment>
+            <HeadingStep text="Implement" />
+
+            {numTargets > 0 && (
+              <React.Fragment>
+                <p>
+                  All touch targets are either defined by visible components or
+                  have enough clear space. Ask designer for any clarification to
+                  ensure comfortably large targets.
+                </p>
+
+                <div className="space-md" />
+
+                {targetsArray.map((key) => {
+                  const { id, name } = touchTargets[key];
+
+                  return (
+                    <div
+                      key={id}
+                      aria-label="goto touch target"
+                      className="cursor-pointer border-radius-2 row-touch-target-dev flex-row-center"
+                      onClick={() => zoomTo([id], true)}
+                      onKeyDown={(e) => {
+                        if (utils.isEnterKey(e.key)) zoomTo([id], true);
+                      }}
+                      role="button"
+                      tabIndex="0"
+                    >
+                      <div className="landmark-block" />
+                      <div className="space-xsw" />
+                      <div className="touch-target-name">{name}</div>
+                    </div>
+                  );
+                })}
+              </React.Fragment>
+            )}
+
+            {numTargets === 0 && (
+              <p>
+                Designs were marked as verified manually. Check with the
+                designer if you believe any targets are too small or too closely
+                positioned.
+              </p>
+            )}
+
+            <div className="space-md" />
+            <div className="divider" />
+            <div className="space-md" />
+
+            <HeadingStep text="Test" />
+            <ul className="disc">
+              {pageType === 'web' ? (
+                <li>
+                  Review the{' '}
+                  <a
+                    href="https://playbook.ebay.com/foundations/accessibility/include-plugin?tab=responsive-web&referrer=include#touch-target"
+                    target="_blank"
+                    rel="noreferrer"
+                    tabIndex="0"
+                  >
+                    accessibility playbook
+                  </a>
+                </li>
+              ) : (
+                <li>Run an automated accessibility test.</li>
+              )}
+            </ul>
+          </React.Fragment>
+        )}
       </React.Fragment>
     </AnnotationStepPage>
   );

@@ -2,7 +2,11 @@ import * as React from 'react';
 import { utils } from '@/constants';
 
 // components
-import { AnnotationStepPage, HeadingStep } from '@/components';
+import {
+  AnnotationStepPage,
+  DevStepIncomplete,
+  HeadingStep
+} from '@/components';
 
 // icons
 import { SvgArrowWidth, SvgPlus } from '@/icons';
@@ -13,7 +17,7 @@ import Context from '@/context';
 function ResponsiveReflow() {
   // main app state
   const cnxt = React.useContext(Context);
-  const { newFeaturesIntro, responsiveBreakpoints } = cnxt;
+  const { isDevMode, newFeaturesIntro, responsiveBreakpoints } = cnxt;
   const { page, pageType, sendToFigma, stepsCompleted, updateState } = cnxt;
 
   // local state
@@ -168,18 +172,25 @@ function ResponsiveReflow() {
     });
   };
 
-  React.useEffect(() => {
-    // mount
-    checkCanSave();
+  const getPrimaryAction = () => {
+    if (isDevMode) {
+      return {
+        buttonText: 'Next',
+        completesStep: true,
+        onClick: () => null
+      };
+    }
 
-    return () => {
-      // unmount
-    };
-  }, [breakpoints]);
+    if (showOnboarding) {
+      return {
+        buttonText: 'Save breakpoints',
+        completesStep: false,
+        isDisabled: canSave === false,
+        onClick: saveBreakpoints
+      };
+    }
 
-  // break this out so it updates
-  const primaryAction =
-    isCompleted || reflowCreated
+    return isCompleted || reflowCreated
       ? {
           buttonText: 'Responsive reflow documented',
           completesStep: true,
@@ -190,114 +201,178 @@ function ResponsiveReflow() {
           completesStep: false,
           onClick: onCreateDesigns
         };
+  };
+
+  const getSecondaryAction = () => {
+    if (isDevMode) {
+      return {
+        buttonText: 'Prev',
+        onClick: () => null,
+        isPrev: true
+      };
+    }
+
+    return isCompleted || reflowCreated
+      ? {
+          buttonText: 'Copy again',
+          skipsStep: false,
+          onClick: onCreateDesigns
+        }
+      : null;
+  };
+
+  React.useEffect(() => {
+    // mount
+    checkCanSave();
+
+    return () => {
+      // unmount
+    };
+  }, [breakpoints]);
 
   return (
     <AnnotationStepPage
       bannerTipProps={{ pageType, routeName }}
       title="Responsive reflow"
+      completed={isCompleted}
       routeName={routeName}
       footerProps={{
-        primaryAction: showOnboarding
-          ? {
-              buttonText: 'Save breakpoints',
-              completesStep: false,
-              isDisabled: canSave === false,
-              onClick: saveBreakpoints
-            }
-          : primaryAction,
-        secondaryAction:
-          isCompleted || reflowCreated
-            ? {
-                buttonText: 'Copy again',
-                skipsStep: false,
-                onClick: onCreateDesigns
-              }
-            : null
+        primaryAction: getPrimaryAction(),
+        secondaryAction: getSecondaryAction()
       }}
     >
       <React.Fragment>
-        <HeadingStep number={1} text={firstStepText} />
+        {isDevMode === false && (
+          <React.Fragment>
+            <HeadingStep number={1} text={firstStepText} />
 
-        {showOnboarding && (
-          <div className="container-breakpoints">
-            {breakpoints.map(({ id, name, width }, index) => {
-              const key = `breakpoint-${id}-${index}`;
-              const nameClass = name === '' ? ' warning' : '';
-              const widthClass = isNumber(width) === false ? ' warning' : '';
+            {showOnboarding && (
+              <div className="container-breakpoints">
+                {breakpoints.map(({ id, name, width }, index) => {
+                  const key = `breakpoint-${id}-${index}`;
+                  const nameClass = name === '' ? ' warning' : '';
+                  const widthClass =
+                    isNumber(width) === false ? ' warning' : '';
 
-              return (
-                <div
-                  key={key}
-                  className="breakpoint-row flex-row-space-between"
-                >
-                  <div className="flex-row-center">
-                    <div className="flex-row-center mr2">
-                      <div className="breakpoint-label">Name:</div>
+                  return (
+                    <div
+                      key={key}
+                      className="breakpoint-row flex-row-space-between"
+                    >
+                      <div className="flex-row-center">
+                        <div className="flex-row-center mr2">
+                          <div className="breakpoint-label">Name:</div>
 
-                      <input
-                        className={`input-name${nameClass}`}
-                        type="text"
-                        onBlur={sanitizeBreakpoints}
-                        onChange={(e) => onBreakpointChange(e, index, 'name')}
-                        value={name}
-                      />
-                    </div>
+                          <input
+                            className={`input-name${nameClass}`}
+                            type="text"
+                            onBlur={sanitizeBreakpoints}
+                            onChange={(e) =>
+                              onBreakpointChange(e, index, 'name')
+                            }
+                            value={name}
+                          />
+                        </div>
 
-                    <div className="flex-row-center">
-                      <div className="breakpoint-label">
-                        <SvgArrowWidth />
-                        Width:
+                        <div className="flex-row-center">
+                          <div className="breakpoint-label">
+                            <SvgArrowWidth />
+                            Width:
+                          </div>
+                          <input
+                            className={`input-width${widthClass}`}
+                            type="text"
+                            onBlur={sanitizeBreakpoints}
+                            onChange={(e) =>
+                              onBreakpointChange(e, index, 'width')
+                            }
+                            value={width}
+                          />
+                          px
+                        </div>
                       </div>
-                      <input
-                        className={`input-width${widthClass}`}
-                        type="text"
-                        onBlur={sanitizeBreakpoints}
-                        onChange={(e) => onBreakpointChange(e, index, 'width')}
-                        value={width}
-                      />
-                      px
+
+                      <div
+                        aria-label="remove breakpoint"
+                        className="btn-remove"
+                        onClick={() => removeBreakpoint(index)}
+                        onKeyDown={(e) => {
+                          if (utils.isEnterKey(e.key)) removeBreakpoint(index);
+                        }}
+                        role="button"
+                        tabIndex="0"
+                      >
+                        <div className="remove-dash" />
+                      </div>
                     </div>
-                  </div>
+                  );
+                })}
 
-                  <div
-                    aria-label="remove breakpoint"
-                    className="btn-remove"
-                    onClick={() => removeBreakpoint(index)}
-                    onKeyDown={(e) => {
-                      if (utils.isEnterKey(e.key)) removeBreakpoint(index);
-                    }}
-                    role="button"
-                    tabIndex="0"
-                  >
-                    <div className="remove-dash" />
-                  </div>
+                <div className="divider" />
+
+                <div
+                  className="add-breakpoint-row flex-row-center"
+                  onClick={addBreakpoint}
+                  onKeyDown={({ key }) => {
+                    if (utils.isEnterKey(key)) addBreakpoint();
+                  }}
+                  role="button"
+                  tabIndex="0"
+                >
+                  <SvgPlus />
+                  Add breakpoint
                 </div>
-              );
-            })}
+              </div>
+            )}
 
-            <div className="divider" />
-
-            <div
-              className="add-breakpoint-row flex-row-center"
-              onClick={addBreakpoint}
-              onKeyDown={({ key }) => {
-                if (utils.isEnterKey(key)) addBreakpoint();
-              }}
-              role="button"
-              tabIndex="0"
-            >
-              <SvgPlus />
-              Add breakpoint
-            </div>
-          </div>
+            {(isCompleted || reflowCreated) && (
+              <HeadingStep
+                number={2}
+                text="Adjust the layouts to ensure that there is no horizontal scrolling when the page is viewed on smaller devices."
+              />
+            )}
+          </React.Fragment>
         )}
 
-        {(isCompleted || reflowCreated) && (
-          <HeadingStep
-            number={2}
-            text="Adjust the layouts to ensure that there is no horizontal scrolling when the page is viewed on smaller devices."
-          />
-        )}
+        {isDevMode === true &&
+          (isCompleted ? (
+            <React.Fragment>
+              <HeadingStep text="Implement" />
+              <p>
+                Use provided mocks for implementing reflow in a variety of
+                viewport sizes.
+              </p>
+
+              <div className="space-md" />
+              <div className="divider" />
+              <div className="space-md" />
+
+              <HeadingStep text="Test" />
+              <p>
+                Check page at 320px width (and other breakpoints) to ensure:
+              </p>
+              <ul className="disc">
+                <li>No loss of information or functionality.</li>
+                <li>
+                  No multi-directional page scrolling. It is OK for some parts
+                  of the page to scroll, e.g. tables, carousels, navigation or
+                  filter pills.
+                </li>
+                <li>No cropped or overlapping text.</li>
+                <li>Text does not extend beyond its container.</li>
+              </ul>
+
+              <div className="space-sm" />
+
+              <p>
+                Content can be hidden at some breakpoints, as long as there is a
+                control to reveal it (e.g. menu icon, overflow icon) and no loss
+                of information.
+              </p>
+            </React.Fragment>
+          ) : (
+            <DevStepIncomplete label="responsive reflow" />
+          ))}
       </React.Fragment>
     </AnnotationStepPage>
   );
