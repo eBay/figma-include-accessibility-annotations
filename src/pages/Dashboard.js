@@ -481,7 +481,7 @@ function Dashboard() {
 
       <div className="dashboard-footer flex-row-space-between">
         {isDevMode === false && (
-          <div className="flex-row-center">
+          <div className="flex-row-center btns-container">
             <button
               className="btn primary"
               onClick={onAddNewPage}

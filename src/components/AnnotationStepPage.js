@@ -32,19 +32,6 @@ function AnnotationStepPage({
     });
   }, []);
 
-  const effectiveFooterProps = isDevMode
-    ? {
-        primaryAction: {
-          buttonText: 'Next',
-          completesStep: true
-        },
-        secondaryAction: {
-          buttonText: 'Previous',
-          isPrev: true
-        }
-      }
-    : footerProps;
-
   return (
     <div className="container-main">
       <main id="main" tabIndex="-1">
@@ -82,7 +69,7 @@ function AnnotationStepPage({
         )}
       </main>
 
-      <Footer routeName={routeName} {...effectiveFooterProps} />
+      <Footer routeName={routeName} {...footerProps} />
     </div>
   );
 }

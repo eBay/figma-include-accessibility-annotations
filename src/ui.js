@@ -145,13 +145,16 @@ function App() {
 
   // listen for steps completed change, adjust progress state
   React.useEffect(() => {
-    sendToFigma('steps-completed', {
-      stepsCompleted,
-      page,
-      pageType,
-      stepsNative,
-      steps
-    });
+    // designer checks can't be written to a read-only Dev Mode document
+    if (isDevMode === false) {
+      sendToFigma('steps-completed', {
+        stepsCompleted,
+        page,
+        pageType,
+        stepsNative,
+        steps
+      });
+    }
 
     const newPercentage = stepsCompleted.reduce((accum, step) => {
       const routeData = pageType === 'web' ? routes : routesNative;
@@ -160,7 +163,7 @@ function App() {
     }, 0);
 
     setPercentage(newPercentage);
-  }, [stepsCompleted]);
+  }, [isDevMode, stepsCompleted]);
 
   // listen for dashboard display
   React.useEffect(() => {
@@ -228,41 +231,36 @@ function App() {
       <div className={`app-top ${leftNavClass}${cbViewerClass}`}>
         <NavLeft progress={progressPercent} />
 
-        <div className="flex-1">
-          <Routes>
-            {pageType === 'web' && (
-              <React.Fragment>
-                <Route path="/" element={<Landmarks />} />
-                <Route path="headings" element={<Headings />} />
-                <Route path="reading-order" element={<ReadingOrder />} />
-                <Route path="alt-text" element={<AltText />} />
-                <Route path="contrast" element={<Contrast />} />
-                <Route path="touch-target" element={<TouchTarget />} />
-                <Route path="text-zoom" element={<TextZoom />} />
-                <Route
-                  path="responsive-reflow"
-                  element={<ResponsiveReflow />}
-                />
-                <Route path="color-blindness" element={<ColorBlindness />} />
-                <Route path="complex-gestures" element={<ComplexGestures />} />
-              </React.Fragment>
-            )}
+        <Routes>
+          {pageType === 'web' && (
+            <React.Fragment>
+              <Route path="/" element={<Landmarks />} />
+              <Route path="headings" element={<Headings />} />
+              <Route path="reading-order" element={<ReadingOrder />} />
+              <Route path="alt-text" element={<AltText />} />
+              <Route path="contrast" element={<Contrast />} />
+              <Route path="touch-target" element={<TouchTarget />} />
+              <Route path="text-zoom" element={<TextZoom />} />
+              <Route path="responsive-reflow" element={<ResponsiveReflow />} />
+              <Route path="color-blindness" element={<ColorBlindness />} />
+              <Route path="complex-gestures" element={<ComplexGestures />} />
+            </React.Fragment>
+          )}
 
-            {pageType === 'native' && (
-              <React.Fragment>
-                <Route path="/" element={<Headings />} />
-                <Route path="focus-grouping" element={<FocusGrouping />} />
-                <Route path="reading-order" element={<ReadingOrder />} />
-                <Route path="alt-text" element={<AltText />} />
-                <Route path="touch-target" element={<TouchTarget />} />
-                <Route path="contrast" element={<Contrast />} />
-                <Route path="text-zoom" element={<TextZoom />} />
-                <Route path="complex-gestures" element={<ComplexGestures />} />
-                <Route path="color-blindness" element={<ColorBlindness />} />
-              </React.Fragment>
-            )}
-          </Routes>
-        </div>
+          {pageType === 'native' && (
+            <React.Fragment>
+              <Route path="/" element={<Headings />} />
+              <Route path="focus-grouping" element={<FocusGrouping />} />
+              <Route path="reading-order" element={<ReadingOrder />} />
+              <Route path="alt-text" element={<AltText />} />
+              <Route path="touch-target" element={<TouchTarget />} />
+              <Route path="contrast" element={<Contrast />} />
+              <Route path="text-zoom" element={<TextZoom />} />
+              <Route path="complex-gestures" element={<ComplexGestures />} />
+              <Route path="color-blindness" element={<ColorBlindness />} />
+            </React.Fragment>
+          )}
+        </Routes>
       </div>
     </div>
   );
