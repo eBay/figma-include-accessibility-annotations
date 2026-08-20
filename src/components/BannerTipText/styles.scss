@@ -19,11 +19,30 @@
   text-transform: uppercase;
 }
 
+.tip-link {
+  border-radius: 2px;
+  color: var(--foreground-on-warning);
+  display: inline-block;
+  font-size: 12px;
+  margin-left: 8px;
+  margin-top: 8px;
+  text-decoration: underline;
+}
+
 .tip-text-collapsed {
-  max-height: 16px;
+  -webkit-box-orient: vertical;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
+
+  // the link is only reachable once the tip is expanded, and its inline-block
+  // margin would grow the clamped line beyond the tip
+  .tip-link {
+    display: none;
+  }
 }
 
 .tip-toggle {
@@ -43,14 +62,4 @@
   & .rotate-right-rev {
     transform: rotate(0deg)
   }
-}
-
-.tip-link {
-  border-radius: 2px;
-  color: var(--foreground-on-warning);
-  display: inline-block;
-  font-size: 12px;
-  margin-left: 8px;
-  margin-top: 8px;
-  text-decoration: underline;
 }
