@@ -427,15 +427,21 @@ figma.ui.onmessage = async (msg) => {
       nodeIds.map(async (nodeId) => {
         const nodeFound = await figma.getNodeByIdAsync(nodeId);
 
+        // prevent memory leak (if not found, do nothing)
+        if (nodeFound === null) {
+          // this might happen if step data is out of sync with location change
+          // that's okay, we don't need to show an error
+          return;
+        }
+
         // edge casing for one or the other
         const isFocusOrder = nodeFound.name.includes('Focus order');
         const isReadingOrder = nodeFound.name.includes('Reading order');
 
-        // prevent memory leak (if not found, do nothing)
-        if (nodeFound !== null) {
-          // if hard value passed (visible), use that, else toggle visible state
-          const changeVisibleTo =
-            visible !== null ? visible : !nodeFound.visible;
+        // if hard value passed (visible), use that, else toggle visible state
+        const changeVisibleTo = visible !== null ? visible : !nodeFound.visible;
+
+        utils.safeEdit('set visible', () => {
           nodeFound.visible = changeVisibleTo;
           nodeFound.expanded = false;
 
@@ -463,9 +469,7 @@ figma.ui.onmessage = async (msg) => {
               }
             }
           }
-        }
-
-        return null;
+        });
       })
     );
   }

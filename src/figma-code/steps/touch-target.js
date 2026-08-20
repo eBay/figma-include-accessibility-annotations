@@ -105,7 +105,7 @@ export const add = async (msg) => {
 };
 
 export const checkTouchTargets = async (msg) => {
-  const { touchTargets } = msg;
+  const { pageType, touchTargets } = msg;
 
   const validTargetNodes = (
     await Promise.all(
@@ -175,8 +175,7 @@ export const checkTouchTargets = async (msg) => {
     return doRectanglesIntersect(node1, node2);
   };
 
-  // in terms of WCAG compliance, this is the same on native and web
-  const targetSize = 24;
+  const targetSize = getTouchTargetSize(pageType);
 
   const checkOverlap = (nodes) => {
     const overlapIssues = [];

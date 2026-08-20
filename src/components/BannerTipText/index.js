@@ -27,7 +27,7 @@ function BannerTipText(props) {
   const tabIndex = tipExpanded ? '0' : '-1';
   const isLink =
     helpUrl !== null
-      ? ` <a className="tip-link" href="${helpUrl}" target="_blank" rel="noreferrer" tabIndex="${tabIndex}">${helpText}</a>`
+      ? ` <a class="tip-link" href="${helpUrl}" target="_blank" rel="noreferrer" tabIndex="${tabIndex}">${helpText}</a>`
       : '';
   const displayText = `${text}${isLink}`;
   const isOpened = showArrow === false || tipExpanded;
