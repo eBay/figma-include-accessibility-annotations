@@ -11,9 +11,9 @@ an accessibility annotation Figma plugin
 
 ## Intro
 
-<img alt="plugin version 16" src="previews/v16/include_banner.png" />
+<img alt="plugin version 17" src="previews/v17/include_banner.png" />
 
-The eBay Include accessibility annotation Figma plugin is a tool to make annotating for accessibility (a11y) easier — easier for designers to spec and easier for developers to understand what is required.
+The eBay Include accessibility annotation Figma plugin is a tool to make annotating for accessibility (a11y) easier — easier for designers to spec and easier for developers to understand what is required. Version 17 adds a read-only inspect experience in Figma Dev Mode so developers can review existing annotations without changing the design file.
 
 The plugin was developed by members of the accessibility and design teams at eBay and is released for public use on Figma. You can view and install the latest version of the plugin [here](https://www.figma.com/community/plugin/1208180794570801545/Include%3A-an-accessibility-annotation-tool).
 
@@ -35,6 +35,7 @@ The plugin was developed by members of the accessibility and design teams at eBa
 
 - [X] Touch target revision (v15)
 - [X] Split between focus & reading order (v16)
+- [X] Dev Mode inspect experience for developers (v17)
 - [ ] Pointer gestures
 - [ ] Interactive elements step
 - [ ] Use of AI to generate labels

@@ -38,18 +38,24 @@ The app consists of 2 main files:
 
 The main methods used **_in this plugin_** to communicate with Figma are:
 
+The plugin runs in Figma Design Mode (`editorType: "figma"`) and Figma Dev Mode (`editorType: "dev"` with the `inspect` capability). Design Mode still creates and edits annotations. Dev Mode is read-only: it shows implement and test guidance for existing annotation layers and does not write to the document.
+
 - `figma.once('run')`
 
-  - used to run once on plugin load: pre-load fonts and search current page for any A11y Layers
+  - used to run once on plugin load: load user preferences (including whether the plugin opened in Dev Mode), pre-load fonts, and search the current page for any A11y Layers
 
-- `figma.once('selectionchange')`
+- `figma.on('selectionchange')`
 
   - listen for frame selection (used to start an initial scan)
   - listen for Headings selection by user (accessibility step)
 
-- `figma.once('currentpagechange')`
+- `figma.on('currentpagechange')`
 
   - if the user changes to a different page on Figma, we ask them to go back to the page they started the plugin on, or to re-start the plugin on this new page
+
+- `figma.on('close')`
+
+  - restore visibility of accessibility layers; this is a no-op when the document is read-only (including Dev Mode)
 
 - `figma.ui.onmessage` **main communication**
 
