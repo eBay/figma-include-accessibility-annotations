@@ -1,6 +1,6 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { analytics, getPluginResizeMessage, utils } from '@/constants';
 
 // components
@@ -19,7 +19,7 @@ import routesNative from '@/data/routes-native.json';
 function Footer({ primaryAction = null, secondaryAction = null, routeName }) {
   // main app state
   const cnxt = React.useContext(Context);
-  const { hasDashboard, isProd, page, pages, pageType } = cnxt;
+  const { hasDashboard, isProd, isDevMode, page, pages, pageType } = cnxt;
   const { steps, stepsNative, stepsCompleted, leftNavVisible } = cnxt;
   const { sessionId, currentUser, sendToFigma, updateState } = cnxt;
 
@@ -33,10 +33,11 @@ function Footer({ primaryAction = null, secondaryAction = null, routeName }) {
   const [isLast, setIsLast] = React.useState(false);
 
   // class state
-  const hasDashboardClass = hasDashboard ? ' has-dashboard' : '';
+  const hasDashboardClass = hasDashboard ? 'has-dashboard' : '';
 
   // handle route changes
   const location = useLocation();
+  const navigate = useNavigate();
 
   const backToDashboard = () => {
     updateState('colorBlindnessView', false);
@@ -70,11 +71,15 @@ function Footer({ primaryAction = null, secondaryAction = null, routeName }) {
 
     updateState('touchTargets', {});
 
-    // make all layers visible
-    sendToFigma('show-all-layers');
+    if (isDevMode === false) {
+      // make all layers visible
+      sendToFigma('show-all-layers');
+    }
   };
 
   const onCompleteStep = () => {
+    if (isDevMode === true) return;
+
     // check if this was an already-completed step
     const newStepsCompleted = [...stepsCompleted];
     const indexFound = stepsCompleted.indexOf(routeName);
@@ -122,13 +127,19 @@ function Footer({ primaryAction = null, secondaryAction = null, routeName }) {
   React.useEffect(() => {
     // remove starting slash from path
     const path = location.pathname.replace(/[/]/g, '');
+    const isPrev = secondaryAction?.isPrev || false;
+
+    const filteredRoutes = Object.keys(routeData).filter(
+      (route) => routeData[route].path === path
+    );
 
     // default and / path, 0 index
     let indexFound = 0;
-    if (path !== '') {
-      const filteredRoutes = Object.keys(routeData).filter(
-        (route) => routeData[route].path === path
-      );
+    if (path !== '' && isDevMode) {
+      const idx = stepsArray.indexOf(filteredRoutes[0]);
+
+      indexFound = isPrev ? idx : idx + 1;
+    } else if (path !== '') {
       indexFound = stepsArray.indexOf(filteredRoutes[0]);
     }
 
@@ -161,7 +172,7 @@ function Footer({ primaryAction = null, secondaryAction = null, routeName }) {
           <div className="svg-theme-stroke_link rotate-180">
             <SvgArrowRight />
           </div>
-          <div className="spacer1w" />
+          <div className="space-xsw" />
           Dashboard
         </Link>
       )}
@@ -174,6 +185,15 @@ function Footer({ primaryAction = null, secondaryAction = null, routeName }) {
             }
             className="btn no-underline flex-row-center"
             onClick={() => {
+              if (secondaryAction?.isPrev) {
+                const routeIndex = stepsArray.indexOf(routeName);
+                if (routeIndex > 0) {
+                  navigate(-1);
+                } else {
+                  backToDashboard();
+                }
+              }
+
               if (secondaryAction.onClick) secondaryAction.onClick();
               if (secondaryAction.skipsStep || secondaryAction.completesStep) {
                 if (secondaryAction.completesStep) onCompleteStep();
@@ -191,7 +211,7 @@ function Footer({ primaryAction = null, secondaryAction = null, routeName }) {
             }}
             isLast={isLast}
             next={next}
-            isDisabled={primaryAction.isDisabled}
+            isDisabled={primaryAction?.isDisabled}
           >
             {secondaryAction.buttonText || 'Skip'}
           </FooterActionButton>
@@ -245,6 +265,7 @@ Footer.propTypes = {
     onClick: PropTypes.func,
     buttonText: PropTypes.string,
     isDisabled: PropTypes.bool,
+    isPrev: PropTypes.bool,
     skipsStep: PropTypes.bool
   })
 };

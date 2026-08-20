@@ -172,6 +172,14 @@ function App() {
   }, [showDashboard]);
 
   React.useEffect(() => {
+    document.documentElement.classList.toggle('figma-dev-mode', isDevMode);
+
+    return () => {
+      document.documentElement.classList.remove('figma-dev-mode');
+    };
+  }, [isDevMode]);
+
+  React.useEffect(() => {
     // fix the "No <!doctype html> found." because of Figma + iFrame
     if (!document.doctype) {
       const docT = document.implementation.createDocumentType('html', '', '');

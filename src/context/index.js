@@ -17,6 +17,7 @@ export default React.createContext({
 
   // global accessibility data
   pages: [],
+  otherPages: [],
   page: null,
   pageSelected: null,
   pageType: null,

@@ -18,6 +18,7 @@ function BannerTipText(props) {
   // props
   const { footer = null } = props;
   const { helpText = 'Learn more', helpUrl = null, text } = props;
+  const { showArrow = true } = props;
 
   // local state
   const [animateClass, setAnimateClass] = React.useState('');
@@ -29,9 +30,11 @@ function BannerTipText(props) {
       ? ` <a className="tip-link" href="${helpUrl}" target="_blank" rel="noreferrer" tabIndex="${tabIndex}">${helpText}</a>`
       : '';
   const displayText = `${text}${isLink}`;
-  const ariaLabel = tipExpanded ? 'collapse' : 'expand';
-  const rotateClass = tipExpanded ? ' rotate-right-rev' : ' rotate-left-rev';
-  const tipTextClass = tipExpanded ? '' : 'tip-text-collapsed';
+  const isOpened = showArrow === false || tipExpanded;
+  const isOpenedClass = isOpened ? ' tip-opened' : '';
+  const ariaLabel = isOpened ? 'collapse' : 'expand';
+  const rotateClass = isOpened ? ' rotate-right-rev' : ' rotate-left-rev';
+  const tipTextClass = isOpened ? '' : 'tip-text-collapsed';
 
   const onToggle = () => {
     updateState('tipExpanded', !tipExpanded);
@@ -53,22 +56,24 @@ function BannerTipText(props) {
   }, []);
 
   return (
-    <div className="banner-tip">
+    <div className={`banner-tip${isOpenedClass}`}>
       <div className="flex-row align-start">
-        <div
-          aria-label={`${ariaLabel} tip`}
-          className="tip-toggle"
-          onClick={onToggle}
-          onKeyDown={({ key }) => {
-            if (utils.isEnterKey(key)) onToggle();
-          }}
-          role="button"
-          tabIndex="0"
-        >
-          <div className={`svg-theme${animateClass}${rotateClass}`}>
-            <SvgChevronDown size={12} />
+        {showArrow && (
+          <div
+            aria-label={`${ariaLabel} tip`}
+            className="tip-toggle"
+            onClick={onToggle}
+            onKeyDown={({ key }) => {
+              if (utils.isEnterKey(key)) onToggle();
+            }}
+            role="button"
+            tabIndex="0"
+          >
+            <div className={`svg-theme${animateClass}${rotateClass}`}>
+              <SvgChevronDown size={12} />
+            </div>
           </div>
-        </div>
+        )}
 
         <div className="tip-label">tip</div>
 
@@ -90,7 +95,8 @@ BannerTipText.propTypes = {
   // optional
   footer: PropTypes.element,
   helpText: PropTypes.string,
-  helpUrl: PropTypes.string
+  helpUrl: PropTypes.string,
+  showArrow: PropTypes.bool
 };
 
 export default React.memo(BannerTipText);

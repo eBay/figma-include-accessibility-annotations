@@ -43,6 +43,7 @@ function AppState({ children }) {
 
     // global accessibility data
     pages: [],
+    otherPages: [],
     page: null,
     pageSelected: null,
     pageType: null,
@@ -113,8 +114,11 @@ function AppState({ children }) {
             ...prevState,
             isLoading: false,
             pages: data.pages,
-            hasDashboard: data.hasProgress,
-            showDashboard: data.hasProgress,
+            otherPages: data.otherPages || [],
+            hasDashboard:
+              data.hasProgress || (data.otherPages || []).length > 0,
+            showDashboard:
+              data.hasProgress || (data.otherPages || []).length > 0,
             currentUser: data.currentUser,
             sessionId: data.sessionId
           }));

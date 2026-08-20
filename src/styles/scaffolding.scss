@@ -27,9 +27,23 @@ main {
     width: 468px;
   }
 
+  .figma-dev-mode & {
+    width: 100%;
+  }
+
   // .cb-viewer & {
   //   width: 100%;
   // }
+}
+
+.figma-dev-mode {
+  .app-top > nav {
+    display: none;
+  }
+
+  .container-main {
+    width: 100%;
+  }
 }
 
 // footer
@@ -41,6 +55,10 @@ footer {
   height: vars.$footer-height;
   justify-content: flex-end;
   padding: 0 vars.$spacing-sm;
+
+  .figma-dev-mode & {
+    border-bottom: 1px solid var(--figma-color-border);
+  }
 
   &.has-dashboard {
     justify-content: space-between;

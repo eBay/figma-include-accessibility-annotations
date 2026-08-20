@@ -76,7 +76,13 @@ $spacers: (
   'spacer2': vars.$spacing-sm,
   'spacer3': vars.$spacing-md,
   'spacer4': vars.$spacing-lg,
-  'spacer6': vars.$spacing-xxl
+  'spacer6': vars.$spacing-xxl,
+  'space-xxs': vars.$spacing-xxs,
+  'space-xs': vars.$spacing-xs,
+  'space-sm': vars.$spacing-sm,
+  'space-md': vars.$spacing-md,
+  'space-lg': vars.$spacing-lg,
+  'space-xxl': vars.$spacing-xxl
 );
 
 // height spacer

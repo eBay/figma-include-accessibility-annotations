@@ -64,6 +64,35 @@
     &::-webkit-scrollbar {
       display: none;
     }
+
+    .figma-dev-mode & {
+      height: 100%;
+      overflow-y: auto;
+    }
+  }
+}
+
+.dashboard-footer-spacer {
+  height: 190px;
+  width: 100%;
+}
+
+.cards {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+
+  > * {
+    min-width: 0;
+  }
+
+  > .section-separator,
+  > .dashboard-footer-spacer {
+    grid-column: 1 / -1;
+  }
+
+  .view-condensed & {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -72,22 +101,20 @@
   border-radius: 6px;
   display: inline-flex;
   flex-direction: column;
-  margin: 0 16px 16px 0;
   padding: vars.$spacing-sm;
-  width: 212px;
+  width: 100%;
 
-  .view-condensed & {
-    width: 234px;
-
-    &:nth-child(2n) {
-      margin-right: 0;
-    }
+  .figma-dev-mode & {
+    cursor: default;
   }
 
-  .view-full & {
-    &:nth-child(3n) {
-      margin-right: 0;
-    }
+  .clamp {
+    -webkit-box-orient: vertical;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   &.selected {
@@ -125,6 +152,10 @@
   padding: vars.$spacing-sm;
   position: absolute;
   width: 100%;
+
+  .figma-dev-mode & {
+    border-bottom: 1px solid var(--figma-color-border);
+  }
 }
 
 .container-modal {
@@ -182,6 +213,21 @@
   top: 0;
   width: 100vw;
   z-index: 200;
+}
+
+.completed-circle {
+  align-items: center;
+  border: 1px solid var(--figma-color-border-strong);
+  border-radius: 8px;
+  display: flex;
+  height: 14px;
+  justify-content: center;
+  margin-right: 10px;
+  width: 14px;
+
+  &--completed {
+    background-color: var(--figma-color-border-strong);
+  }
 }
 
 // Feedback
@@ -444,6 +490,7 @@ $selection-button-width: 72px;
   margin-top: 16px;
   position: relative;
 
+  /* stylelint-disable-next-line no-descending-specificity */
   & svg {
     position: absolute;
     top: 0;
@@ -518,6 +565,7 @@ $selection-button-width: 72px;
   flex-direction: row;
   padding-right: 4px;
 
+  /* stylelint-disable-next-line no-descending-specificity */
   svg {
     margin-right: 4px;
   }
@@ -538,7 +586,8 @@ $selection-button-width: 72px;
   margin: 16px 0;
   padding: 8px 0;
   width: fit-content;
-  
+
+  /* stylelint-disable-next-line no-descending-specificity */
   svg {
     margin-right: 4px;
   }

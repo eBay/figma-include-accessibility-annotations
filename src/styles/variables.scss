@@ -37,7 +37,7 @@ $footer-height-condensed: 48px;
 
   // layout
   // ///////////////////////////////////////////////////////////////////////////
-  --spacer-xxs: #{$spacing-xxs};
+  --spacing-xxs: #{$spacing-xxs};
   --spacing-xs: #{$spacing-xs};
   --spacing-sm: #{$spacing-sm};
   --spacing-md: #{$spacing-md};
@@ -65,5 +65,19 @@ $footer-height-condensed: 48px;
     --border-accent: #659eff;
     --border-attention: #ff5c5c;
     --border-warning: #592e13;
+  }
+
+  &.figma-dev-mode {
+    --background-accent: #00875f;
+    --background-attention: #e0103a;
+    --background-warning: #fff1c2;
+    --foreground-accent: #00875f;
+    --foreground-attention: #e0103a;
+    --foreground-muted: #767676;
+    --foreground-on-color: #fff;
+    --foreground-on-warning: rgb(0 0 0 / 90%);
+    --border-accent: #00875f;
+    --border-attention: #e0103a;
+    --border-warning: #fff1c2;
   }
 }

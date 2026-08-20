@@ -23,11 +23,12 @@ function NavLeft({ progress = null }) {
   // main app state
   const cnxt = React.useContext(Context);
   const { colorBlindnessView, leftNavVisible, pageType, stepsCompleted } = cnxt;
-  const { sendToFigma, updateState } = cnxt;
+  const { steps, stepsNative, sendToFigma, updateState } = cnxt;
 
   // flow type
   const isWeb = pageType === 'web';
   const routeData = isWeb ? routes : routesNative;
+  const stepsArray = isWeb ? steps : stepsNative;
   const Icon = isWeb ? SvgWeb : SvgMobile;
 
   const toggleLeftNav = () => {
@@ -87,7 +88,7 @@ function NavLeft({ progress = null }) {
       )}
 
       <ul>
-        {Object.keys(routeData).map((routeLabel) => {
+        {stepsArray.map((routeLabel) => {
           const { label, path, percent } = routeData[routeLabel];
           const isCompleted = stepsCompleted.includes(routeLabel);
 

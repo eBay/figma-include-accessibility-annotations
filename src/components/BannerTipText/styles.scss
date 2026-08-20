@@ -4,8 +4,12 @@
   color: var(--foreground-on-warning);
   font-size: 11px;
   line-height: 15px;
-  padding: var(--spacing-xs) var(--spacing-md) var(--spacing-xs) var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-lg) var(--spacing-xs) var(--spacing-xs);
   position: relative;
+
+  &.tip-opened {
+    padding: var(--spacing-xs) var(--spacing-lg) var(--spacing-xs) var(--spacing-xs);
+  }
 }
 
 .tip-label {
@@ -27,7 +31,11 @@
   position: absolute!important;
   right: 8px;
   top: 8px;
-  
+
+  & .svg-theme path {
+    fill: var(--foreground-on-warning);
+  }
+
   & .rotate-left-rev {
     transform: rotate(-180deg)
   }
@@ -42,7 +50,7 @@
   color: var(--foreground-on-warning);
   display: inline-block;
   font-size: 12px;
-  margin-left: 26px;
+  margin-left: 8px;
   margin-top: 8px;
   text-decoration: underline;
 }

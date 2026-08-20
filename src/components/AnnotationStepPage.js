@@ -6,18 +6,22 @@ import { analytics } from '@/constants';
 import BannerTip from '@/components/BannerTip';
 import Footer from '@/components/Footer';
 
+// icons
+import { SvgCheck } from '@/icons';
+
 // app state
 import Context from '@/context';
 
 function AnnotationStepPage({
-  children,
   bannerTipProps,
+  children,
+  completed = false,
   footerProps = {},
   title,
   routeName
 }) {
   const cnxt = React.useContext(Context);
-  const { currentUser, sessionId, isProd } = cnxt;
+  const { currentUser, isDevMode, sessionId, isProd } = cnxt;
 
   React.useEffect(() => {
     analytics.logEvent({
@@ -28,17 +32,58 @@ function AnnotationStepPage({
     });
   }, []);
 
+  const effectiveFooterProps = isDevMode
+    ? {
+        primaryAction: {
+          buttonText: 'Next',
+          completesStep: true
+        },
+        secondaryAction: {
+          buttonText: 'Previous',
+          isPrev: true
+        }
+      }
+    : footerProps;
+
   return (
-    <React.Fragment>
+    <div className="container-main">
       <main id="main" tabIndex="-1">
-        <BannerTip {...bannerTipProps} />
-        <div className="spacer2" />
-        <h2>{title}</h2>
-        <div className="spacer2" />
+        {isDevMode === false && (
+          <React.Fragment>
+            <BannerTip {...bannerTipProps} />
+            <div className="space-sm" />
+          </React.Fragment>
+        )}
+
+        <div className="flex-row-center">
+          {isDevMode && (
+            <div
+              className={`completed-circle${completed ? ' completed-circle--completed' : ''}`}
+            >
+              {completed && (
+                <div className="svg-theme_inverse">
+                  <SvgCheck size={12} />
+                </div>
+              )}
+            </div>
+          )}
+
+          <h2>{title}</h2>
+        </div>
+        <div className="space-sm" />
+
         {children}
+
+        {isDevMode && (
+          <React.Fragment>
+            <div className="space-md" />
+            <BannerTip {...bannerTipProps} />
+          </React.Fragment>
+        )}
       </main>
-      <Footer routeName={routeName} {...footerProps} />
-    </React.Fragment>
+
+      <Footer routeName={routeName} {...effectiveFooterProps} />
+    </div>
   );
 }
 
@@ -54,6 +99,7 @@ AnnotationStepPage.propTypes = {
   title: PropTypes.string.isRequired,
 
   // optional
+  completed: PropTypes.bool,
   footerProps: PropTypes.shape({
     primaryAction: PropTypes.object,
     secondaryAction: PropTypes.object

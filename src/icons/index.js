@@ -7,6 +7,7 @@ export { default as SvgCheckSm } from './SvgCheckSm';
 export { default as SvgChevronDown } from './SvgChevronDown';
 export { default as SvgChevronLeft } from './SvgChevronLeft';
 export { default as SvgClose } from './SvgClose';
+export { default as SvgCopy } from './SvgCopy';
 export { default as SvgDownCarrot } from './SvgDownCarrot';
 export { default as SvgEmojiCelebrate } from './SvgEmojiCelebrate';
 export { default as SvgEmojiMonocle } from './SvgEmojiMonocle';

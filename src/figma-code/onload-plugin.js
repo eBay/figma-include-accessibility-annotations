@@ -568,6 +568,64 @@ export const getPreviousScanData = async (pageSelected) => {
     // no frames are on this Figma page at all
   }
 
+  // In Dev Mode, surface annotations found on other Figma pages.
+  const otherPages = [];
+  if (figma.editorType === 'dev') {
+    await Promise.all(
+      figma.root.children.map(async (figmaPage) => {
+        await figmaPage.loadAsync();
+
+        if (figmaPage.id === currentPage.id) return;
+
+        const { children: pageLayers } = figmaPage;
+
+        await Promise.all(
+          pageLayers.map(async (layer) => {
+            const name = utils.nameBeforePipe(layer.name);
+
+            if (layer.type === 'SECTION') {
+              const { children: sectionLayers } = layer;
+
+              await Promise.all(
+                sectionLayers.map(async (sectionLayer) => {
+                  if (sectionLayer.name.includes(config.a11ySuffix)) {
+                    const sectionLayerName = utils.nameBeforePipe(
+                      sectionLayer.name
+                    );
+                    const sectionLayerData = await isA11yLayer(
+                      sectionLayers,
+                      sectionLayer,
+                      sectionLayerName
+                    );
+
+                    if (
+                      typeof sectionLayerData === 'object' &&
+                      sectionLayerData !== null
+                    ) {
+                      otherPages.push({
+                        ...sectionLayerData,
+                        parentName: figmaPage.name
+                      });
+                    }
+                  }
+                })
+              );
+            } else if (layer.name.includes(config.a11ySuffix)) {
+              const layerData = await isA11yLayer(pageLayers, layer, name);
+
+              if (typeof layerData === 'object' && layerData !== null) {
+                otherPages.push({
+                  ...layerData,
+                  parentName: figmaPage.name
+                });
+              }
+            }
+          })
+        );
+      })
+    );
+  }
+
   // session update
   const { getAsync, setAsync } = figma.clientStorage;
 
@@ -595,6 +653,7 @@ export const getPreviousScanData = async (pageSelected) => {
     data: {
       hasProgress,
       pages,
+      otherPages,
       currentUser,
       sessionId,
       newKeyV2: needsNewLayerKeyV2
