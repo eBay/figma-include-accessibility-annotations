@@ -308,7 +308,7 @@ const isA11yLayer = async (children, childNode, name) => {
             groupObj.name.startsWith('Group Area') &&
             groupObj.type === 'RECTANGLE'
           ) {
-            groups.push(groups.length);
+            groups.push(groupObj.id);
           }
         }
 

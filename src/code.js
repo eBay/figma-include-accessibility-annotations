@@ -393,10 +393,13 @@ figma.ui.onmessage = async (msg) => {
   if (type === 'zoom-to') {
     const { nodeIds, selectNodes } = msg;
 
-    // get nodes by id
-    const zoomNodes = await Promise.all(
+    // get nodes by id, ignoring ids no longer in the document
+    const nodesFound = await Promise.all(
       nodeIds.map((nodeId) => figma.getNodeByIdAsync(nodeId))
     );
+    const zoomNodes = nodesFound.filter((node) => node !== null);
+
+    if (zoomNodes.length === 0) return;
 
     // also select them in Figma document?
     if (selectNodes) {
