@@ -471,7 +471,10 @@ function ReadingOrder() {
         )}
 
         {isDevMode === true && isCompleted === false && (
-          <DevStepIncomplete label="reading order" />
+          <DevStepIncomplete
+            label="reading order"
+            text="No reading or focus order annotations were made. Check with the designer about completing this step."
+          />
         )}
 
         {isDevMode === true && isCompleted && (

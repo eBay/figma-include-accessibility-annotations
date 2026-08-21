@@ -371,7 +371,10 @@ function ResponsiveReflow() {
               </p>
             </React.Fragment>
           ) : (
-            <DevStepIncomplete label="responsive reflow" />
+            <DevStepIncomplete
+              label="responsive reflow"
+              text="The design has not been rendered in different screen sizes. Check with the designer about completing this step."
+            />
           ))}
       </React.Fragment>
     </AnnotationStepPage>

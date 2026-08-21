@@ -579,7 +579,10 @@ function Landmarks() {
         )}
 
         {isDevMode === true && isCompleted === false && (
-          <DevStepIncomplete label="landmarks" />
+          <DevStepIncomplete
+            label="landmarks"
+            text="The Landmarks annotation step was not completed. Check with the designer about completing it."
+          />
         )}
 
         {isDevMode === true && isCompleted && (
@@ -638,17 +641,7 @@ function Landmarks() {
 
             <HeadingStep text="Test" />
             <ul className="disc">
-              <li>
-                Review the{' '}
-                <a
-                  href="https://playbook.ebay.com/foundations/accessibility/include-plugin?tab=responsive-web&referrer=include#landmarks"
-                  target="_blank"
-                  rel="noreferrer"
-                  tabIndex="0"
-                >
-                  accessibility playbook
-                </a>
-              </li>
+              <li>Run an automated accessibility test</li>
               <li>Verify expected landmark behavior with a screenreader</li>
             </ul>
           </React.Fragment>

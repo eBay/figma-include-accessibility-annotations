@@ -419,25 +419,14 @@ function Contrast() {
 
               <HeadingStep text="Test" />
               <ul className="disc">
-                {pageType === 'web' ? (
-                  <li>
-                    Review the{' '}
-                    <a
-                      href="https://playbook.ebay.com/foundations/accessibility/include-plugin?tab=responsive-web&referrer=include#contrast"
-                      target="_blank"
-                      rel="noreferrer"
-                      tabIndex="0"
-                    >
-                      accessibility playbook
-                    </a>
-                  </li>
-                ) : (
-                  <li>Run an automated accessibility test.</li>
-                )}
+                <li>Run an automated accessibility test.</li>
               </ul>
             </React.Fragment>
           ) : (
-            <DevStepIncomplete label="color contrast" />
+            <DevStepIncomplete
+              label="color contrast"
+              text="The design has not been scanned for contrast issues. Check with the designer about completing this step."
+            />
           ))}
       </React.Fragment>
     </AnnotationStepPage>

@@ -270,7 +270,10 @@ function TouchTarget() {
         )}
 
         {isDevMode === true && isCompleted === false && (
-          <DevStepIncomplete label="touch targets" />
+          <DevStepIncomplete
+            label="touch targets"
+            text="The design has not been checked for touch targets. Check with the designer about completing this step."
+          />
         )}
 
         {isDevMode === true && isCompleted && (
@@ -325,21 +328,7 @@ function TouchTarget() {
 
             <HeadingStep text="Test" />
             <ul className="disc">
-              {pageType === 'web' ? (
-                <li>
-                  Review the{' '}
-                  <a
-                    href="https://playbook.ebay.com/foundations/accessibility/include-plugin?tab=responsive-web&referrer=include#touch-target"
-                    target="_blank"
-                    rel="noreferrer"
-                    tabIndex="0"
-                  >
-                    accessibility playbook
-                  </a>
-                </li>
-              ) : (
-                <li>Run an automated accessibility test.</li>
-              )}
+              <li>Run an automated accessibility test.</li>
             </ul>
           </React.Fragment>
         )}

@@ -159,7 +159,10 @@ function TextZoom() {
               )}
             </React.Fragment>
           ) : (
-            <DevStepIncomplete label="text resizing" />
+            <DevStepIncomplete
+              label="text resizing"
+              text="The design has not been rendered with a larger text. Check with the designer about completing this step."
+            />
           ))}
       </React.Fragment>
     </AnnotationStepPage>

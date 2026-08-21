@@ -342,7 +342,10 @@ function Headings() {
         )}
 
         {isDevMode === true && isCompleted === false && (
-          <DevStepIncomplete label="headings" />
+          <DevStepIncomplete
+            label="headings"
+            text="The Headings annotation step was not completed. Check with the designer about completing it."
+          />
         )}
 
         {isDevMode === true && isCompleted && (
@@ -352,9 +355,8 @@ function Headings() {
             {headingsAreSet && (
               <React.Fragment>
                 <p>
-                  {pageType === 'web'
-                    ? 'Use provided annotations to structure the heading levels on the page.'
-                    : 'Use provided annotations for headings.'}
+                  Use provided annotations to structure the heading levels on
+                  the page.
                 </p>
 
                 <div className="space-md" />
@@ -398,28 +400,12 @@ function Headings() {
             <div className="space-md" />
 
             <HeadingStep text="Test" />
-
-            {pageType === 'web' ? (
-              <ul className="disc">
-                <li>
-                  Review the{' '}
-                  <a
-                    href="https://playbook.ebay.com/foundations/accessibility/include-plugin?tab=responsive-web&referrer=include#headings"
-                    target="_blank"
-                    rel="noreferrer"
-                    tabIndex="0"
-                  >
-                    accessibility playbook
-                  </a>
-                </li>
-                <li>
-                  Verify expected heading navigation behavior with a
-                  screenreader
-                </li>
-              </ul>
-            ) : (
-              <p>Verify expected heading behavior with a screenreader.</p>
-            )}
+            <ul className="disc">
+              <li>Run an automated accessibility test</li>
+              <li>
+                Verify expected heading navigation behavior with a screenreader
+              </li>
+            </ul>
           </React.Fragment>
         )}
       </React.Fragment>

@@ -401,7 +401,10 @@ function AltText() {
         )}
 
         {isDevMode === true && isCompleted === false && (
-          <DevStepIncomplete label="alternative text" />
+          <DevStepIncomplete
+            label="alternative text"
+            text="The Alternative text annotation step was not completed. Check with the designer about completing it."
+          />
         )}
 
         {isDevMode === true && isCompleted && (
@@ -481,21 +484,7 @@ function AltText() {
 
             <HeadingStep text="Test" />
             <ul className="disc">
-              {pageType === 'web' ? (
-                <li>
-                  Review the{' '}
-                  <a
-                    href="https://playbook.ebay.com/foundations/accessibility/include-plugin?tab=responsive-web&referrer=include#alternative-text"
-                    target="_blank"
-                    rel="noreferrer"
-                    tabIndex="0"
-                  >
-                    accessibility playbook
-                  </a>
-                </li>
-              ) : (
-                <li>Run an automated accessibility test.</li>
-              )}
+              <li>Run an automated accessibility test.</li>
               <li>
                 Verify images with alternative text announce as expected in a
                 screenreader &amp; decorative images do not announce.

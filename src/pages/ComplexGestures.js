@@ -378,7 +378,10 @@ function ComplexGestures() {
         )}
 
         {isDevMode === true && gesturesCompleted === false && (
-          <DevStepIncomplete label="complex gestures" />
+          <DevStepIncomplete
+            label="complex gestures"
+            text="The Complex gestures annotation step was not completed. Check with the designer about completing it."
+          />
         )}
 
         {isDevMode === true && gesturesCompleted && (
@@ -402,18 +405,10 @@ function ComplexGestures() {
             <div className="space-md" />
 
             <HeadingStep text="Test" />
-            {pageType === 'web' ? (
-              <p>
-                Ensure that the user is able to get to all the functionality
-                using only clicks or taps.
-              </p>
-            ) : (
-              <p>
-                Ensure that where the interface supports complex gestures, that
-                a user is also able to get to all the functionality using one
-                finger and taps.
-              </p>
-            )}
+            <p>
+              Ensure that the user is able to get to all the functionality using
+              only clicks or taps.
+            </p>
           </React.Fragment>
         )}
       </React.Fragment>
