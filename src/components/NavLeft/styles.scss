@@ -26,7 +26,9 @@ nav {
     height: 40px;
     padding: 8px 16px;
     text-decoration: none;
-    transition: background-color 400ms ease, padding 600ms ease-in-out;
+    transition:
+      background-color 400ms ease,
+      padding 600ms ease-in-out;
 
     &.active {
       background-color: #c5e5fb;

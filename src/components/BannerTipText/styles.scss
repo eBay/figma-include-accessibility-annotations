@@ -4,11 +4,13 @@
   color: var(--foreground-on-warning);
   font-size: 11px;
   line-height: 15px;
-  padding: var(--spacing-xs) var(--spacing-lg) var(--spacing-xs) var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-lg) var(--spacing-xs)
+    var(--spacing-xs);
   position: relative;
 
   &.tip-opened {
-    padding: var(--spacing-xs) var(--spacing-lg) var(--spacing-xs) var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-lg) var(--spacing-xs)
+      var(--spacing-xs);
   }
 }
 
@@ -47,7 +49,7 @@
 
 .tip-toggle {
   cursor: pointer;
-  position: absolute!important;
+  position: absolute !important;
   right: 8px;
   top: 8px;
 
@@ -56,10 +58,10 @@
   }
 
   & .rotate-left-rev {
-    transform: rotate(-180deg)
+    transform: rotate(-180deg);
   }
 
   & .rotate-right-rev {
-    transform: rotate(0deg)
+    transform: rotate(0deg);
   }
 }
