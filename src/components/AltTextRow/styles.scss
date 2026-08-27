@@ -48,6 +48,64 @@
   width: 48px;
 }
 
+.alt-text-row-dev {
+  align-items: center;
+  column-gap: var(--spacing-xs);
+  display: flex;
+  margin-bottom: var(--spacing-sm);
+  padding: 4px;
+
+  .alt-text-number {
+    align-items: center;
+    background-color: #0400d4;
+    border-radius: 50%;
+    color: #fff;
+    display: flex;
+    flex-shrink: 0;
+    font-size: 11px;
+    font-weight: bold;
+    height: 20px;
+    justify-content: center;
+    min-width: 20px;
+    width: 20px;
+  }
+
+  .alt-text-dev-info {
+    font-size: 12px;
+    line-height: 16px;
+
+    strong {
+      font-weight: bold;
+    }
+  }
+
+  .alt-text-copy {
+    align-items: center;
+    display: flex;
+    justify-content: flex-end;
+    margin-left: auto;
+    min-width: 52px;
+  }
+
+  .alt-text-copy-btn {
+    align-items: center;
+    display: flex;
+    opacity: 0;
+    transition: opacity 150ms ease;
+  }
+
+  .alt-text-copied {
+    color: var(--figma-color-text-success);
+    font-size: 12px;
+    font-weight: bold;
+  }
+
+  &:hover .alt-text-copy-btn,
+  .alt-text-copy-btn:focus {
+    opacity: 1;
+  }
+}
+
 .input {
   flex-grow: 1;
 }

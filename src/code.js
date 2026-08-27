@@ -1,4 +1,4 @@
-import { utils } from '@/constants';
+import { PLUGIN_HEIGHT, PLUGIN_WIDTH_FULL, utils } from '@/constants';
 import {
   config,
   designerChecks,
@@ -13,7 +13,11 @@ import {
  **************************************************************************** */
 
 // https://www.figma.com/plugin-docs/api/properties/figma-showui/
-figma.showUI(__html__, { height: 518, width: 700, themeColors: true });
+figma.showUI(__html__, {
+  height: PLUGIN_HEIGHT,
+  width: PLUGIN_WIDTH_FULL,
+  themeColors: true
+});
 
 // de-select all layers on plugin open
 // turned this off per Anna's request
@@ -62,15 +66,15 @@ figma.once('run', async () => {
   // setting this global for "currentpagechange" listener
   currentPageID = currentPage.id;
 
+  // load user preferences first so isDevMode is set before UI route effects run
+  await onloadPlugin.getUserPreferences();
+
   // get any previous scanned data on current figma page
   // if found, populates dashboard on plugin load
   const { newPageSelected } = onloadPlugin.getPreviousScanData(pageSelected);
 
   // if dashboard data is found, don't listen for new page selection yet
   pageSelected = newPageSelected;
-
-  // load any user preferences
-  await onloadPlugin.getUserPreferences();
 });
 
 /* *****************************************************************************
@@ -389,10 +393,13 @@ figma.ui.onmessage = async (msg) => {
   if (type === 'zoom-to') {
     const { nodeIds, selectNodes } = msg;
 
-    // get nodes by id
-    const zoomNodes = await Promise.all(
+    // get nodes by id, ignoring ids no longer in the document
+    const nodesFound = await Promise.all(
       nodeIds.map((nodeId) => figma.getNodeByIdAsync(nodeId))
     );
+    const zoomNodes = nodesFound.filter((node) => node !== null);
+
+    if (zoomNodes.length === 0) return;
 
     // also select them in Figma document?
     if (selectNodes) {
@@ -423,15 +430,21 @@ figma.ui.onmessage = async (msg) => {
       nodeIds.map(async (nodeId) => {
         const nodeFound = await figma.getNodeByIdAsync(nodeId);
 
+        // prevent memory leak (if not found, do nothing)
+        if (nodeFound === null) {
+          // this might happen if step data is out of sync with location change
+          // that's okay, we don't need to show an error
+          return;
+        }
+
         // edge casing for one or the other
         const isFocusOrder = nodeFound.name.includes('Focus order');
         const isReadingOrder = nodeFound.name.includes('Reading order');
 
-        // prevent memory leak (if not found, do nothing)
-        if (nodeFound !== null) {
-          // if hard value passed (visible), use that, else toggle visible state
-          const changeVisibleTo =
-            visible !== null ? visible : !nodeFound.visible;
+        // if hard value passed (visible), use that, else toggle visible state
+        const changeVisibleTo = visible !== null ? visible : !nodeFound.visible;
+
+        utils.safeEdit('set visible', () => {
           nodeFound.visible = changeVisibleTo;
           nodeFound.expanded = false;
 
@@ -459,9 +472,7 @@ figma.ui.onmessage = async (msg) => {
               }
             }
           }
-        }
-
-        return null;
+        });
       })
     );
   }
@@ -563,8 +574,6 @@ figma.on('close', () => {
   // eslint-disable-next-line no-console
   console.log('plugin has closed');
 
-  // make all accessibility layers visible
-  // this is to case for when developers have read-only access,
-  // they can still see all the a11y layers
+  // make all accessibility layers visible (no-op when document is read-only)
   utils.showAllLayers(config.a11ySuffix);
 });

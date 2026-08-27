@@ -25,14 +25,15 @@ import ColorBlindness from '@/pages/ColorBlindness';
 import Settings from '@/pages/Settings';
 
 // components
-import { NavLeft } from '@/components';
-import ErrorBoundary from '@/components/ErrorBoundary';
+import { ErrorBoundary, NavLeft } from '@/components';
 
 // app context state
 import AppState from '@/context/AppState';
 
 // app state
 import Context from '@/context';
+
+import { LOADING_SLOW_HINT_MS, LOADING_TIMEOUT_MS } from '@/constants';
 
 // data
 import routes from '@/data/routes.json';
@@ -53,7 +54,8 @@ console.error = (message, ...args) => {
 
 function App() {
   const cnxt = React.useContext(Context);
-  const { alertMsg, condensedUI, isLoading, loadingMsg, leftNavVisible } = cnxt;
+  const { alertMsg, condensedUI, isDevMode, isLoading, loadingMsg } = cnxt;
+  const { leftNavVisible } = cnxt;
   const { colorBlindnessView, page, pageSelected, pageType } = cnxt;
   const { steps, stepsNative, stepsCompleted, stepsData, showDashboard } = cnxt;
   const { showPageChange, showSettings, sendToFigma, updateState } = cnxt;
@@ -77,7 +79,7 @@ function App() {
           'loadingMsg',
           'If you have a lot of pages with annotations, and high-res images, try moving them to their own Figma page to get it to load faster.'
         );
-      }, 15000);
+      }, LOADING_SLOW_HINT_MS);
 
       timer60 = setTimeout(() => {
         updateState(
@@ -85,7 +87,7 @@ function App() {
           "We couldn't load the annotations. If you have a lot of pages with annotations, and high-res images, try moving them to their own Figma page to get it to load faster."
         );
         setLoadingWarning(true);
-      }, 60000);
+      }, LOADING_TIMEOUT_MS);
     }
 
     return () => {
@@ -96,6 +98,11 @@ function App() {
 
   // listen for route change, adjust show/hide layers in Figma document
   React.useEffect(() => {
+    // if we are in dev mode, do not hide/show layers
+    if (isDevMode) {
+      return;
+    }
+
     // remove starting slash from path
     const currentPath = location.pathname.replace(/[/]/g, '');
     const stepsDataKeysArray = Object.keys(stepsData);
@@ -134,17 +141,20 @@ function App() {
       // show current layer for step
       sendToFigma('visible', { nodeIds: layerIdsToShow, visible: true });
     }
-  }, [location, stepsData]);
+  }, [isDevMode, location, stepsData]);
 
   // listen for steps completed change, adjust progress state
   React.useEffect(() => {
-    sendToFigma('steps-completed', {
-      stepsCompleted,
-      page,
-      pageType,
-      stepsNative,
-      steps
-    });
+    // designer checks can't be written to a read-only Dev Mode document
+    if (isDevMode === false) {
+      sendToFigma('steps-completed', {
+        stepsCompleted,
+        page,
+        pageType,
+        stepsNative,
+        steps
+      });
+    }
 
     const newPercentage = stepsCompleted.reduce((accum, step) => {
       const routeData = pageType === 'web' ? routes : routesNative;
@@ -153,7 +163,7 @@ function App() {
     }, 0);
 
     setPercentage(newPercentage);
-  }, [stepsCompleted]);
+  }, [isDevMode, stepsCompleted]);
 
   // listen for dashboard display
   React.useEffect(() => {
@@ -163,6 +173,14 @@ function App() {
       sendToFigma('page-selected', { isSelected: false });
     }
   }, [showDashboard]);
+
+  React.useEffect(() => {
+    document.documentElement.classList.toggle('figma-dev-mode', isDevMode);
+
+    return () => {
+      document.documentElement.classList.remove('figma-dev-mode');
+    };
+  }, [isDevMode]);
 
   React.useEffect(() => {
     // fix the "No <!doctype html> found." because of Figma + iFrame
@@ -213,41 +231,36 @@ function App() {
       <div className={`app-top ${leftNavClass}${cbViewerClass}`}>
         <NavLeft progress={progressPercent} />
 
-        <div className="flex-1">
-          <Routes>
-            {pageType === 'web' && (
-              <React.Fragment>
-                <Route path="/" element={<Landmarks />} />
-                <Route path="headings" element={<Headings />} />
-                <Route path="reading-order" element={<ReadingOrder />} />
-                <Route path="alt-text" element={<AltText />} />
-                <Route path="contrast" element={<Contrast />} />
-                <Route path="touch-target" element={<TouchTarget />} />
-                <Route path="text-zoom" element={<TextZoom />} />
-                <Route
-                  path="responsive-reflow"
-                  element={<ResponsiveReflow />}
-                />
-                <Route path="color-blindness" element={<ColorBlindness />} />
-                <Route path="complex-gestures" element={<ComplexGestures />} />
-              </React.Fragment>
-            )}
+        <Routes>
+          {pageType === 'web' && (
+            <React.Fragment>
+              <Route path="/" element={<Landmarks />} />
+              <Route path="headings" element={<Headings />} />
+              <Route path="reading-order" element={<ReadingOrder />} />
+              <Route path="alt-text" element={<AltText />} />
+              <Route path="contrast" element={<Contrast />} />
+              <Route path="touch-target" element={<TouchTarget />} />
+              <Route path="text-zoom" element={<TextZoom />} />
+              <Route path="responsive-reflow" element={<ResponsiveReflow />} />
+              <Route path="color-blindness" element={<ColorBlindness />} />
+              <Route path="complex-gestures" element={<ComplexGestures />} />
+            </React.Fragment>
+          )}
 
-            {pageType === 'native' && (
-              <React.Fragment>
-                <Route path="/" element={<Headings />} />
-                <Route path="focus-grouping" element={<FocusGrouping />} />
-                <Route path="reading-order" element={<ReadingOrder />} />
-                <Route path="alt-text" element={<AltText />} />
-                <Route path="touch-target" element={<TouchTarget />} />
-                <Route path="contrast" element={<Contrast />} />
-                <Route path="text-zoom" element={<TextZoom />} />
-                <Route path="complex-gestures" element={<ComplexGestures />} />
-                <Route path="color-blindness" element={<ColorBlindness />} />
-              </React.Fragment>
-            )}
-          </Routes>
-        </div>
+          {pageType === 'native' && (
+            <React.Fragment>
+              <Route path="/" element={<Headings />} />
+              <Route path="focus-grouping" element={<FocusGrouping />} />
+              <Route path="reading-order" element={<ReadingOrder />} />
+              <Route path="alt-text" element={<AltText />} />
+              <Route path="touch-target" element={<TouchTarget />} />
+              <Route path="contrast" element={<Contrast />} />
+              <Route path="text-zoom" element={<TextZoom />} />
+              <Route path="complex-gestures" element={<ComplexGestures />} />
+              <Route path="color-blindness" element={<ColorBlindness />} />
+            </React.Fragment>
+          )}
+        </Routes>
       </div>
     </div>
   );

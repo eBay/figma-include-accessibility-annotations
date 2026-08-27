@@ -205,6 +205,49 @@ const sanitizeName = (name) => {
 };
 
 /**
+ * Log an error with optional stack details
+ *
+ * @param {string} msg - error message
+ * @param {Error|null} error - optional Error object
+ *
+ * @return null
+ */
+export const logError = (msg, error = null) => {
+  /* eslint-disable no-console */
+  console.error(msg);
+
+  if (error !== null) {
+    console.error(error.name);
+    console.error(error.message);
+    console.error(error.stack);
+  }
+  /* eslint-enable no-console */
+};
+
+/**
+ * Run a document mutation, skipping silently when the file is read-only.
+ *
+ * Dev Mode and view-only files reject document writes; editorType is stale
+ * during a mode switch, so the try/catch is the only reliable guard.
+ *
+ * @param {string} label - context for console logging on failure
+ * @param {Function} mutate - callback that performs the document write
+ *
+ * @return {boolean} true if the mutation ran, false if skipped or failed
+ */
+const safeEdit = (label, mutate) => {
+  if (figma.editorType === 'dev') return false;
+
+  try {
+    mutate();
+    return true;
+  } catch (error) {
+    logError(`${label} skipped, document is read-only`, error);
+    return false;
+  }
+};
+
+/**
  * Find all A11y layers and make the child layers visible
  *
  * this is used when:
@@ -216,30 +259,32 @@ const sanitizeName = (name) => {
  * @return null
  */
 const showAllLayers = (a11ySuffix) => {
-  // get current page user is on
-  const { currentPage } = figma;
-  const { children } = currentPage;
+  safeEdit('showAllLayers', () => {
+    // get current page user is on
+    const { currentPage } = figma;
+    const { children } = currentPage;
 
-  // check if this page has children layers
-  if (children.length > 0) {
-    // loop through frames, find accessibility layers
-    children.forEach((node) => {
-      // is accessibility layer?
-      if (node.name.includes(a11ySuffix)) {
-        const { children: a11ySteps } = node;
-        // show main a11y layer
-        node.visible = true;
+    // check if this page has children layers
+    if (children.length > 0) {
+      // loop through frames, find accessibility layers
+      children.forEach((node) => {
+        // is accessibility layer?
+        if (node.name.includes(a11ySuffix)) {
+          const { children: a11ySteps } = node;
+          // show main a11y layer
+          node.visible = true;
 
-        // do we have a11y step layers?
-        if (a11ySteps.length > 0) {
-          // loop through step layers
-          a11ySteps.forEach((childNode) => {
-            childNode.visible = true;
-          });
+          // do we have a11y step layers?
+          if (a11ySteps.length > 0) {
+            // loop through step layers
+            a11ySteps.forEach((childNode) => {
+              childNode.visible = true;
+            });
+          }
         }
-      }
-    });
-  }
+      });
+    }
+  });
 };
 
 /**
@@ -272,6 +317,7 @@ export const scrollToBottomOfAnnotationStep = () => {
  */
 const getBase64FromHash = async (imagesScanned, imagesManual, page) => {
   const { currentPage } = figma;
+  const isDevMode = figma.editorType === 'dev';
 
   // get a11y annotation page
   const originalPage = await figma.getNodeByIdAsync(page.id);
@@ -299,7 +345,7 @@ const getBase64FromHash = async (imagesScanned, imagesManual, page) => {
   });
 
   // hide if exists
-  if (a11yPage !== null) {
+  if (a11yPage !== null && isDevMode === false) {
     a11yPage.visible = false;
   }
 
@@ -363,7 +409,7 @@ const getBase64FromHash = async (imagesScanned, imagesManual, page) => {
   );
 
   // make visible again, if exists
-  if (a11yPage !== null) {
+  if (a11yPage !== null && isDevMode === false) {
     a11yPage.visible = true;
   }
 
@@ -381,8 +427,10 @@ export default {
   getBase64FromHash,
   hasNoImageFills,
   isEnterKey,
+  logError,
   nameBeforePipe,
   sanitizeName,
+  safeEdit,
   showAllLayers,
   sleep,
   scrollToBottomOfAnnotationStep

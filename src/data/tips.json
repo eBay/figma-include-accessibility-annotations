@@ -134,5 +134,141 @@
     "Complex gestures": {
       "text": "When actions can be performed with a <em>gesture</em> ensure there is an alternate and visible way to perform this using only clicks or taps."
     }
+  },
+  "native-dev": {
+    "Headings": {
+      "text": "Headings help provide a hierarchy for the screen's content, and allow people using a screen reader to quickly jump between sections.",
+      "link": {
+        "text": "More about Headings",
+        "url": "https://playbook.ebay.com/foundations/accessibility/include-plugin?tab=native-mobile&referrer=include#headings"
+      }
+    },
+    "Focus grouping": {
+      "text": "Grouping can improve usability of accessibility services, e.g. it reduces the number of swipes to move through content with a screen reader. If a group contains multiple actions, align with design on the preferred approach, such as 'custom actions'.",
+      "link": {
+        "text": "More about Focus grouping",
+        "url": "https://playbook.ebay.com/foundations/accessibility/include-plugin?tab=native-mobile&referrer=include#focus-grouping"
+      }
+    },
+    "Reading order": {
+      "text": "When using a mobile screen reader, the reading order and focus order typically align, including when using an external keyboard. Check TalkBack and VoiceOver support for correct key combinations.<br/><br/>Focus order annotations are useful for showing how the app supports a keyboard without a screen reader running. Android enables this support without a system setting change. For iOS, enable Full Keyboard Access in Accessibility settings.",
+      "link": {
+        "text": "More about Reading & focus order",
+        "url": "https://playbook.ebay.com/foundations/accessibility/include-plugin?tab=native-mobile&referrer=include#reading--focus-order"
+      }
+    },
+    "Alt text": {
+      "text": "Alternative text is announced by screen readers and describes the purpose, function, or content of an image.<br/><br/>Images that convey meaning are <em>informative</em> and require alt text. Images that do not convey meaning, or are non-functional and beside text that conveys their meaning are considered <em>decorative.</em>",
+      "link": {
+        "text": "More about Alternative text",
+        "url": "https://playbook.ebay.com/foundations/accessibility/include-plugin?tab=native-mobile&referrer=include#alternative-text"
+      }
+    },
+    "Contrast": {
+      "text": "Text must have a contrast ratio of 4.5:1. Large text must have a contrast ratio of 3:1. Interactive and meaningful graphical elements must have a contrast ratio of 3:1.",
+      "link": {
+        "text": "More about Contrast",
+        "url": "https://playbook.ebay.com/foundations/accessibility/include-plugin?tab=native-mobile&referrer=include#contrast"
+      }
+    },
+    "Touch target": {
+      "text": "WCAG SC 2.5.8 Target Size defines the minimum area as 24px by 24px. Some teams prefer to use 44px x 44px for iOS and 48px x 48px for Android.<br /><br />There are exceptions for undersize targets with sufficient spacing, links within sentences or blocks of text, or targets like pins on a map, or dots on a chart.",
+      "link": {
+        "text": "More about Touch target",
+        "url": "https://playbook.ebay.com/foundations/accessibility/include-plugin?tab=native-mobile&referrer=include#touch-target"
+      }
+    },
+    "Text zoom": {
+      "text": "Apps need to support enlarged text sizes up to 200% which users can set in Android or iOS display or accessibility settings. In practice, it is common to cap or limit resizing of some elements. Discuss with design where needed.<br /><br />This step aligns with WCAG SC 1.4.4.",
+      "link": {
+        "text": "More about Text resizing",
+        "url": "https://playbook.ebay.com/foundations/accessibility/include-plugin?tab=native-mobile&referrer=include#text-resizing"
+      }
+    },
+    "Complex gestures": {
+      "text": "When actions can be performed with a <em>gesture</em>, ensure there is at least one alternate way to perform this using one finger and taps. As this requirement supports sighted users with limited dexterity but who may not be using assistive technology, the alternate method must be visible. Custom actions can also support assistive technology users.",
+      "link": {
+        "text": "More about Complex gestures",
+        "url": "https://playbook.ebay.com/foundations/accessibility/include-plugin?tab=native-mobile&referrer=include#complex-gestures"
+      }
+    },
+    "Color blindness": {
+      "text": "People may perceive colors differently, and may not be able to differentiate between some or all colors. Ensure a design does not rely only on color to convey meaning.",
+      "link": {
+        "text": "More about Color",
+        "url": "https://playbook.ebay.com/foundations/accessibility/include-plugin?tab=native-mobile&referrer=include#color"
+      }
+    }
+  },
+  "web-dev": {
+    "Landmarks": {
+      "text": "HTML5 elements such as &lt;main&gt;, &lt;nav&gt;, &lt;footer&gt; identify landmarks - regions of a page which help screen reader users navigate and understand layout.<br/><br/>When there are multiple landmarks of the same type they should be named using aria-label. Names must not include words like 'landmark', 'region' or 'navigation' as screen readers already announce the type.",
+      "link": {
+        "text": "More about Landmarks",
+        "url": "https://playbook.ebay.com/foundations/accessibility/include-plugin?tab=responsive-web&referrer=include#landmarks"
+      }
+    },
+    "Headings": {
+      "text": "Headings provide a hierarchy for the screen's content, and allow people using a screen reader to quickly jump between sections. Use only one H1 per page, avoid skipping heading levels, and make them succinct.",
+      "link": {
+        "text": "More about Headings",
+        "url": "https://playbook.ebay.com/foundations/accessibility/include-plugin?tab=responsive-web&referrer=include#headings"
+      }
+    },
+    "Reading order": {
+      "text": "<strong>Reading order</strong> refers to all content in the DOM. It's the order a screen reader announces content when using \"read all\" or line-by-line commands.<br /><br /><strong>Focus order</strong> applies only to interactive elements, and follows the order in which they receive keyboard focus (e.g., using Tab or arrow keys).<br /><br />These orders usually align. Focus order annotations indicate order between and within interactive elements, and can indicate where the focus order diverges from reading order.<br /><br />Always test both—regardless of whether annotations are provided.",
+      "link": {
+        "text": "More about Reading & focus order",
+        "url": "https://playbook.ebay.com/foundations/accessibility/include-plugin?tab=responsive-web&referrer=include#reading--focus-order"
+      }
+    },
+    "Alt text": {
+      "text": "Alternative text is announced by screen readers and describes the purpose, function, or content of an image.<br/><br/>Images that convey meaning are <em>informative</em> and require alt text. Images that do not convey meaning, or are non-functional and beside text that conveys their meaning are considered <em>decorative.</em>",
+      "link": {
+        "text": "More about Alternative text",
+        "url": "https://playbook.ebay.com/foundations/accessibility/include-plugin?tab=responsive-web&referrer=include#alternative-text"
+      }
+    },
+    "Contrast": {
+      "text": "Text must have a contrast ratio of 4.5:1. Large text must have a contrast ratio of 3:1. Interactive and meaningful graphical elements must have a contrast ratio of 3:1.<br/><br/>Contrast minimums apply to hover and visited states, but interactive elements in a disabled state are exempt.",
+      "link": {
+        "text": "More about Contrast",
+        "url": "https://playbook.ebay.com/foundations/accessibility/include-plugin?tab=responsive-web&referrer=include#contrast"
+      }
+    },
+    "Touch target": {
+      "text": "WCAG SC 2.5.8 Target Size defines the minimum area as 24px by 24px, but allows exceptions for undersize targets with sufficient spacing, links within sentences or blocks of text, or targets like pins on a map, or dots on a chart.",
+      "link": {
+        "text": "More about Touch target",
+        "url": "https://playbook.ebay.com/foundations/accessibility/include-plugin?tab=responsive-web&referrer=include#touch-target"
+      }
+    },
+    "Text zoom": {
+      "text": "Users must be able to resize text at least 200% without loss of information. This applies to all breakpoints.<br/><br/>Users can change text size in browser settings. This change makes text larger but will not affect some non-text elements. Alternatively, users can zoom the browser to 200% which will resize other elements.<br/><br/>Common failures for this requirement include text becoming clipped, overlapping, or extending beyond containers to the point where meaning is lost.<br/><br/>This step aligns with WCAG SC 1.4.4.",
+      "link": {
+        "text": "More about Text resizing",
+        "url": "https://playbook.ebay.com/foundations/accessibility/include-plugin?tab=responsive-web&referrer=include#text-resizing"
+      }
+    },
+    "Responsive reflow": {
+      "text": "Web content needs to reflow, without horizontal scrolling, at a screen width of 320px. Text does not need to resize to meet this, but if it does, no information must be lost. This step aligns with WCAG SC 1.4.10 Reflow.",
+      "link": {
+        "text": "More about Responsive reflow",
+        "url": "https://playbook.ebay.com/foundations/accessibility/include-plugin?tab=responsive-web&referrer=include#responsive-reflow"
+      }
+    },
+    "Interactive elements": {
+      "text": "Naming interactive elements determines what the screen reader is going to read out. Accessibility for each interactive element from the storybook is already coded in the control."
+    },
+    "Color blindness": {
+      "text": "People may perceive colors differently, and may not be able to differentiate between some or all colors. Ensure a design does not rely only on color to convey meaning.",
+      "link": {
+        "text": "More about Color",
+        "url": "https://playbook.ebay.com/foundations/accessibility/include-plugin?tab=responsive-web&referrer=include#color"
+      }
+    },
+    "Complex gestures": {
+      "text": "When actions can be performed with a <em>gesture</em> ensure there is an alternative and visible way to perform this using only clicks or taps."
+    }
   }
 }

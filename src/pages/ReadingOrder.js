@@ -5,6 +5,7 @@ import { utils } from '@/constants';
 // components
 import {
   AnnotationStepPage,
+  DevStepIncomplete,
   Dropdown,
   HeadingStep,
   Toggle
@@ -29,12 +30,25 @@ const focusTypesArrayDropdown = focusTypesArray.map((id) => ({
 function ReadingOrder() {
   // main app state
   const cnxt = React.useContext(Context);
-  const { focusOrders, page, pageType, stepsCompleted, sendToFigma } = cnxt;
-  const { updateState } = cnxt;
+  const {
+    isDevMode,
+    focusOrders,
+    page,
+    pageType,
+    stepsCompleted,
+    sendToFigma
+  } = cnxt;
+  const { stepsData, updateState, zoomTo } = cnxt;
 
   // ui state
   const focusOrdersKeys = Object.keys(focusOrders);
   const focusOrdersAreSet = focusOrdersKeys.length !== 0;
+
+  // dev mode: distinguish reading order vs focus order completion
+  // (focus-only implement copy only applies to the web flow)
+  const hasReadingOrder = Boolean(stepsData?.['Reading order']);
+  const focusOrderOnly =
+    pageType === 'web' && focusOrdersAreSet && !hasReadingOrder;
 
   // state defaults
   const routeName = 'Reading order';
@@ -161,13 +175,31 @@ function ReadingOrder() {
   };
 
   const onDoneWithReadingOrder = () => {
+    if (isDevMode) return;
+
     // all is good to go
     sendToFigma('confirm-reading-order', { page, pageType });
   };
 
   const getPrimaryAction = () => {
-    if (isCompleted) {
-      return { completesStep: true, onClick: onDoneWithReadingOrder };
+    if (isCompleted || isDevMode) {
+      return {
+        ...(isDevMode && { buttonText: 'Next' }),
+        completesStep: true,
+        onClick: onDoneWithReadingOrder
+      };
+    }
+
+    return null;
+  };
+
+  const getSecondaryAction = () => {
+    if (isDevMode) {
+      return {
+        buttonText: 'Prev',
+        onClick: () => null,
+        isPrev: true
+      };
     }
 
     return null;
@@ -250,184 +282,346 @@ function ReadingOrder() {
   return (
     <AnnotationStepPage
       title="Reading order"
+      completed={isCompleted}
       routeName={routeName}
       bannerTipProps={{ pageType, routeName }}
       footerProps={{
         primaryAction: getPrimaryAction(),
-        secondaryAction: null
+        secondaryAction: getSecondaryAction()
       }}
     >
       <React.Fragment>
-        {focusOrdersAreSet && (
-          <div>
-            <DragDropContext onDragEnd={handleDragEnd}>
-              <Droppable droppableId="tabs">
-                {(p1) => (
-                  <div {...p1.droppableProps} ref={p1.innerRef}>
-                    {Object.keys(focusOrders).map((key, index) => {
-                      const { id, number, type } = focusOrders[key];
-                      const isOpened = openedDropdown === id;
-                      const allowDelete = getChildCount(number) === 0;
+        {isDevMode === false && (
+          <React.Fragment>
+            {focusOrdersAreSet && (
+              <div>
+                <DragDropContext onDragEnd={handleDragEnd}>
+                  <Droppable droppableId="tabs">
+                    {(p1) => (
+                      <div {...p1.droppableProps} ref={p1.innerRef}>
+                        {Object.keys(focusOrders).map((key, index) => {
+                          const { id, number, type } = focusOrders[key];
+                          const isOpened = openedDropdown === id;
+                          const allowDelete = getChildCount(number) === 0;
 
-                      return (
-                        <Draggable key={id} draggableId={id} index={index}>
-                          {(p2) => (
-                            <div
-                              ref={p2.innerRef}
-                              {...p2.draggableProps}
-                              {...p2.dragHandleProps}
-                              className="focus-order-line"
-                              data-number={number}
-                              data-type={type}
-                            >
-                              <div className="flex-row-center">
-                                <div className="drag-handle flex-row-center">
-                                  <div className="spacer1w" />
-                                  <SvgReorder />
-                                  <div className="spacer1w" />
-
-                                  <p>{number}</p>
-                                </div>
-
-                                <Dropdown
-                                  align="left"
-                                  data={focusTypesArrayDropdown}
-                                  index={id}
-                                  isOpened={isOpened}
-                                  onOpen={setOpenedDropdown}
-                                  onSelect={onTypeUpdate}
-                                  type={type}
-                                />
-                              </div>
-
-                              {allowDelete && (
+                          return (
+                            <Draggable key={id} draggableId={id} index={index}>
+                              {(p2) => (
                                 <div
-                                  aria-label="remove focus order"
-                                  className="btn-remove"
-                                  onClick={() => onRemoveFocusOrder(id)}
-                                  onKeyDown={(e) => {
-                                    if (utils.isEnterKey(e.key))
-                                      onRemoveFocusOrder(id);
-                                  }}
-                                  role="button"
-                                  tabIndex="0"
+                                  ref={p2.innerRef}
+                                  {...p2.draggableProps}
+                                  {...p2.dragHandleProps}
+                                  className="focus-order-line"
+                                  data-number={number}
+                                  data-type={type}
                                 >
-                                  <div className="remove-dash" />
+                                  <div className="flex-row-center">
+                                    <div className="drag-handle flex-row-center">
+                                      <div className="spacer1w" />
+                                      <SvgReorder />
+                                      <div className="spacer1w" />
+
+                                      <p>{number}</p>
+                                    </div>
+
+                                    <Dropdown
+                                      align="left"
+                                      data={focusTypesArrayDropdown}
+                                      index={id}
+                                      isOpened={isOpened}
+                                      onOpen={setOpenedDropdown}
+                                      onSelect={onTypeUpdate}
+                                      type={type}
+                                    />
+                                  </div>
+
+                                  {allowDelete && (
+                                    <div
+                                      aria-label="remove focus order"
+                                      className="btn-remove"
+                                      onClick={() => onRemoveFocusOrder(id)}
+                                      onKeyDown={(e) => {
+                                        if (utils.isEnterKey(e.key))
+                                          onRemoveFocusOrder(id);
+                                      }}
+                                      role="button"
+                                      tabIndex="0"
+                                    >
+                                      <div className="remove-dash" />
+                                    </div>
+                                  )}
                                 </div>
                               )}
-                            </div>
-                          )}
-                        </Draggable>
-                      );
-                    })}
+                            </Draggable>
+                          );
+                        })}
 
-                    {p1.placeholder}
-                  </div>
-                )}
-              </Droppable>
-            </DragDropContext>
-            <div className="spacer2" />
-          </div>
-        )}
-
-        <HeadingStep number={1} text="Add arrows in chosen direction" />
-
-        <div className="button-group">
-          {Object.values(readingOrderTypes).map((readingOrderType) => {
-            const onClick = () => {
-              onAddArrow(readingOrderType.id);
-            };
-
-            return (
-              <div
-                key={readingOrderType.id}
-                className="container-selection-button small"
-              >
-                <div
-                  aria-label={`Add ${readingOrderType.label} arrow`}
-                  role="button"
-                  onClick={onClick}
-                  onKeyDown={({ key }) => {
-                    if (utils.isEnterKey(key)) onClick();
-                  }}
-                  className="selection-button small"
-                  tabIndex="0"
-                >
-                  {readingOrderType.icon}
-                </div>
+                        {p1.placeholder}
+                      </div>
+                    )}
+                  </Droppable>
+                </DragDropContext>
+                <div className="spacer2" />
               </div>
-            );
-          })}
-        </div>
+            )}
 
-        {hasArrows === true && (
-          <React.Fragment>
-            <div className="spacer2" />
-
-            <div className="flex-row align-start">
-              <div className="circle-success svg-theme-success mr1">
-                <SvgCheck size={14} />
-              </div>
-              <p>Arrow placed in Figma</p>
-            </div>
-
-            <div className="spacer2" />
-
-            <HeadingStep
-              number={2}
-              text="Position arrows to reflect the desired order of consuming content in the page/section you are designing"
-            />
-          </React.Fragment>
-        )}
-
-        {hasArrows === false && <div className="spacer2" />}
-
-        <div className="divider" />
-        <div className="spacer3" />
-
-        <Toggle
-          checked={hasKeyboardFocus}
-          label="Keyboard focus order"
-          onChange={(val) => {
-            setKeyboardFocus(val);
-          }}
-        />
-
-        {hasKeyboardFocus && (
-          <React.Fragment>
-            <div className="spacer2" />
-
-            <HeadingStep
-              number={1}
-              text="Mark focus order where different from the reading order."
-            />
+            <HeadingStep number={1} text="Add arrows in chosen direction" />
 
             <div className="button-group">
-              {Object.values(focusOrderTypes).map((item) => {
+              {Object.values(readingOrderTypes).map((readingOrderType) => {
                 const onClick = () => {
-                  onAddFocusOrder(item.id);
+                  onAddArrow(readingOrderType.id);
                 };
 
                 return (
-                  <div key={item.id} className="container-selection-button">
+                  <div
+                    key={readingOrderType.id}
+                    className="container-selection-button small"
+                  >
                     <div
-                      aria-label="Add focus order"
+                      aria-label={`Add ${readingOrderType.label} arrow`}
                       role="button"
                       onClick={onClick}
                       onKeyDown={({ key }) => {
                         if (utils.isEnterKey(key)) onClick();
                       }}
-                      className="selection-button"
+                      className="selection-button small"
                       tabIndex="0"
                     >
-                      {item.icon}
+                      {readingOrderType.icon}
                     </div>
-
-                    <div className="selection-button-label">{item.label}</div>
                   </div>
                 );
               })}
             </div>
+
+            {hasArrows === true && (
+              <React.Fragment>
+                <div className="spacer2" />
+
+                <div className="flex-row align-start">
+                  <div className="circle-success svg-theme-success mr1">
+                    <SvgCheck size={14} />
+                  </div>
+                  <p>Arrow placed in Figma</p>
+                </div>
+
+                <div className="spacer2" />
+
+                <HeadingStep
+                  number={2}
+                  text="Position arrows to reflect the desired order of consuming content in the page/section you are designing"
+                />
+              </React.Fragment>
+            )}
+
+            {hasArrows === false && <div className="spacer2" />}
+
+            <div className="divider" />
+            <div className="spacer3" />
+
+            <Toggle
+              checked={hasKeyboardFocus}
+              label="Keyboard focus order"
+              onChange={(val) => {
+                setKeyboardFocus(val);
+              }}
+            />
+
+            {hasKeyboardFocus && (
+              <React.Fragment>
+                <div className="spacer2" />
+
+                <HeadingStep
+                  number={1}
+                  text="Mark focus order where different from the reading order."
+                />
+
+                <div className="button-group">
+                  {Object.values(focusOrderTypes).map((item) => {
+                    const onClick = () => {
+                      onAddFocusOrder(item.id);
+                    };
+
+                    return (
+                      <div key={item.id} className="container-selection-button">
+                        <div
+                          aria-label="Add focus order"
+                          role="button"
+                          onClick={onClick}
+                          onKeyDown={({ key }) => {
+                            if (utils.isEnterKey(key)) onClick();
+                          }}
+                          className="selection-button"
+                          tabIndex="0"
+                        >
+                          {item.icon}
+                        </div>
+
+                        <div className="selection-button-label">
+                          {item.label}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </React.Fragment>
+            )}
+          </React.Fragment>
+        )}
+
+        {isDevMode === true && isCompleted === false && (
+          <DevStepIncomplete
+            label="reading order"
+            text="No reading or focus order annotations were made. Check with the designer about completing this step."
+          />
+        )}
+
+        {isDevMode === true && isCompleted && (
+          <React.Fragment>
+            <HeadingStep text="Implement" />
+
+            {focusOrderOnly ? (
+              <ul className="disc">
+                <li>
+                  Implement the focus order as indicated by the arrows. Make
+                  sure all interactive elements can receive focus.
+                </li>
+                <li>
+                  Ensure both reading and focus order are logical, especially
+                  where they diverge.
+                </li>
+                <li>
+                  Discuss with the designer if you believe order should be
+                  different.
+                </li>
+              </ul>
+            ) : (
+              <ul className="disc">
+                <li>
+                  Implement the reading order as indicated by the arrows or
+                  discuss with the designer if you believe the order should be
+                  different.
+                </li>
+                <li>
+                  Make sure focus order is logical and all interactive elements
+                  can receive focus.
+                </li>
+              </ul>
+            )}
+
+            {focusOrdersAreSet && (
+              <React.Fragment>
+                <div className="space-md" />
+
+                {Object.keys(focusOrders).map((key) => {
+                  const { id, number, type } = focusOrders[key];
+                  const { label } = focusOrderTypes[type];
+
+                  return (
+                    <div
+                      key={id}
+                      aria-label="goto focus order"
+                      className="cursor-pointer border-radius-2 row-reading-order-dev flex-row-center"
+                      onClick={() => zoomTo([id], true)}
+                      onKeyDown={(e) => {
+                        if (utils.isEnterKey(e.key)) zoomTo([id], true);
+                      }}
+                      role="button"
+                      tabIndex="0"
+                    >
+                      <strong className="reading-order-number">{number}</strong>
+                      <div className="space-smw" />
+                      <div className="reading-order-type">{label}</div>
+                    </div>
+                  );
+                })}
+              </React.Fragment>
+            )}
+
+            {focusOrdersAreSet === false && hasReadingOrder === false && (
+              <React.Fragment>
+                <div className="space-sm" />
+                <p className="muted">Reading order not set</p>
+              </React.Fragment>
+            )}
+
+            <div className="space-md" />
+            <div className="divider" />
+            <div className="space-md" />
+
+            <HeadingStep text="Test" />
+
+            {pageType === 'web' ? (
+              <React.Fragment>
+                <p>
+                  <strong>Verify reading order:</strong>
+                </p>
+                <ul className="disc">
+                  <li>
+                    Using the screen reader ‘read all’ command, or line-by-line
+                    navigation, ensure the order of information makes sense or
+                    matches the visual order/layout.
+                  </li>
+                </ul>
+
+                <div className="space-sm" />
+
+                <p>
+                  <strong>Verify focus order:</strong>
+                </p>
+                <ul className="disc">
+                  <li>
+                    Using Tab key, ensure interactive elements receive focus in
+                    a logical order.
+                  </li>
+                  <li>
+                    Within interactive elements ensure focus follows a logical
+                    order. E.g. when using the arrow keys.
+                  </li>
+                  <li>
+                    Validate non-interactive elements do not receive focus.
+                  </li>
+                </ul>
+              </React.Fragment>
+            ) : (
+              <React.Fragment>
+                <p>
+                  <strong>With screen reader:</strong>
+                </p>
+                <ul className="disc">
+                  <li>
+                    Using the ‘read all’ gesture, or line-by-line swiping
+                    navigation, ensure the order of information makes sense or
+                    matches the visual order/layout.
+                  </li>
+                  <li>Ensure all actions can be performed.</li>
+                  <li>
+                    Repeat using external keyboard and relevant screen reader
+                    keyboard commands.
+                  </li>
+                </ul>
+
+                <div className="space-sm" />
+
+                <p>
+                  <strong>
+                    With external keyboard but without screen reader:
+                  </strong>
+                </p>
+                <ul className="disc">
+                  <li>
+                    On Android: validate Tab key and directional navigation is
+                    logical, and actions can be performed.
+                  </li>
+                  <li>
+                    On iOS: enable Full Keyboard Access and then validate Tab
+                    key and directional navigation is logical, and actions can
+                    be performed.
+                  </li>
+                </ul>
+              </React.Fragment>
+            )}
           </React.Fragment>
         )}
       </React.Fragment>

@@ -1,8 +1,13 @@
 import * as React from 'react';
-import { contrast, utils } from '@/constants';
+import { contrast, getPluginMessage, utils } from '@/constants';
 
 // components
-import { AnnotationStepPage, HeadingStep, LoadingSpinner } from '@/components';
+import {
+  AnnotationStepPage,
+  DevStepIncomplete,
+  HeadingStep,
+  LoadingSpinner
+} from '@/components';
 import ColorBlindnessFilter from '@/components/ColorBlindnessFilter';
 
 // icons
@@ -19,7 +24,7 @@ const colorBlindnessTypesArray = Object.keys(colorBlindnessTypesObj);
 function ColorBlindness() {
   // main app state
   const cnxt = React.useContext(Context);
-  const { colorBlindnessView, page, pageType } = cnxt;
+  const { colorBlindnessView, isDevMode, page, pageType } = cnxt;
   const { sendToFigma, stepsCompleted, updateState } = cnxt;
 
   // ui state
@@ -77,7 +82,10 @@ function ColorBlindness() {
   };
 
   const onMessageListen = async (event) => {
-    const { data, type } = event.data.pluginMessage;
+    const pluginMessage = getPluginMessage(event, { isDevMode });
+    if (!pluginMessage) return;
+
+    const { data, type } = pluginMessage;
 
     // only listen for this response type on this step
     if (type === 'color-blindness-design-image') {
@@ -108,6 +116,14 @@ function ColorBlindness() {
   }, []);
 
   const getPrimaryAction = () => {
+    if (isDevMode) {
+      return {
+        buttonText: 'Next',
+        completesStep: true,
+        onClick: () => null
+      };
+    }
+
     if (colorBlindnessView) {
       return {
         buttonText: 'All looks good',
@@ -132,6 +148,14 @@ function ColorBlindness() {
   };
 
   const getSecondaryAction = () => {
+    if (isDevMode) {
+      return {
+        buttonText: 'Prev',
+        onClick: () => null,
+        isPrev: true
+      };
+    }
+
     if (isCompleted && colorBlindnessView === false) {
       return {
         buttonText: 'View again',
@@ -148,7 +172,8 @@ function ColorBlindness() {
 
   return (
     <AnnotationStepPage
-      title="Use of color"
+      title={isDevMode ? 'Color Blindness' : 'Use of color'}
+      completed={isCompleted}
       bannerTipProps={{ pageType, routeName }}
       routeName={routeName}
       footerProps={{
@@ -157,130 +182,148 @@ function ColorBlindness() {
       }}
     >
       <React.Fragment>
-        <HeadingStep
-          number={1}
-          text="Generate a preview of your design through different lenses and toggle between the views"
-        />
-
-        <HeadingStep
-          number={2}
-          text="Take a look at the visualization below to understand how your design might be perceived by people with color blindness"
-        />
-
-        <div className="divider" />
-
-        <div className="spacer2" />
-
-        <div
-          className="flex-row-center border-radius-2 cursor-pointer"
-          onClick={() => setShowGlossary(!showGlossary)}
-          onKeyDown={({ key }) => {
-            if (utils.isEnterKey(key)) {
-              setShowGlossary(!showGlossary);
-            }
-          }}
-          role="button"
-          tabIndex="0"
-        >
-          <div className={`svg-theme mr1 animated ${arrowGlossaryClass}`}>
-            <SvgCarrot />
-          </div>
-
-          <h2>Glossary</h2>
-        </div>
-
-        {showGlossary && (
+        {isDevMode === false && (
           <React.Fragment>
-            <div className="spacer2" />
+            <HeadingStep
+              number={1}
+              text="Generate a preview of your design through different lenses and toggle between the views"
+            />
 
-            {colorBlindnessTypesArray.map((type) => {
-              const { desc, icon, population } = colorBlindnessTypesObj[type];
+            <HeadingStep
+              number={2}
+              text="Take a look at the visualization below to understand how your design might be perceived by people with color blindness"
+            />
 
-              return (
-                <div className="cb-glossary-item" key={type}>
-                  {icon}
-                  <div className="cb-glossary-desc">{`${desc} `}</div>
-                  <span className="cb-pop">{`${population} population`}</span>
-                </div>
-              );
-            })}
-          </React.Fragment>
-        )}
+            <div className="divider" />
 
-        {loading && (
-          <div className="w-100 flex-center">
-            <div className="spacer2" />
-            <LoadingSpinner size={36} />
-            <div className="muted font-12 pt1">Grabbing design file</div>
-          </div>
-        )}
-        {colorBlindnessView && (
-          <React.Fragment>
             <div className="spacer2" />
 
             <div
               className="flex-row-center border-radius-2 cursor-pointer"
-              onClick={() => setShowPreview(!showPreview)}
+              onClick={() => setShowGlossary(!showGlossary)}
               onKeyDown={({ key }) => {
                 if (utils.isEnterKey(key)) {
-                  setShowPreview(!showPreview);
+                  setShowGlossary(!showGlossary);
                 }
               }}
               role="button"
               tabIndex="0"
             >
-              <div className={`svg-theme mr1 animated ${arrowPreviewClass}`}>
+              <div className={`svg-theme mr1 animated ${arrowGlossaryClass}`}>
                 <SvgCarrot />
               </div>
 
-              <h2>Preview</h2>
+              <h2>Glossary</h2>
             </div>
-          </React.Fragment>
-        )}
 
-        {showPreview && (
-          <React.Fragment>
-            <div className="cb-controls">
-              <div className="cb-types">
+            {showGlossary && (
+              <React.Fragment>
+                <div className="spacer2" />
+
                 {colorBlindnessTypesArray.map((type) => {
-                  const { icon, value } = colorBlindnessTypesObj[type];
-
-                  const isSelected = value === selected;
-                  const newValue = isSelected ? 'None' : value;
-                  const selectedClass = isSelected ? ' cb-selected' : '';
+                  const { desc, icon, population } =
+                    colorBlindnessTypesObj[type];
 
                   return (
-                    <div
-                      className={`cb-type${selectedClass}`}
-                      key={type}
-                      onClick={() => setSelected(newValue)}
-                      onKeyDown={({ key }) => {
-                        if (utils.isEnterKey(key)) {
-                          setSelected(newValue);
-                        }
-                      }}
-                      role="button"
-                      tabIndex="0"
-                    >
+                    <div className="cb-glossary-item" key={type}>
                       {icon}
-                      <div className="cb-name">{value}</div>
+                      <div className="cb-glossary-desc">{`${desc} `}</div>
+                      <span className="cb-pop">{`${population} population`}</span>
                     </div>
                   );
                 })}
+              </React.Fragment>
+            )}
+
+            {loading && (
+              <div className="w-100 flex-center">
+                <div className="spacer2" />
+                <LoadingSpinner size={36} />
+                <div className="muted font-12 pt1">Grabbing design file</div>
               </div>
-            </div>
+            )}
+            {colorBlindnessView && (
+              <React.Fragment>
+                <div className="spacer2" />
 
-            <div className="cb-preview-content">
-              <ColorBlindnessFilter />
+                <div
+                  className="flex-row-center border-radius-2 cursor-pointer"
+                  onClick={() => setShowPreview(!showPreview)}
+                  onKeyDown={({ key }) => {
+                    if (utils.isEnterKey(key)) {
+                      setShowPreview(!showPreview);
+                    }
+                  }}
+                  role="button"
+                  tabIndex="0"
+                >
+                  <div
+                    className={`svg-theme mr1 animated ${arrowPreviewClass}`}
+                  >
+                    <SvgCarrot />
+                  </div>
 
-              <img
-                src={designUri}
-                className={cbTypeClass}
-                alt="current design file"
-              />
-            </div>
+                  <h2>Preview</h2>
+                </div>
+              </React.Fragment>
+            )}
+
+            {showPreview && (
+              <React.Fragment>
+                <div className="cb-controls">
+                  <div className="cb-types">
+                    {colorBlindnessTypesArray.map((type) => {
+                      const { icon, value } = colorBlindnessTypesObj[type];
+
+                      const isSelected = value === selected;
+                      const newValue = isSelected ? 'None' : value;
+                      const selectedClass = isSelected ? ' cb-selected' : '';
+
+                      return (
+                        <div
+                          className={`cb-type${selectedClass}`}
+                          key={type}
+                          onClick={() => setSelected(newValue)}
+                          onKeyDown={({ key }) => {
+                            if (utils.isEnterKey(key)) {
+                              setSelected(newValue);
+                            }
+                          }}
+                          role="button"
+                          tabIndex="0"
+                        >
+                          {icon}
+                          <div className="cb-name">{value}</div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                <div className="cb-preview-content">
+                  <ColorBlindnessFilter />
+
+                  <img
+                    src={designUri}
+                    className={cbTypeClass}
+                    alt="current design file"
+                  />
+                </div>
+              </React.Fragment>
+            )}
           </React.Fragment>
         )}
+
+        {isDevMode === true &&
+          (isCompleted ? (
+            <p>
+              The designer previewed the design through color blindness
+              simulations and confirmed that meaning is not conveyed by color
+              alone.
+            </p>
+          ) : (
+            <DevStepIncomplete label="color blindness" />
+          ))}
       </React.Fragment>
     </AnnotationStepPage>
   );

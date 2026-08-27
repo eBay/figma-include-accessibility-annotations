@@ -1,11 +1,12 @@
 import * as React from 'react';
-import { utils } from '@/constants';
+import { getPluginMessage, utils } from '@/constants';
 
 // components
 import {
   Alert,
   AltTextRow,
   AnnotationStepPage,
+  DevStepIncomplete,
   HeadingStep,
   LoadingSpinner
 } from '@/components';
@@ -19,8 +20,8 @@ import Context from '@/context';
 function AltText() {
   // main app state
   const cnxt = React.useContext(Context);
-  const { imagesData, imageScan, imagesScanned, page } = cnxt;
-  const { pageType, sendToFigma, updateState, zoomTo } = cnxt;
+  const { imagesData, imageScan, imagesScanned, isDevMode, page } = cnxt;
+  const { pageType, sendToFigma, stepsCompleted, updateState, zoomTo } = cnxt;
 
   // local state
   const [isLoading, setLoading] = React.useState(false);
@@ -32,6 +33,7 @@ function AltText() {
 
   // ui state
   const routeName = 'Alt text';
+  const isCompleted = stepsCompleted.includes(routeName);
   const hasImages = imagesData.length > 0;
   const hasSelectedImage = selectedImage !== null;
   const alreadySelected =
@@ -80,6 +82,8 @@ function AltText() {
   };
 
   const createAltTextOverlay = () => {
+    if (isDevMode) return;
+
     // issues with alt text?
     if (flaggedImages.length > 0) {
       setHasAttemptedSubmit(true);
@@ -157,24 +161,38 @@ function AltText() {
     if (!isLoading) {
       if (noImagesFound) {
         return {
+          ...(isDevMode && { buttonText: 'Next' }),
           completesStep: true
         };
       }
 
       if (imagesScanned.length === 0) {
         return {
-          completesStep: false,
-          onClick: onScanForImages,
-          buttonText: 'Scan for images'
+          buttonText: isDevMode ? 'Next' : 'Scan for images',
+          completesStep: isDevMode,
+          ...(isDevMode === false && { onClick: onScanForImages })
         };
       }
 
       if (hasImages) {
         return {
-          completesStep: !flaggedImages.length,
+          ...(isDevMode && { buttonText: 'Next' }),
+          completesStep: isDevMode ? true : !flaggedImages.length,
           onClick: createAltTextOverlay
         };
       }
+    }
+
+    return null;
+  };
+
+  const getSecondaryAction = () => {
+    if (isDevMode) {
+      return {
+        buttonText: 'Prev',
+        onClick: () => null,
+        isPrev: true
+      };
     }
 
     return null;
@@ -201,7 +219,10 @@ function AltText() {
   };
 
   const onMessageListen = async (event) => {
-    const { data, type } = event.data.pluginMessage;
+    const pluginMessage = getPluginMessage(event, { isDevMode });
+    if (!pluginMessage) return;
+
+    const { data, type } = pluginMessage;
 
     // only listen for this response type on this step
     if (type === 'alt-text-image-selected') {
@@ -211,155 +232,264 @@ function AltText() {
 
   React.useEffect(() => {
     // mount
-    window.addEventListener('message', onMessageListen);
+    if (isDevMode === false) {
+      window.addEventListener('message', onMessageListen);
 
-    // start listening for alt text image selected if we have images
-    if (imagesScanned.length > 0) {
-      sendToFigma('alt-text-listening-flag', { listen: true });
+      // start listening for alt text image selected if we have images
+      if (imagesScanned.length > 0) {
+        sendToFigma('alt-text-listening-flag', { listen: true });
+      }
     }
 
     return () => {
       // unmount
-      window.removeEventListener('message', onMessageListen);
+      if (isDevMode === false) {
+        window.removeEventListener('message', onMessageListen);
 
-      // stop listening for alt text image selected
-      sendToFigma('alt-text-listening-flag', { listen: false });
+        // stop listening for alt text image selected
+        sendToFigma('alt-text-listening-flag', { listen: false });
+      }
     };
   }, []);
 
   return (
     <AnnotationStepPage
-      title="Images"
+      title={isDevMode ? 'Alternative text' : 'Images'}
+      completed={isCompleted}
       routeName={routeName}
       bannerTipProps={{ pageType, routeName }}
       footerProps={{
         primaryAction: getPrimaryAction(),
-        secondaryAction: null
+        secondaryAction: getSecondaryAction()
       }}
     >
       <React.Fragment>
-        {hasImages === false && (
-          <HeadingStep number={1} text="Make a list of images in your design" />
-        )}
-
-        {isLoading && (
+        {isDevMode === false && (
           <React.Fragment>
-            <div className="spacer4" />
-            <div className="w-100 flex-center">
-              <LoadingSpinner size={36} />
-              <div className="muted font-12 pt1">Scanning for images...</div>
-            </div>
-          </React.Fragment>
-        )}
+            {hasImages === false && (
+              <HeadingStep
+                number={1}
+                text="Make a list of images in your design"
+              />
+            )}
 
-        {msg && (
-          <React.Fragment>
-            <div className="spacer2" />
-
-            <div className="flex-row-center">
-              <div className="circle-success svg-theme-success mr1">
-                <SvgCheck size={14} />
-              </div>
-
-              <p>{msg}</p>
-            </div>
-          </React.Fragment>
-        )}
-
-        {hasImages && (
-          <React.Fragment>
-            <HeadingStep
-              number={2}
-              text="Mark images as decorative or informative where appropriate.<br>Add alt text for all informative images."
-            />
-
-            <React.Fragment>
-              {showWarning && (
-                <React.Fragment>
-                  <Alert
-                    icon={<SvgWarning />}
-                    style={{ padding: 0 }}
-                    text={`Add Alt text to the Informative image${addS}`}
-                    type="warning"
-                  />
-                  <div className="spacer2" />
-                </React.Fragment>
-              )}
-
-              {imagesData.map((image, index) => {
-                const { base64, displayType, imageBuffer } =
-                  imagesScanned[index];
-                const { id, type } = image;
-
-                // case for placeholder (legacy)
-                if (type !== 'informative' && type !== 'decorative') {
-                  return null;
-                }
-
-                const isOpened = openedDropdown === index;
-
-                // is flagged for not having alt text on Informative image
-                const warnClass =
-                  showWarning && flaggedImages.includes(id) ? ' warning' : '';
-
-                return (
-                  <AltTextRow
-                    key={id}
-                    base64={base64}
-                    displayType={displayType}
-                    image={image}
-                    imageBuffer={imageBuffer}
-                    index={index}
-                    isOpened={isOpened}
-                    onChange={(e) => onChange(e, index)}
-                    onFocus={(e) => {
-                      // select all text for easy removal
-                      e.target.select();
-
-                      // zoom to image in figma
-                      zoomTo([id], true);
-                    }}
-                    onOpen={setOpenedDropdown}
-                    onSelect={onTypeSelect}
-                    onRemove={() => onRemove(index)}
-                    warnClass={warnClass}
-                  />
-                );
-              })}
-            </React.Fragment>
-          </React.Fragment>
-        )}
-
-        {(hasImages || noImagesFound) && (
-          <React.Fragment>
-            <div className="spacer1" />
-            <div className="divider" />
-            <div className="spacer3" />
-
-            <HeadingStep number={hasImages ? 3 : 2} text={manualText} />
-
-            <div className="container-selection-button">
-              <div
-                aria-label="add image"
-                className="selection-button"
-                onClick={() => {
-                  if (hasSelectedImage) addImageManually();
-                }}
-                onKeyDown={(e) => {
-                  if (utils.isEnterKey(e.key) && hasSelectedImage) {
-                    addImageManually();
-                  }
-                }}
-                role="button"
-                tabIndex={0}
-              >
-                <div>
-                  <SvgImage />
+            {isLoading && (
+              <React.Fragment>
+                <div className="spacer4" />
+                <div className="w-100 flex-center">
+                  <LoadingSpinner size={36} />
+                  <div className="muted font-12 pt1">
+                    Scanning for images...
+                  </div>
                 </div>
-              </div>
+              </React.Fragment>
+            )}
 
-              <div className="selection-button-label">add selected</div>
-            </div>
+            {msg && (
+              <React.Fragment>
+                <div className="spacer2" />
+
+                <div className="flex-row-center">
+                  <div className="circle-success svg-theme-success mr1">
+                    <SvgCheck size={14} />
+                  </div>
+
+                  <p>{msg}</p>
+                </div>
+              </React.Fragment>
+            )}
+
+            {hasImages && (
+              <React.Fragment>
+                <HeadingStep
+                  number={2}
+                  text="Mark images as decorative or informative where appropriate.<br>Add alt text for all informative images."
+                />
+
+                <React.Fragment>
+                  {showWarning && (
+                    <React.Fragment>
+                      <Alert
+                        icon={<SvgWarning />}
+                        style={{ padding: 0 }}
+                        text={`Add Alt text to the Informative image${addS}`}
+                        type="warning"
+                      />
+                      <div className="spacer2" />
+                    </React.Fragment>
+                  )}
+
+                  {imagesData.map((image, index) => {
+                    const { base64, displayType, imageBuffer } =
+                      imagesScanned[index];
+                    const { id, type } = image;
+
+                    // case for placeholder (legacy)
+                    if (type !== 'informative' && type !== 'decorative') {
+                      return null;
+                    }
+
+                    const isOpened = openedDropdown === index;
+
+                    // is flagged for not having alt text on Informative image
+                    const warnClass =
+                      showWarning && flaggedImages.includes(id)
+                        ? ' warning'
+                        : '';
+
+                    return (
+                      <AltTextRow
+                        key={id}
+                        base64={base64}
+                        displayType={displayType}
+                        image={image}
+                        imageBuffer={imageBuffer}
+                        index={index}
+                        isOpened={isOpened}
+                        onChange={(e) => onChange(e, index)}
+                        onFocus={(e) => {
+                          // select all text for easy removal
+                          e.target.select();
+
+                          // zoom to image in figma
+                          zoomTo([id], true);
+                        }}
+                        onOpen={setOpenedDropdown}
+                        onSelect={onTypeSelect}
+                        onRemove={() => onRemove(index)}
+                        warnClass={warnClass}
+                      />
+                    );
+                  })}
+                </React.Fragment>
+              </React.Fragment>
+            )}
+
+            {(hasImages || noImagesFound) && (
+              <React.Fragment>
+                <div className="spacer1" />
+                <div className="divider" />
+                <div className="spacer3" />
+
+                <HeadingStep number={hasImages ? 3 : 2} text={manualText} />
+
+                <div className="container-selection-button">
+                  <div
+                    aria-label="add image"
+                    className="selection-button"
+                    onClick={() => {
+                      if (hasSelectedImage) addImageManually();
+                    }}
+                    onKeyDown={(e) => {
+                      if (utils.isEnterKey(e.key) && hasSelectedImage) {
+                        addImageManually();
+                      }
+                    }}
+                    role="button"
+                    tabIndex={0}
+                  >
+                    <div>
+                      <SvgImage />
+                    </div>
+                  </div>
+
+                  <div className="selection-button-label">add selected</div>
+                </div>
+              </React.Fragment>
+            )}
+          </React.Fragment>
+        )}
+
+        {isDevMode === true && isCompleted === false && (
+          <DevStepIncomplete
+            label="alternative text"
+            text="The Alternative text annotation step was not completed. Check with the designer about completing it."
+          />
+        )}
+
+        {isDevMode === true && isCompleted && (
+          <React.Fragment>
+            <HeadingStep text="Implement" />
+            <ul className="disc">
+              <li>
+                Add alternative text for the informative images using provided
+                text. Skip if the visible label is next to an image.
+              </li>
+              <li>Implement all remaining images as decorative.</li>
+            </ul>
+
+            <div className="space-md" />
+            <div className="divider" />
+            <div className="space-md" />
+
+            {hasImages && (
+              <React.Fragment>
+                {imagesData.map((image, index) => {
+                  const { id, type } = image;
+
+                  // match image data by id (dev mode order may differ)
+                  const scanned =
+                    imagesScanned.find((img) => img.id === id) ||
+                    imagesScanned[index] ||
+                    {};
+                  const { base64, displayType, imageBuffer } = scanned;
+
+                  // case for placeholder (legacy)
+                  if (type !== 'informative' && type !== 'decorative') {
+                    return null;
+                  }
+
+                  const isOpened = openedDropdown === index;
+
+                  // is flagged for not having alt text on Informative image
+                  const warnClass =
+                    showWarning && flaggedImages.includes(id) ? ' warning' : '';
+
+                  return (
+                    <AltTextRow
+                      key={id}
+                      base64={base64}
+                      displayType={displayType}
+                      image={image}
+                      imageBuffer={imageBuffer}
+                      index={index}
+                      isOpened={isOpened}
+                      onChange={(e) => onChange(e, index)}
+                      onFocus={(e) => {
+                        // select all text for easy removal
+                        e.target.select();
+
+                        // zoom to image in figma
+                        zoomTo([id], true);
+                      }}
+                      onOpen={setOpenedDropdown}
+                      onSelect={onTypeSelect}
+                      onRemove={() => onRemove(index)}
+                      warnClass={warnClass}
+                      isDevMode={isDevMode}
+                    />
+                  );
+                })}
+                <div className="space-md" />
+              </React.Fragment>
+            )}
+
+            {hasImages === false && (
+              <React.Fragment>
+                <div className="space-sm" />
+                <p className="muted">No images set</p>
+                <div className="space-md" />
+              </React.Fragment>
+            )}
+
+            <HeadingStep text="Test" />
+            <ul className="disc">
+              <li>Run an automated accessibility test.</li>
+              <li>
+                Verify images with alternative text announce as expected in a
+                screenreader &amp; decorative images do not announce.
+              </li>
+            </ul>
           </React.Fragment>
         )}
       </React.Fragment>

@@ -64,6 +64,43 @@
     &::-webkit-scrollbar {
       display: none;
     }
+
+    .figma-dev-mode & {
+      height: 100%;
+      overflow-y: auto;
+    }
+  }
+}
+
+.dashboard-footer-spacer {
+  height: 190px;
+  width: 100%;
+}
+
+.cards {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: 1fr;
+
+  > * {
+    min-width: 0;
+  }
+
+  > .section-separator,
+  > .dashboard-footer-spacer {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (width > 430px) {
+  .cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (width > 600px) {
+  .cards {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
@@ -72,22 +109,21 @@
   border-radius: 6px;
   display: inline-flex;
   flex-direction: column;
-  margin: 0 16px 16px 0;
   padding: vars.$spacing-sm;
-  width: 212px;
 
-  .view-condensed & {
-    width: 234px;
-
-    &:nth-child(2n) {
-      margin-right: 0;
-    }
+  .figma-dev-mode & {
+    cursor: default;
   }
 
-  .view-full & {
-    &:nth-child(3n) {
-      margin-right: 0;
-    }
+  .clamp {
+    --lines: 2;
+
+    -webkit-box-orient: vertical;
+    display: -webkit-box;
+    -webkit-line-clamp: var(--lines);
+    line-clamp: var(--lines);
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   &.selected {
@@ -125,6 +161,22 @@
   padding: vars.$spacing-sm;
   position: absolute;
   width: 100%;
+
+  .figma-dev-mode & {
+    border-bottom: 1px solid var(--figma-color-border);
+
+    @media (width < 320px) {
+      align-items: flex-start;
+      height: auto;
+      justify-content: flex-end;
+
+      .btns-container {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 4px;
+      }
+    }
+  }
 }
 
 .container-modal {
@@ -184,6 +236,21 @@
   z-index: 200;
 }
 
+.completed-circle {
+  align-items: center;
+  border: 1px solid var(--figma-color-border-strong);
+  border-radius: 8px;
+  display: flex;
+  height: 14px;
+  justify-content: center;
+  margin-right: 10px;
+  width: 14px;
+
+  &--completed {
+    background-color: var(--figma-color-border-strong);
+  }
+}
+
 // Feedback
 // /////////////////////////////////////////////////////////////////////////////
 .feedback {
@@ -239,6 +306,17 @@
   text-transform: capitalize;
 }
 
+.row-landmark-dev {
+  margin-bottom: 8px;
+}
+
+.landmark-block {
+  background: var(--figma-color-bg-hover);
+  border-radius: 4px;
+  height: 32px;
+  width: 32px;
+}
+
 // Button selection containers (gestures, landmarks, headings, focus groups)
 // /////////////////////////////////////////////////////////////////////////////
 $selection-button-width: 72px;
@@ -257,7 +335,7 @@ $selection-button-width: 72px;
   scroll-snap-align: center;
   text-align: center;
   width: $selection-button-width; // scrollbar visible or not, still displaying fine
-  
+
   &.small {
     height: 40px;
     margin-right: 12px;
@@ -333,6 +411,23 @@ $selection-button-width: 72px;
   width: 260px;
 }
 
+.row-heading-dev {
+  margin-bottom: 8px;
+
+  .heading-level {
+    min-width: 20px;
+  }
+
+  .heading-title-dev {
+    flex: 1;
+    font-size: 12px;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
 // Reading Order
 // /////////////////////////////////////////////////////////////////////////////
 .reading-order-text {
@@ -350,6 +445,39 @@ $selection-button-width: 72px;
 
   & .drag-handle {
     width: 64px;
+  }
+}
+
+.row-reading-order-dev {
+  margin-bottom: 8px;
+
+  .reading-order-number {
+    min-width: 24px;
+  }
+
+  .reading-order-type {
+    font-size: 12px;
+    text-transform: capitalize;
+  }
+}
+
+// Touch Target
+// /////////////////////////////////////////////////////////////////////////////
+.row-touch-target-dev {
+  margin-bottom: 8px;
+
+  .touch-target-name {
+    font-size: 12px;
+  }
+}
+
+// Focus Grouping
+// /////////////////////////////////////////////////////////////////////////////
+.row-focus-group-dev {
+  margin-bottom: 8px;
+
+  .focus-group-name {
+    font-size: 12px;
   }
 }
 
@@ -444,6 +572,7 @@ $selection-button-width: 72px;
   margin-top: 16px;
   position: relative;
 
+  /* stylelint-disable-next-line no-descending-specificity */
   & svg {
     position: absolute;
     top: 0;
@@ -457,35 +586,35 @@ $selection-button-width: 72px;
 }
 
 .protanopia {
-  filter: url("#protanopia");
+  filter: url('#protanopia');
 }
 
 .protanomaly {
-  filter: url("#protanomaly");
+  filter: url('#protanomaly');
 }
 
 .deuteranopia {
-  filter: url("#deuteranopia");
+  filter: url('#deuteranopia');
 }
 
 .deuteranomaly {
-  filter: url("#deuteranomaly");
+  filter: url('#deuteranomaly');
 }
 
 .tritanopia {
-  filter: url("#tritanopia");
+  filter: url('#tritanopia');
 }
 
 .tritanomaly {
-  filter: url("#tritanomaly");
+  filter: url('#tritanomaly');
 }
 
 .achromatopsia {
-  filter: url("#achromatopsia");
+  filter: url('#achromatopsia');
 }
 
 .achromatomaly {
-  filter: url("#achromatomaly");
+  filter: url('#achromatomaly');
 }
 
 // Settings
@@ -518,6 +647,7 @@ $selection-button-width: 72px;
   flex-direction: row;
   padding-right: 4px;
 
+  /* stylelint-disable-next-line no-descending-specificity */
   svg {
     margin-right: 4px;
   }
@@ -538,7 +668,8 @@ $selection-button-width: 72px;
   margin: 16px 0;
   padding: 8px 0;
   width: fit-content;
-  
+
+  /* stylelint-disable-next-line no-descending-specificity */
   svg {
     margin-right: 4px;
   }

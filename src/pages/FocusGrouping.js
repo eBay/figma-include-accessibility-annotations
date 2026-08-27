@@ -4,6 +4,7 @@ import { utils } from '@/constants';
 // components
 import {
   AnnotationStepPage,
+  DevStepIncomplete,
   EmptyStepSelection,
   HeadingStep
 } from '@/components';
@@ -20,8 +21,8 @@ import Context from '@/context';
 function FocusGrouping() {
   // main app state
   const cnxt = React.useContext(Context);
-  const { groups, page, pageType, stepsCompleted } = cnxt;
-  const { sendToFigma, updateState } = cnxt;
+  const { isDevMode, groups, page, pageType, stepsCompleted } = cnxt;
+  const { sendToFigma, updateState, zoomTo } = cnxt;
 
   // ui state
   const groupsArray = Object.keys(groups);
@@ -41,6 +42,8 @@ function FocusGrouping() {
   };
 
   const onCompleteGroups = () => {
+    if (isDevMode) return;
+
     if (noGroups) {
       // let figma side know that no groups are needed
       sendToFigma('no-groups', {
@@ -89,8 +92,9 @@ function FocusGrouping() {
   };
 
   const getPrimaryAction = () => {
-    if (groupsAreSet || noGroups) {
+    if (groupsAreSet || noGroups || isDevMode) {
       return {
+        ...(isDevMode && { buttonText: 'Next' }),
         completesStep: true,
         onClick: onCompleteGroups
       };
@@ -98,78 +102,152 @@ function FocusGrouping() {
     return null;
   };
 
+  const getSecondaryAction = () => {
+    if (isDevMode) {
+      return {
+        buttonText: 'Prev',
+        onClick: () => null,
+        isPrev: true
+      };
+    }
+
+    return null;
+  };
+
   return (
     <AnnotationStepPage
       title="Focus grouping"
+      completed={isCompleted}
       routeName={routeName}
       bannerTipProps={{ pageType, routeName }}
       footerProps={{
         primaryAction: getPrimaryAction(),
-        secondaryAction: null
+        secondaryAction: getSecondaryAction()
       }}
     >
       <React.Fragment>
-        {groupsAreSet && (
+        {isDevMode === false && (
           <React.Fragment>
-            {groupsArray.map((id, idx) => (
-              <div
-                key={`focus-group-${id}`}
-                className="flex-row-space-between flex-row-center"
-              >
-                <div>{`group ${idx + 1}`}</div>
-                <div
-                  aria-label="remove group"
-                  className="btn-remove"
-                  onClick={() => onRemoveGroup(idx)}
-                  onKeyDown={({ key }) => {
-                    if (utils.isEnterKey(key)) onRemoveGroup(idx);
-                  }}
-                  role="button"
-                  tabIndex="0"
-                >
-                  <div className="remove-dash" />
+            {groupsAreSet && (
+              <React.Fragment>
+                {groupsArray.map((id, idx) => (
+                  <div
+                    key={`focus-group-${id}`}
+                    className="flex-row-space-between flex-row-center"
+                  >
+                    <div>{`group ${idx + 1}`}</div>
+                    <div
+                      aria-label="remove group"
+                      className="btn-remove"
+                      onClick={() => onRemoveGroup(idx)}
+                      onKeyDown={({ key }) => {
+                        if (utils.isEnterKey(key)) onRemoveGroup(idx);
+                      }}
+                      role="button"
+                      tabIndex="0"
+                    >
+                      <div className="remove-dash" />
+                    </div>
+                  </div>
+                ))}
+
+                <div className="spacer1" />
+                <div className="divider" />
+                <div className="spacer2" />
+              </React.Fragment>
+            )}
+
+            <HeadingStep number={1} text="Place an overlay for a focus group" />
+
+            {!groupsAreSet && (
+              <EmptyStepSelection
+                id="no-groups"
+                isSelected={noGroups}
+                onClick={onEmptySelected}
+                text="no groups"
+              />
+            )}
+
+            {!noGroups && (
+              <div className="button-group">
+                <div className="container-selection-button">
+                  <div
+                    aria-label="add focus group"
+                    className="selection-button"
+                    onClick={onClick}
+                    onKeyDown={({ key }) => {
+                      if (utils.isEnterKey(key)) onClick();
+                    }}
+                    role="button"
+                    tabIndex={0}
+                  >
+                    <div>
+                      <SvgFocusGroup />
+                    </div>
+                  </div>
+
+                  <div className="selection-button-label">focus group</div>
                 </div>
               </div>
-            ))}
-
-            <div className="spacer1" />
-            <div className="divider" />
-            <div className="spacer2" />
+            )}
           </React.Fragment>
         )}
 
-        <HeadingStep number={1} text="Place an overlay for a focus group" />
-
-        {!groupsAreSet && (
-          <EmptyStepSelection
-            id="no-groups"
-            isSelected={noGroups}
-            onClick={onEmptySelected}
-            text="no groups"
-          />
+        {isDevMode === true && isCompleted === false && (
+          <DevStepIncomplete label="focus grouping" />
         )}
 
-        {!noGroups && (
-          <div className="button-group">
-            <div className="container-selection-button">
-              <div
-                aria-label="add focus group"
-                className="selection-button"
-                onClick={onClick}
-                onKeyDown={({ key }) => {
-                  if (utils.isEnterKey(key)) onClick();
-                }}
-                role="button"
-                tabIndex={0}
-              >
-                <div>
-                  <SvgFocusGroup />
-                </div>
-              </div>
+        {isDevMode === true && isCompleted && (
+          <React.Fragment>
+            <HeadingStep text="Implement" />
 
-              <div className="selection-button-label">focus group</div>
-            </div>
-          </div>
+            {groupsAreSet && (
+              <React.Fragment>
+                <p>Group elements as indicated by the annotations.</p>
+
+                <div className="space-md" />
+
+                {groupsArray.map((key, idx) => {
+                  const groupId = groups[key];
+
+                  return (
+                    <div
+                      key={`focus-group-${key}`}
+                      aria-label="goto focus group"
+                      className="cursor-pointer border-radius-2 row-focus-group-dev flex-row-center"
+                      onClick={() => zoomTo([groupId], true)}
+                      onKeyDown={(e) => {
+                        if (utils.isEnterKey(e.key)) zoomTo([groupId], true);
+                      }}
+                      role="button"
+                      tabIndex="0"
+                    >
+                      <div className="landmark-block" />
+                      <div className="space-xsw" />
+                      <div className="focus-group-name">{`Group ${idx + 1}`}</div>
+                    </div>
+                  );
+                })}
+              </React.Fragment>
+            )}
+
+            {groupsAreSet === false && (
+              <p>
+                The design was marked as not needing Focus grouping. Check with
+                the designer if you think that any should be added.
+              </p>
+            )}
+
+            <div className="space-md" />
+            <div className="divider" />
+            <div className="space-md" />
+
+            <HeadingStep text="Test" />
+            <p>
+              Verify expected behavior with a screenreader. Each group should be
+              one swipe. Ensure actions work as expected.
+            </p>
+          </React.Fragment>
         )}
       </React.Fragment>
     </AnnotationStepPage>

@@ -1,6 +1,22 @@
+.heading-step-container {
+  margin-bottom: var(--spacing-sm);
+
+  .figma-dev-mode & {
+    margin-bottom: var(--spacing-xxs);
+  }
+
+  ul {
+    margin-left: 70px;
+    margin-top: 4px;
+  }
+
+  li {
+    list-style: disc;
+  }
+}
+
 .heading-step {
   display: flex;
-  margin-bottom: var(--spacing-sm);
 
   p {
     display: flex;

@@ -1,0 +1,27 @@
+.error-boundary {
+  height: 100vh;
+  padding: var(--spacing-md);
+}
+
+.error-boundary-content {
+  flex-direction: column;
+  gap: var(--spacing-md);
+  text-align: center;
+}
+
+.error-boundary-message {
+  margin: 0;
+  max-width: 280px;
+}
+
+.error-boundary-details {
+  color: var(--foreground-attention);
+  font-size: 11px;
+  margin: 0;
+  max-width: 320px;
+  word-break: break-word;
+}
+
+.error-boundary-retry {
+  margin-top: var(--spacing-xs);
+}

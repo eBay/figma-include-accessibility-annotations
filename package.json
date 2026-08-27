@@ -1,6 +1,6 @@
 {
   "name": "figma-include-accessibility-annotations",
-  "version": "16",
+  "version": "17",
   "description": "Include is a tool built to make annotating for accessibility (a11y) easier",
   "main": "code.js",
   "scripts": {
@@ -11,6 +11,9 @@
     "bundle": "webpack --mode=production && node zip.js",
     "lint": "eslint ./src",
     "lint-scss": "stylelint \"**/*.scss\"",
+    "lint:all": "npm run lint && npm run lint-scss",
+    "format": "prettier --write \"src/**/*.{js,scss}\"",
+    "format:check": "prettier --check \"src/**/*.{js,scss}\"",
     "docs": "node_modules/.bin/jsdoc --readme DOCS.md -c jsdoc.json"
   },
   "author": "eBay Design Technology",

@@ -5,6 +5,7 @@ import { utils } from '@/constants';
 import {
   Alert,
   AnnotationStepPage,
+  DevStepIncomplete,
   Dropdown,
   EmptyStepSelection,
   HeadingStep
@@ -26,7 +27,7 @@ const landmarksAlwaysNeedLabel = ['form', 'section'];
 function Landmarks() {
   // main app state
   const cnxt = React.useContext(Context);
-  const { landmarks, page, pageType, stepsCompleted } = cnxt;
+  const { isDevMode, landmarks, page, pageType, stepsCompleted } = cnxt;
   const { removeNodes, sendToFigma, updateState, zoomTo } = cnxt;
 
   const landmarksTypesArrayDropdown = landmarksTypesArray.map((id, index) => ({
@@ -137,6 +138,8 @@ function Landmarks() {
   };
 
   const onDoneWithLandmarks = () => {
+    if (isDevMode) return;
+
     if (noLandmarks) {
       sendToFigma('no-landmark', {
         page,
@@ -334,8 +337,9 @@ function Landmarks() {
   }, [labelsTemp]);
 
   const getPrimaryAction = () => {
-    if (landmarksAreSet || noLandmarks) {
+    if (landmarksAreSet || noLandmarks || isDevMode) {
       return {
+        ...(isDevMode && { buttonText: 'Next' }),
         completesStep: true,
         isDisabled:
           showDupWarning ||
@@ -349,204 +353,297 @@ function Landmarks() {
     return null;
   };
 
+  const getSecondaryAction = () => {
+    if (isDevMode) {
+      return {
+        buttonText: 'Prev',
+        onClick: () => null,
+        isPrev: true
+      };
+    }
+
+    return null;
+  };
+
   return (
     <AnnotationStepPage
       title="Landmarks"
+      completed={isCompleted}
       routeName={routeName}
       bannerTipProps={{ pageType, routeName }}
       footerProps={{
         primaryAction: getPrimaryAction(),
-        secondaryAction: null
+        secondaryAction: getSecondaryAction()
       }}
     >
       <React.Fragment>
-        {showDupWarning && (
+        {isDevMode === false && (
           <React.Fragment>
-            <Alert
-              icon={<SvgWarning />}
-              style={{ padding: 0 }}
-              text="Distinguish landmarks of the same type with a unique name."
-              type="warning"
-            />
-            <div className="spacer1" />
-          </React.Fragment>
-        )}
+            {showDupWarning && (
+              <React.Fragment>
+                <Alert
+                  icon={<SvgWarning />}
+                  style={{ padding: 0 }}
+                  text="Distinguish landmarks of the same type with a unique name."
+                  type="warning"
+                />
+                <div className="spacer1" />
+              </React.Fragment>
+            )}
 
-        {showAlwaysNeedLabel && (
-          <React.Fragment>
-            <Alert
-              icon={<SvgWarning />}
-              style={{ padding: 0 }}
-              text="Add a label to landmarks that are too vague without one."
-              type="warning"
-            />
+            {showAlwaysNeedLabel && (
+              <React.Fragment>
+                <Alert
+                  icon={<SvgWarning />}
+                  style={{ padding: 0 }}
+                  text="Add a label to landmarks that are too vague without one."
+                  type="warning"
+                />
 
-            <div className="spacer1" />
-          </React.Fragment>
-        )}
+                <div className="spacer1" />
+              </React.Fragment>
+            )}
 
-        {showLandmarkWordWarning && (
-          <React.Fragment>
-            <Alert
-              icon={<SvgWarning />}
-              style={{ padding: 0 }}
-              text={`Remove the word "landmark" or the landmark type name, as it is already included in the landmark label.`}
-              type="warning"
-            />
-            <div className="spacer1" />
-          </React.Fragment>
-        )}
+            {showLandmarkWordWarning && (
+              <React.Fragment>
+                <Alert
+                  icon={<SvgWarning />}
+                  style={{ padding: 0 }}
+                  text={`Remove the word "landmark" or the landmark type name, as it is already included in the landmark label.`}
+                  type="warning"
+                />
+                <div className="spacer1" />
+              </React.Fragment>
+            )}
 
-        {showSameLabelWarning && (
-          <React.Fragment>
-            <Alert
-              icon={<SvgWarning />}
-              style={{ padding: 0 }}
-              text="Labels must be unique."
-              type="warning"
-            />
-            <div className="spacer1" />
-          </React.Fragment>
-        )}
+            {showSameLabelWarning && (
+              <React.Fragment>
+                <Alert
+                  icon={<SvgWarning />}
+                  style={{ padding: 0 }}
+                  text="Labels must be unique."
+                  type="warning"
+                />
+                <div className="spacer1" />
+              </React.Fragment>
+            )}
 
-        {landmarksAreSet && (
-          <React.Fragment>
-            {landmarksArray.map((key) => {
-              const { id, label, type } = landmarks[key];
-              const isOpened = openedDropdown === id;
+            {landmarksAreSet && (
+              <React.Fragment>
+                {landmarksArray.map((key) => {
+                  const { id, label, type } = landmarks[key];
+                  const isOpened = openedDropdown === id;
 
-              const hasTempLabel = labelsTemp[id]?.value || label;
-              const showLabel =
-                label !== null ||
-                needsLabel.includes(id) ||
-                hasTempLabel !== null;
+                  const hasTempLabel = labelsTemp[id]?.value || label;
+                  const showLabel =
+                    label !== null ||
+                    needsLabel.includes(id) ||
+                    hasTempLabel !== null;
 
-              // is flagged for not having label (or can't have "Landmark" in the label)
-              const warnClass =
-                (needsLabel.includes(id) && hasTempLabel === null) ||
-                hasLandmarkWord.includes(id) ||
-                hasSameLabel.includes(id)
-                  ? ' warning'
-                  : '';
+                  // is flagged for not having label (or can't have "Landmark" in the label)
+                  const warnClass =
+                    (needsLabel.includes(id) && hasTempLabel === null) ||
+                    hasLandmarkWord.includes(id) ||
+                    hasSameLabel.includes(id)
+                      ? ' warning'
+                      : '';
 
-              return (
-                <div key={key} className="row-landmark flex-row-space-between">
-                  <div className="flex-row-center">
-                    <Dropdown
-                      data={landmarksTypesArrayDropdown}
-                      disabledValues={maxUsageReached}
-                      index={id}
-                      isOpened={isOpened}
-                      onOpen={onTypeDropdownOpen}
-                      onSelect={onTypeUpdate}
-                      type={type}
-                    />
-
-                    {showLabel && (
-                      <React.Fragment>
-                        <div className="spacer2w" />
-                        <div className="muted">Label</div>
-                        <div className="spacer1w" />
-
-                        <input
-                          className={`input${warnClass}`}
-                          type="text"
-                          onBlur={() => onBlur(id, type)}
-                          onChange={(e) => onChange(e, id)}
-                          onFocus={() => {
-                            // zoom to image in figma
-                            zoomTo([id], true);
-                          }}
-                          placeholder="Type in name"
-                          value={hasTempLabel || ''}
+                  return (
+                    <div
+                      key={key}
+                      className="row-landmark flex-row-space-between"
+                    >
+                      <div className="flex-row-center">
+                        <Dropdown
+                          data={landmarksTypesArrayDropdown}
+                          disabledValues={maxUsageReached}
+                          index={id}
+                          isOpened={isOpened}
+                          onOpen={onTypeDropdownOpen}
+                          onSelect={onTypeUpdate}
+                          type={type}
                         />
-                      </React.Fragment>
-                    )}
-                  </div>
 
-                  <div
-                    aria-label="remove landmark"
-                    className="btn-remove"
-                    onClick={() => onRemoveLandmark(id)}
-                    onKeyDown={(e) => {
-                      if (utils.isEnterKey(e.key)) onRemoveLandmark(id);
-                    }}
-                    role="button"
-                    tabIndex="0"
-                  >
-                    <div className="remove-dash" />
-                  </div>
-                </div>
-              );
-            })}
+                        {showLabel && (
+                          <React.Fragment>
+                            <div className="spacer2w" />
+                            <div className="muted">Label</div>
+                            <div className="spacer1w" />
 
-            <div className="spacer1" />
+                            <input
+                              className={`input${warnClass}`}
+                              type="text"
+                              onBlur={() => onBlur(id, type)}
+                              onChange={(e) => onChange(e, id)}
+                              onFocus={() => {
+                                // zoom to image in figma
+                                zoomTo([id], true);
+                              }}
+                              placeholder="Type in name"
+                              value={hasTempLabel || ''}
+                            />
+                          </React.Fragment>
+                        )}
+                      </div>
 
-            <div className="divider" />
-            <div className="spacer2" />
+                      <div
+                        aria-label="remove landmark"
+                        className="btn-remove"
+                        onClick={() => onRemoveLandmark(id)}
+                        onKeyDown={(e) => {
+                          if (utils.isEnterKey(e.key)) onRemoveLandmark(id);
+                        }}
+                        role="button"
+                        tabIndex="0"
+                      >
+                        <div className="remove-dash" />
+                      </div>
+                    </div>
+                  );
+                })}
+
+                <div className="spacer1" />
+
+                <div className="divider" />
+                <div className="spacer2" />
+              </React.Fragment>
+            )}
+
+            <HeadingStep number={1} text="Select landmark type" />
+
+            {!landmarksAreSet && (
+              <EmptyStepSelection
+                id="no-landmarks"
+                isSelected={noLandmarks}
+                onClick={onEmptySelected}
+                text="no landmarks"
+              />
+            )}
+
+            {!noLandmarks && (
+              <div className="button-group">
+                {landmarksTypesArray.map((type) => {
+                  const { label, icon } = landmarksTypesObj[type];
+
+                  // check if limit usage has been reached
+                  const maxReached = maxUsageReached.includes(type);
+
+                  // display / disabled state
+                  const fadedClass = maxReached ? 'faded' : '';
+                  const isDisabled = maxReached;
+
+                  // handle non-interactive state
+                  const noEvents = isDisabled ? ' no-events' : '';
+                  const onClick = isDisabled
+                    ? () => null
+                    : () => onSelect(type);
+
+                  return (
+                    <div key={label} className="container-selection-button">
+                      <div
+                        className={`selection-button${noEvents}`}
+                        onClick={onClick}
+                        onKeyDown={(e) => {
+                          if (utils.isEnterKey(e.key)) onClick();
+                        }}
+                        role="button"
+                        tabIndex={isDisabled ? -1 : 0}
+                      >
+                        <div className={fadedClass}>{icon}</div>
+                        {maxReached && (
+                          <div className="limit-reached">Limit 1</div>
+                        )}
+                      </div>
+
+                      <div className="selection-button-label">{label}</div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+
+            {selected && (
+              <React.Fragment>
+                <div className="spacer2" />
+
+                <HeadingStep
+                  number={2}
+                  text={`Place the overlay over the ${selected.replace(
+                    /-/g,
+                    ' '
+                  )} area`}
+                />
+              </React.Fragment>
+            )}
           </React.Fragment>
         )}
 
-        <HeadingStep number={1} text="Select landmark type" />
-
-        {!landmarksAreSet && (
-          <EmptyStepSelection
-            id="no-landmarks"
-            isSelected={noLandmarks}
-            onClick={onEmptySelected}
-            text="no landmarks"
+        {isDevMode === true && isCompleted === false && (
+          <DevStepIncomplete
+            label="landmarks"
+            text="The Landmarks annotation step was not completed. Check with the designer about completing it."
           />
         )}
 
-        {!noLandmarks && (
-          <div className="button-group">
-            {landmarksTypesArray.map((type) => {
-              const { label, icon } = landmarksTypesObj[type];
-
-              // check if limit usage has been reached
-              const maxReached = maxUsageReached.includes(type);
-
-              // display / disabled state
-              const fadedClass = maxReached ? 'faded' : '';
-              const isDisabled = maxReached;
-
-              // handle non-interactive state
-              const noEvents = isDisabled ? ' no-events' : '';
-              const onClick = isDisabled ? () => null : () => onSelect(type);
-
-              return (
-                <div key={label} className="container-selection-button">
-                  <div
-                    className={`selection-button${noEvents}`}
-                    onClick={onClick}
-                    onKeyDown={(e) => {
-                      if (utils.isEnterKey(e.key)) onClick();
-                    }}
-                    role="button"
-                    tabIndex={isDisabled ? -1 : 0}
-                  >
-                    <div className={fadedClass}>{icon}</div>
-                    {maxReached && <div className="limit-reached">Limit 1</div>}
-                  </div>
-
-                  <div className="selection-button-label">{label}</div>
-                </div>
-              );
-            })}
-          </div>
-        )}
-
-        {selected && (
+        {isDevMode === true && isCompleted && (
           <React.Fragment>
-            <div className="spacer2" />
+            <HeadingStep text="Implement" />
 
-            <HeadingStep
-              number={2}
-              text={`Place the overlay over the ${selected.replace(
-                /-/g,
-                ' '
-              )} area`}
-            />
+            {landmarksAreSet && (
+              <React.Fragment>
+                <p>
+                  Use provided HTML5 landmarks. Add aria-label only if
+                  specified.
+                </p>
+
+                <div className="space-sm" />
+
+                {landmarksArray.map((key) => {
+                  const { id, label, type } = landmarks[key];
+
+                  return (
+                    <div
+                      key={key}
+                      aria-label="goto landmark"
+                      className="cursor-pointer border-radius-2 row-landmark-dev flex-row-space-between"
+                      onClick={() => zoomTo([id], true)}
+                      onKeyDown={(e) => {
+                        if (utils.isEnterKey(e.key)) zoomTo([id], true);
+                      }}
+                      role="button"
+                      tabIndex="0"
+                    >
+                      <div className="flex-row-center">
+                        <div className="landmark-block" />
+                        <div className="space-xsw" />
+
+                        <code>
+                          &lt;{type}
+                          {label ? ` aria-label="${label}"` : ''}&gt;
+                        </code>
+                      </div>
+                    </div>
+                  );
+                })}
+              </React.Fragment>
+            )}
+
+            {!landmarksAreSet && (
+              <p>
+                Designs were marked as not needing any landmarks. Check with the
+                designer if you believe any landmarks should be added.
+              </p>
+            )}
+
+            <div className="space-md" />
+            <div className="divider" />
+            <div className="space-md" />
+
+            <HeadingStep text="Test" />
+            <ul className="disc">
+              <li>Run an automated accessibility test</li>
+              <li>Verify expected landmark behavior with a screenreader</li>
+            </ul>
           </React.Fragment>
         )}
       </React.Fragment>

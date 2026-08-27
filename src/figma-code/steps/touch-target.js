@@ -1,4 +1,4 @@
-import { colors, figmaLayer, utils } from '@/constants';
+import { colors, figmaLayer, getTouchTargetSize, utils } from '@/constants';
 import config from '@/figma-code/config';
 import { getOrCreateMainA11yFrame } from '@/figma-code/frame-helpers';
 
@@ -55,7 +55,7 @@ export const add = async (msg) => {
   }
 
   // create rectangle
-  const size = pageType === 'web' ? 24 : 48;
+  const size = getTouchTargetSize(pageType);
   const targetNode = figmaLayer.createRectangle({
     fillColor: colors.deepTeal,
     name: `Touch target ${nextTargetNum}`,
@@ -105,7 +105,7 @@ export const add = async (msg) => {
 };
 
 export const checkTouchTargets = async (msg) => {
-  const { touchTargets } = msg;
+  const { pageType, touchTargets } = msg;
 
   const validTargetNodes = (
     await Promise.all(
@@ -175,8 +175,7 @@ export const checkTouchTargets = async (msg) => {
     return doRectanglesIntersect(node1, node2);
   };
 
-  // in terms of WCAG compliance, this is the same on native and web
-  const targetSize = 24;
+  const targetSize = getTouchTargetSize(pageType);
 
   const checkOverlap = (nodes) => {
     const overlapIssues = [];

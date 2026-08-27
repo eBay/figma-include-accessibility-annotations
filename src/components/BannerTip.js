@@ -4,11 +4,16 @@ import PropTypes from 'prop-types';
 // components
 import BannerTipText from '@/components/BannerTipText';
 
+// app state
+import Context from '@/context';
+
 // data
 import tips from '@/data/tips.json';
 
 function BannerTip({ footer = null, pageType, routeName = 'Landmarks' }) {
-  const tip = tips[pageType][routeName];
+  const { isDevMode } = React.useContext(Context);
+  const tipKey = isDevMode ? `${pageType}-dev` : pageType;
+  const tip = tips[tipKey][routeName];
 
   return (
     <BannerTipText

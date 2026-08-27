@@ -11,11 +11,41 @@ an accessibility annotation Figma plugin
 
 ## Intro
 
-<img alt="plugin version 16" src="previews/v16/include_banner.png" />
+<img alt="plugin version 17" src="previews/v17/include_banner.png" />
 
 The eBay Include accessibility annotation Figma plugin is a tool to make annotating for accessibility (a11y) easier — easier for designers to spec and easier for developers to understand what is required.
 
 The plugin was developed by members of the accessibility and design teams at eBay and is released for public use on Figma. You can view and install the latest version of the plugin [here](https://www.figma.com/community/plugin/1208180794570801545/Include%3A-an-accessibility-annotation-tool).
+
+## What's new in v17
+
+Version 17 adds a read-only inspect experience in Figma Dev Mode so developers can review existing annotations without changing the design file.
+
+Features:
+
+- added a read-only Dev Mode inspect experience, with a dashboard of annotated pages and previous/next step navigation
+- added implement and test guidance from existing annotations (web and native); Color blindness is skipped in inspect
+- added developer-focused step tips while keeping Design Mode playbook links
+- scans other Figma pages in Dev Mode so annotations are not limited to the current page
+- dashboard grid reflows as the Dev Mode panel is resized
+
+Bug fixes:
+
+- guard document writes in read-only Dev Mode (annotation key migration, designer checks, layer visibility) so opening inspect no longer throws
+- fix contrast sampling using the wrong corner of a text node
+- check native touch targets against the native minimum size
+- fix collapsed step tip layout
+- fix Dev Mode step footer scrolling out of view
+- clicking a focus group in Dev Mode now zooms to and selects the Group Area layer
+- tightened inspect copy across annotation steps
+
+Open source code:
+
+- updated manifest to use `editorType: ["figma", "dev"]` with `capabilities: ["inspect"]`
+- centralized plugin constants (sizes, WCAG values, loading timeouts)
+- added an ErrorBoundary fallback
+- ignore non-plugin iframe window messages so listeners do not crash
+- added prettier format scripts and a combined `lint:all` command
 
 ## Roadmap
 
@@ -35,6 +65,7 @@ The plugin was developed by members of the accessibility and design teams at eBa
 
 - [X] Touch target revision (v15)
 - [X] Split between focus & reading order (v16)
+- [X] Dev Mode inspect experience for developers (v17)
 - [ ] Pointer gestures
 - [ ] Interactive elements step
 - [ ] Use of AI to generate labels

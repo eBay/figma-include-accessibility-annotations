@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { analytics, utils } from '@/constants';
 
 // components
+import BannerTipText from '@/components/BannerTipText';
 import ProgressLine from '@/components/ProgressLine';
 import ProgressPieChart from '@/components/ProgressPieChart';
 
@@ -10,6 +11,7 @@ import ProgressPieChart from '@/components/ProgressPieChart';
 import {
   SvgArrowRight,
   SvgClose,
+  SvgInfoFill,
   SvgMobile,
   SvgSettings,
   SvgWeb
@@ -30,9 +32,10 @@ const feedbackFormUrl = process.env.FEEDBACK_FORM_URL;
 function Dashboard() {
   // main app state
   const cnxt = React.useContext(Context);
-  const { condensedUI, imagesScanned, pages, steps, version } = cnxt;
+  const { condensedUI, imagesScanned, pages, otherPages, steps, version } =
+    cnxt;
   const { removeNodes, sendToFigma, updateState, zoomTo } = cnxt;
-  const { currentUser, sessionId, isProd } = cnxt;
+  const { currentUser, sessionId, isProd, isDevMode } = cnxt;
 
   // local state
   const [progressType, setProgressType] = React.useState(null);
@@ -123,8 +126,8 @@ function Dashboard() {
         }
       }
 
-      // navigate to first incomplete step
-      if (newPath !== null) {
+      // navigate to first incomplete step in Design Mode
+      if (newPath !== null && isDevMode === false) {
         navigate(newPath);
       } else {
         // if all steps are completed, go back to first step
@@ -172,6 +175,8 @@ function Dashboard() {
 
   // page select toggle
   const onSelect = (id) => {
+    if (isDevMode) return;
+
     const newSelected = [...selected];
 
     // if in array, remove it
@@ -267,6 +272,11 @@ function Dashboard() {
         break;
       }
     }
+
+    if (isDevMode) {
+      emojiState = 'dev-mode';
+    }
+
     setProgressType(emojiState);
 
     // send ga event
@@ -293,24 +303,29 @@ function Dashboard() {
   }
 
   const condensedClass = condensedUI ? 'view-condensed' : 'view-full';
+  const headingText = isDevMode
+    ? 'Annotations in this Figma'
+    : 'Checks in this Figma';
 
   return (
     <div className={`dashboard ${condensedClass}`}>
       <div className="flex-row-space-between">
-        <h1>Checks in this Figma</h1>
+        <h1>{headingText}</h1>
         <div className="flex-row-center">
-          <div
-            className="flex-row-center border-radius-2 link mr2 no-underline cursor-pointer"
-            onClick={gotoSettings}
-            onKeyDown={({ key }) => {
-              if (utils.isEnterKey(key)) gotoSettings();
-            }}
-            role="button"
-            tabIndex="0"
-          >
-            <SvgSettings />
-            Settings
-          </div>
+          {isDevMode === false && (
+            <div
+              className="flex-row-center border-radius-2 link mr2 no-underline cursor-pointer"
+              onClick={gotoSettings}
+              onKeyDown={({ key }) => {
+                if (utils.isEnterKey(key)) gotoSettings();
+              }}
+              role="button"
+              tabIndex="0"
+            >
+              <SvgSettings />
+              Settings
+            </div>
+          )}
 
           {feedbackFormUrl?.length > 0 && (
             <a
@@ -325,96 +340,171 @@ function Dashboard() {
         </div>
       </div>
 
-      {progressType !== null && <ProgressLine progressType={progressType} />}
+      {isDevMode && (
+        <React.Fragment>
+          <div className="space-sm" />
+          <BannerTipText
+            showArrow={false}
+            text="Review the accessibility annotations in this file and check with the designer if you have questions."
+          />
+        </React.Fragment>
+      )}
 
-      <div className="spacer3" />
+      {progressType !== null && isDevMode === false && (
+        <ProgressLine progressType={progressType} />
+      )}
+
+      <div className="space-md" />
 
       <div className="dashboard-scrollable">
-        {pages.map((item) => {
-          const { id, name, stepsCompleted, type, page } = item;
+        <div className="cards">
+          {pages.map((item) => {
+            const { id, name, stepsCompleted, type, page } = item;
 
-          const selectedClass = selected.includes(id) ? ' selected' : '';
-          const isWeb = type === 'web';
-          const Icon = isWeb ? SvgWeb : SvgMobile;
-          const routeData = isWeb ? routes : routesNative;
+            const selectedClass = selected.includes(id) ? ' selected' : '';
+            const isWeb = type === 'web';
+            const Icon = isWeb ? SvgWeb : SvgMobile;
+            const routeData = isWeb ? routes : routesNative;
 
-          const progress = Math.ceil(
-            stepsCompleted.reduce(
-              (accum, step) => accum + (routeData[step]?.percent ?? 0),
-              0
-            )
-          );
+            const progress = Math.ceil(
+              stepsCompleted.reduce(
+                (accum, step) => accum + (routeData[step]?.percent ?? 0),
+                0
+              )
+            );
 
-          return (
-            <div
-              key={id}
-              className={`card${selectedClass} cursor-pointer`}
-              onClick={() => onSelect(id)}
-              onKeyDown={({ key }) => {
-                if (utils.isEnterKey(key)) onSelect(id);
-              }}
-              role="button"
-              tabIndex="0"
-            >
-              <div className="flex-row-space-between border-radius-2">
-                <div className="flow-type">
-                  <div className="svg-theme">
-                    <Icon />
-                  </div>
-                  <div className="flow-type-text">{type}</div>
-                </div>
-
-                <ProgressPieChart progress={progress} />
-              </div>
-
-              <div className="spacer2" />
-
-              <div className="card-title">{name}</div>
-
-              <div className="spacer2" />
-
+            return (
               <div
-                className="flex-row-center align-self-start border-radius-2 cursor-pointer"
-                onClick={() => loadInBase64(page, stepsCompleted)}
+                key={id}
+                className={`card${selectedClass} cursor-pointer`}
+                onClick={() => onSelect(id)}
                 onKeyDown={({ key }) => {
-                  if (utils.isEnterKey(key)) loadInBase64(page, stepsCompleted);
+                  if (utils.isEnterKey(key)) onSelect(id);
                 }}
                 role="button"
                 tabIndex="0"
               >
-                <div className="link font-12">Go to checks</div>
+                <div className="flex-row-space-between border-radius-2">
+                  <div className="flow-type">
+                    <div className="svg-theme">
+                      <Icon />
+                    </div>
+                    <div className="flow-type-text">{type}</div>
+                  </div>
 
-                <div className="spacer1w" />
+                  <ProgressPieChart progress={progress} />
+                </div>
 
-                <div className="svg-theme-stroke_link">
-                  <SvgArrowRight />
+                <div className="space-sm" />
+
+                <div className="card-title">{name}</div>
+
+                <div className="space-sm" />
+
+                <div
+                  className="flex-row-center align-self-start border-radius-2 cursor-pointer"
+                  onClick={() => loadInBase64(page, stepsCompleted)}
+                  onKeyDown={({ key }) => {
+                    if (utils.isEnterKey(key))
+                      loadInBase64(page, stepsCompleted);
+                  }}
+                  role="button"
+                  tabIndex="0"
+                >
+                  <div className="link font-12">
+                    {isDevMode ? 'Go to annotations' : 'Go to checks'}
+                  </div>
+
+                  <div className="space-xsw" />
+
+                  <div className="svg-theme-stroke_link">
+                    <SvgArrowRight />
+                  </div>
                 </div>
               </div>
+            );
+          })}
+
+          {otherPages.length > 0 && (
+            <div className="section-separator">
+              <div className="space-md" />
+              <h2>More on other pages in this file</h2>
+              <div className="space-md" />
             </div>
-          );
-        })}
+          )}
+
+          {otherPages.map((item) => {
+            const { id, name, stepsCompleted, type, parentName } = item;
+            const isWeb = type === 'web';
+            const Icon = isWeb ? SvgWeb : SvgMobile;
+            const routeData = isWeb ? routes : routesNative;
+            const progress = Math.ceil(
+              stepsCompleted.reduce(
+                (accum, step) => accum + (routeData[step]?.percent ?? 0),
+                0
+              )
+            );
+
+            return (
+              <div key={id} className="card">
+                <div className="flex-row-space-between border-radius-2">
+                  <div className="flow-type">
+                    <div className="svg-theme">
+                      <Icon />
+                    </div>
+                    <div className="flow-type-text">{type}</div>
+                  </div>
+
+                  <ProgressPieChart progress={progress} />
+                </div>
+
+                <div className="space-sm" />
+                <div className="card-title">{name}</div>
+                <div className="space-sm" />
+
+                <div className="flex-row-center align-self-start">
+                  <div className="svg-theme">
+                    <SvgInfoFill size={16} />
+                  </div>
+                  <div className="space-smw" />
+                  <div className="font-12 clamp">
+                    {`Go to "${parentName}" page to view annotations`}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+
+          {isDevMode && <div className="dashboard-footer-spacer" />}
+        </div>
       </div>
 
       <div className="dashboard-footer flex-row-space-between">
-        <div className="flex-row-center">
-          <button className="btn primary" onClick={onAddNewPage} type="button">
-            Add new page
-          </button>
+        {isDevMode === false && (
+          <div className="flex-row-center btns-container">
+            <button
+              className="btn primary"
+              onClick={onAddNewPage}
+              type="button"
+            >
+              Add new page
+            </button>
 
-          <div className="spacer1w" />
+            <div className="space-xsw" />
 
-          <button
-            className="btn"
-            disabled={selected.length === 0}
-            onClick={onDelete}
-            onKeyDown={({ key }) => {
-              if (utils.isEnterKey(key)) onDelete();
-            }}
-            type="button"
-          >
-            {`Delete selected${selectedCount}`}
-          </button>
-        </div>
+            <button
+              className="btn"
+              disabled={selected.length === 0}
+              onClick={onDelete}
+              onKeyDown={({ key }) => {
+                if (utils.isEnterKey(key)) onDelete();
+              }}
+              type="button"
+            >
+              {`Delete selected${selectedCount}`}
+            </button>
+          </div>
+        )}
 
         <div className="muted">{`v.${version}`}</div>
       </div>

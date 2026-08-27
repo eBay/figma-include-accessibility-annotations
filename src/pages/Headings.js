@@ -4,6 +4,7 @@ import { utils } from '@/constants';
 // components
 import {
   AnnotationStepPage,
+  DevStepIncomplete,
   Dropdown,
   EmptyStepSelection,
   HeadingStep,
@@ -23,8 +24,8 @@ import headingTypesNative from '@/data/heading-types-native';
 function Headings() {
   // main app state
   const cnxt = React.useContext(Context);
-  const { headings, headingTemp, page, pageType } = cnxt;
-  const { stepsCompleted, sendToFigma, updateState } = cnxt;
+  const { isDevMode, headings, headingTemp, page, pageType } = cnxt;
+  const { stepsCompleted, sendToFigma, updateState, zoomTo } = cnxt;
 
   const headingTypes =
     pageType === 'web' ? headingTypesWeb : headingTypesNative;
@@ -139,6 +140,8 @@ function Headings() {
   };
 
   const onHeadingsConfirmed = () => {
+    if (isDevMode) return;
+
     if (noHeadings) {
       sendToFigma('no-heading', {
         page,
@@ -163,21 +166,38 @@ function Headings() {
 
   React.useEffect(() => {
     // mount
-    onHeadingsListenStart();
+    if (isDevMode === false) {
+      onHeadingsListenStart();
+    }
 
     return () => {
       // unmount
       // if user leaves the step early, while listening for headings selection,
       // stop listening for headings selection
-      sendToFigma('headings-listener', { page, pageType });
+      if (isDevMode === false) {
+        sendToFigma('headings-listener', { page, pageType });
+      }
     };
   }, []);
 
   const getPrimaryAction = () => {
-    if (headingsAreSet || noHeadings) {
+    if (headingsAreSet || noHeadings || isDevMode) {
       return {
-        onClick: onHeadingsConfirmed, // create annotations
+        ...(isDevMode && { buttonText: 'Next' }),
+        onClick: onHeadingsConfirmed,
         completesStep: true
+      };
+    }
+
+    return null;
+  };
+
+  const getSecondaryAction = () => {
+    if (isDevMode) {
+      return {
+        buttonText: 'Prev',
+        onClick: () => null,
+        isPrev: true
       };
     }
 
@@ -193,126 +213,199 @@ function Headings() {
   return (
     <AnnotationStepPage
       title="Headings"
+      completed={isCompleted}
       routeName={routeName}
       bannerTipProps={{ pageType, routeName }}
       footerProps={{
         primaryAction: getPrimaryAction(),
-        secondaryAction: null
+        secondaryAction: getSecondaryAction()
       }}
     >
       <React.Fragment>
-        {headingsArray.length > 0 && (
+        {isDevMode === false && (
           <React.Fragment>
-            {headingsArray.map((key) => {
-              const { id, title, type } = headings[key];
-              const isOpened = openedDropdown === id;
+            {headingsArray.length > 0 && (
+              <React.Fragment>
+                {headingsArray.map((key) => {
+                  const { id, title, type } = headings[key];
+                  const isOpened = openedDropdown === id;
 
-              return (
-                <div key={id} className="flex-row-space-between">
-                  <div className="flex-row-center">
-                    <SvgText fill="#b3b3b3" />
+                  return (
+                    <div key={id} className="flex-row-space-between">
+                      <div className="flex-row-center">
+                        <SvgText fill="#b3b3b3" />
 
-                    <div className="heading-title">{title}</div>
-                  </div>
+                        <div className="heading-title">{title}</div>
+                      </div>
 
-                  <div className="flex-row-center">
-                    {pageType === 'web' && (
-                      <Dropdown
-                        align="right"
-                        data={headingTypesArrayDropdown}
-                        index={id}
-                        isOpened={isOpened}
-                        onOpen={setOpenedDropdown}
-                        onSelect={onTypeUpdate}
-                        type={type}
-                      />
-                    )}
+                      <div className="flex-row-center">
+                        {pageType === 'web' && (
+                          <Dropdown
+                            align="right"
+                            data={headingTypesArrayDropdown}
+                            index={id}
+                            isOpened={isOpened}
+                            onOpen={setOpenedDropdown}
+                            onSelect={onTypeUpdate}
+                            type={type}
+                          />
+                        )}
 
-                    <div className="spacer1w" />
+                        <div className="spacer1w" />
 
-                    <div
-                      aria-label="remove heading"
-                      className="btn-remove"
-                      onClick={() => onRemoveHeading(id)}
-                      onKeyDown={(e) => {
-                        if (utils.isEnterKey(e.key)) onRemoveHeading(id);
-                      }}
-                      role="button"
-                      tabIndex="0"
-                    >
-                      <div className="remove-dash" />
+                        <div
+                          aria-label="remove heading"
+                          className="btn-remove"
+                          onClick={() => onRemoveHeading(id)}
+                          onKeyDown={(e) => {
+                            if (utils.isEnterKey(e.key)) onRemoveHeading(id);
+                          }}
+                          role="button"
+                          tabIndex="0"
+                        >
+                          <div className="remove-dash" />
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  );
+                })}
+
+                <div className="spacer1" />
+
+                <div className="divider" />
+
+                <div className="spacer3" />
+              </React.Fragment>
+            )}
+
+            <HeadingStep number={1} text={stepOneText} />
+
+            {showWarning && (
+              <React.Fragment>
+                <Alert
+                  icon={<SvgWarning />}
+                  style={{ padding: 0 }}
+                  text="Select text in your figma frame first"
+                  type="warning"
+                />
+                <div className="spacer2" />
+              </React.Fragment>
+            )}
+
+            {!headingsAreSet && (
+              <EmptyStepSelection
+                id="no-headings"
+                isSelected={noHeadings}
+                onClick={onEmptySelected}
+                text="no headings"
+              />
+            )}
+
+            {!noHeadings && (
+              <React.Fragment>
+                <HeadingStep number={2} text="Choose heading level" />
+
+                <div className="button-group" role="radiogroup">
+                  {headingTypesArray.map((type) => {
+                    const { label, icon } = headingTypes[type];
+
+                    const onClick = () => {
+                      onInitialTypeSelect(type);
+                    };
+
+                    return (
+                      <div key={label} className="container-selection-button">
+                        <div
+                          className="selection-button"
+                          onClick={onClick}
+                          onKeyDown={(e) => {
+                            if (utils.isEnterKey(e.key)) onClick();
+                          }}
+                          role="button"
+                          tabIndex={0}
+                        >
+                          <div>{icon}</div>
+                        </div>
+
+                        <div className="selection-button-label">
+                          heading
+                          <br />
+                          {label}
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
-              );
-            })}
-
-            <div className="spacer1" />
-
-            <div className="divider" />
-
-            <div className="spacer3" />
+              </React.Fragment>
+            )}
           </React.Fragment>
         )}
 
-        <HeadingStep number={1} text={stepOneText} />
-
-        {showWarning && (
-          <React.Fragment>
-            <Alert
-              icon={<SvgWarning />}
-              style={{ padding: 0 }}
-              text="Select text in your figma frame first"
-              type="warning"
-            />
-            <div className="spacer2" />
-          </React.Fragment>
-        )}
-
-        {!headingsAreSet && (
-          <EmptyStepSelection
-            id="no-headings"
-            isSelected={noHeadings}
-            onClick={onEmptySelected}
-            text="no headings"
+        {isDevMode === true && isCompleted === false && (
+          <DevStepIncomplete
+            label="headings"
+            text="The Headings annotation step was not completed. Check with the designer about completing it."
           />
         )}
 
-        {!noHeadings && (
+        {isDevMode === true && isCompleted && (
           <React.Fragment>
-            <HeadingStep number={2} text="Choose heading level" />
+            <HeadingStep text="Implement" />
 
-            <div className="button-group" role="radiogroup">
-              {headingTypesArray.map((type) => {
-                const { label, icon } = headingTypes[type];
+            {headingsAreSet && (
+              <React.Fragment>
+                <p>
+                  Use provided annotations to structure the heading levels on
+                  the page.
+                </p>
 
-                const onClick = () => {
-                  onInitialTypeSelect(type);
-                };
+                <div className="space-md" />
+                {headingsArray.map((key) => {
+                  const { id, title, type } = headings[key];
+                  const level = parseInt(type.replace(/\D+/g, ''), 10) || 1;
 
-                return (
-                  <div key={label} className="container-selection-button">
+                  return (
                     <div
-                      className="selection-button"
-                      onClick={onClick}
+                      key={id}
+                      aria-label="goto heading"
+                      className="cursor-pointer border-radius-2 row-heading-dev flex-row-center"
+                      onClick={() => zoomTo([id], true)}
                       onKeyDown={(e) => {
-                        if (utils.isEnterKey(e.key)) onClick();
+                        if (utils.isEnterKey(e.key)) zoomTo([id], true);
                       }}
                       role="button"
-                      tabIndex={0}
+                      style={{ paddingLeft: `${(level - 1) * 16}px` }}
+                      tabIndex="0"
                     >
-                      <div>{icon}</div>
+                      <strong className="heading-level">
+                        {type.toUpperCase()}
+                      </strong>
+                      <div className="space-smw" />
+                      <div className="heading-title-dev">{title}</div>
                     </div>
+                  );
+                })}
+              </React.Fragment>
+            )}
 
-                    <div className="selection-button-label">
-                      heading
-                      <br />
-                      {label}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+            {!headingsAreSet && (
+              <p>
+                Designs were marked as not needing any headings. Check with the
+                designer if you believe any headings should be added.
+              </p>
+            )}
+
+            <div className="space-md" />
+            <div className="divider" />
+            <div className="space-md" />
+
+            <HeadingStep text="Test" />
+            <ul className="disc">
+              <li>Run an automated accessibility test</li>
+              <li>
+                Verify expected heading navigation behavior with a screenreader
+              </li>
+            </ul>
           </React.Fragment>
         )}
       </React.Fragment>

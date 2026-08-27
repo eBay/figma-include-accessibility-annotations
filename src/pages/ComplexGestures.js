@@ -5,6 +5,7 @@ import { utils } from '@/constants';
 import {
   Alert,
   AnnotationStepPage,
+  DevStepIncomplete,
   EmptyStepSelection,
   HeadingStep
 } from '@/components';
@@ -23,7 +24,7 @@ const gestureTypesArray = Object.keys(gestureTypesObj);
 function ComplexGestures() {
   // main app state
   const cnxt = React.useContext(Context);
-  const { gestures, page, pageType } = cnxt;
+  const { isDevMode, gestures, page, pageType } = cnxt;
   const { removeNodes, stepsCompleted, sendToFigma, updateState, zoomTo } =
     cnxt;
 
@@ -126,6 +127,8 @@ function ComplexGestures() {
   };
 
   const onAnnotateGestures = () => {
+    if (isDevMode) return;
+
     if (noGestures) {
       // let figma side know that no gestures are needed
       sendToFigma('no-gestures', {
@@ -183,6 +186,14 @@ function ComplexGestures() {
   }, [gestures]);
 
   const getPrimaryAction = () => {
+    if (isDevMode) {
+      return {
+        buttonText: pageType === 'web' ? 'Done' : 'Next',
+        completesStep: true,
+        onClick: () => null
+      };
+    }
+
     // gestures are set and none are in progress,
     // allow user to confirm and annotate
     if (gesturesAreSet || noGestures) {
@@ -195,158 +206,210 @@ function ComplexGestures() {
     return null;
   };
 
+  const getSecondaryAction = () => {
+    if (isDevMode) {
+      return {
+        buttonText: 'Prev',
+        onClick: () => null,
+        isPrev: true
+      };
+    }
+
+    return null;
+  };
+
   return (
     <AnnotationStepPage
       title="Complex gestures"
+      completed={gesturesCompleted}
       routeName={routeName}
       bannerTipProps={{ pageType, routeName }}
       footerProps={{
         primaryAction: getPrimaryAction(),
-        secondaryAction: null
+        secondaryAction: getSecondaryAction()
       }}
     >
       <React.Fragment>
-        {gesturesAreSet && (
+        {isDevMode === false && (
           <React.Fragment>
-            <HeadingStep
-              number={1}
-              style={{ marginBottom: 8 }}
-              text="Describe the action for the alternative affordance"
-            />
-
-            {showWarning && (
+            {gesturesAreSet && (
               <React.Fragment>
-                <Alert
-                  icon={<SvgWarning />}
-                  style={{ padding: 0 }}
-                  text="Some actions are missing a description"
-                  type="warning"
+                <HeadingStep
+                  number={1}
+                  style={{ marginBottom: 8 }}
+                  text="Describe the action for the alternative affordance"
                 />
+
+                {showWarning && (
+                  <React.Fragment>
+                    <Alert
+                      icon={<SvgWarning />}
+                      style={{ padding: 0 }}
+                      text="Some actions are missing a description"
+                      type="warning"
+                    />
+                    <div className="spacer1" />
+                  </React.Fragment>
+                )}
+
+                <div style={{ marginTop: showWarning ? 0 : -8 }}>
+                  {gesturesArray.map((key) => {
+                    const { id, label, type } = gestures[key];
+                    const gestureLabel = gestureTypesObj[type].label;
+                    const hasTempLabel = labelsTemp[id] || label;
+
+                    // is flagged for not having label
+                    const warnClass =
+                      showWarning &&
+                      needsLabel.includes(id) &&
+                      hasTempLabel === null
+                        ? ' warning'
+                        : '';
+
+                    return (
+                      <div key={key} className="flex-row-space-between">
+                        <div className="flex-row-center">
+                          <div className="gesture-type">
+                            {`alternative to ${gestureLabel}`}
+                          </div>
+
+                          <div className="spacer2w" />
+                          <div className="muted">Action</div>
+                          <div className="spacer1w" />
+                          <input
+                            className={`input${warnClass}`}
+                            type="text"
+                            onChange={(e) => onChange(e, id)}
+                            onFocus={() => {
+                              // zoom to layer in figma
+                              zoomTo([id], true);
+                            }}
+                            placeholder="Type action"
+                            value={hasTempLabel || ''}
+                          />
+                        </div>
+
+                        <div
+                          aria-label="remove gesture"
+                          className="btn-remove"
+                          onClick={() => onRemoveGesture(id)}
+                          onKeyDown={(e) => {
+                            if (utils.isEnterKey(e.key)) onRemoveGesture(id);
+                          }}
+                          role="button"
+                          tabIndex="0"
+                        >
+                          <div className="remove-dash" />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
                 <div className="spacer1" />
+
+                <div className="divider" />
+                <div className="spacer2" />
               </React.Fragment>
             )}
 
-            <div style={{ marginTop: showWarning ? 0 : -8 }}>
-              {gesturesArray.map((key) => {
-                const { id, label, type } = gestures[key];
-                const gestureLabel = gestureTypesObj[type].label;
-                const hasTempLabel = labelsTemp[id] || label;
+            <React.Fragment>
+              <HeadingStep
+                number={gesturesAreSet ? 2 : 1}
+                text="Select a gesture that needs an alternative affordance."
+              />
+              {!gesturesAreSet && (
+                <EmptyStepSelection
+                  id="no-gestures"
+                  isSelected={noGestures}
+                  onClick={onEmptySelected}
+                  text="no gestures"
+                />
+              )}
 
-                // is flagged for not having label
-                const warnClass =
-                  showWarning &&
-                  needsLabel.includes(id) &&
-                  hasTempLabel === null
-                    ? ' warning'
-                    : '';
+              {!noGestures && (
+                <div className="button-group">
+                  {gestureTypesArray.map((type) => {
+                    const { label, icon } = gestureTypesObj[type];
 
-                return (
-                  <div key={key} className="flex-row-space-between">
-                    <div className="flex-row-center">
-                      <div className="gesture-type">
-                        {`alternative to ${gestureLabel}`}
+                    // legacy handling:
+                    // allow for multi-finger tap to still exist in old annotations,
+                    // but no longer allow user to add to new annotations
+                    if (type === 'multi-finger') {
+                      return null;
+                    }
+
+                    // handle non-interactive state
+                    // rectangle has already been created, lock in the gesture selection until step is completed)
+                    // const noEvents = isDisabled ? ' no-events' : '';
+                    const onClick = () => onSelect(type);
+
+                    return (
+                      <div key={label} className="container-selection-button">
+                        <div
+                          className="selection-button"
+                          onClick={onClick}
+                          onKeyDown={(e) => {
+                            if (utils.isEnterKey(e.key)) onClick();
+                          }}
+                          role="button"
+                          tabIndex={0}
+                        >
+                          <div>{icon}</div>
+                        </div>
+
+                        <div className="selection-button-label">{label}</div>
                       </div>
+                    );
+                  })}
+                </div>
+              )}
+            </React.Fragment>
 
-                      <div className="spacer2w" />
-                      <div className="muted">Action</div>
-                      <div className="spacer1w" />
-                      <input
-                        className={`input${warnClass}`}
-                        type="text"
-                        onChange={(e) => onChange(e, id)}
-                        onFocus={() => {
-                          // zoom to layer in figma
-                          zoomTo([id], true);
-                        }}
-                        placeholder="Type action"
-                        value={hasTempLabel || ''}
-                      />
-                    </div>
-
-                    <div
-                      aria-label="remove gesture"
-                      className="btn-remove"
-                      onClick={() => onRemoveGesture(id)}
-                      onKeyDown={(e) => {
-                        if (utils.isEnterKey(e.key)) onRemoveGesture(id);
-                      }}
-                      role="button"
-                      tabIndex="0"
-                    >
-                      <div className="remove-dash" />
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-            <div className="spacer1" />
-
-            <div className="divider" />
-            <div className="spacer2" />
+            {selected && (
+              <HeadingStep
+                number={gesturesAreSet ? 3 : 2}
+                text={`Place the overlay on the onscreen elements that enable users to perform the ${selected.replace(
+                  /-/g,
+                  ' '
+                )} action with one finger and taps.`}
+              />
+            )}
           </React.Fragment>
         )}
 
-        <React.Fragment>
-          <HeadingStep
-            number={gesturesAreSet ? 2 : 1}
-            text="Select a gesture that needs an alternative affordance."
+        {isDevMode === true && gesturesCompleted === false && (
+          <DevStepIncomplete
+            label="complex gestures"
+            text="The Complex gestures annotation step was not completed. Check with the designer about completing it."
           />
-          {!gesturesAreSet && (
-            <EmptyStepSelection
-              id="no-gestures"
-              isSelected={noGestures}
-              onClick={onEmptySelected}
-              text="no gestures"
-            />
-          )}
+        )}
 
-          {!noGestures && (
-            <div className="button-group">
-              {gestureTypesArray.map((type) => {
-                const { label, icon } = gestureTypesObj[type];
+        {isDevMode === true && gesturesCompleted && (
+          <React.Fragment>
+            <HeadingStep text="Implement" />
 
-                // legacy handling:
-                // allow for multi-finger tap to still exist in old annotations,
-                // but no longer allow user to add to new annotations
-                if (type === 'multi-finger') {
-                  return null;
-                }
+            {gesturesAreSet ? (
+              <p>
+                Apply the alternative interactions to complex gestures as
+                indicated in the annotations.
+              </p>
+            ) : (
+              <p>
+                Designs were marked as not needing any alternatives to complex
+                gestures.
+              </p>
+            )}
 
-                // handle non-interactive state
-                // rectangle has already been created, lock in the gesture selection until step is completed)
-                // const noEvents = isDisabled ? ' no-events' : '';
-                const onClick = () => onSelect(type);
+            <div className="space-md" />
+            <div className="divider" />
+            <div className="space-md" />
 
-                return (
-                  <div key={label} className="container-selection-button">
-                    <div
-                      className="selection-button"
-                      onClick={onClick}
-                      onKeyDown={(e) => {
-                        if (utils.isEnterKey(e.key)) onClick();
-                      }}
-                      role="button"
-                      tabIndex={0}
-                    >
-                      <div>{icon}</div>
-                    </div>
-
-                    <div className="selection-button-label">{label}</div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
-        </React.Fragment>
-
-        {selected && (
-          <HeadingStep
-            number={gesturesAreSet ? 3 : 2}
-            text={`Place the overlay on the onscreen elements that enable users to perform the ${selected.replace(
-              /-/g,
-              ' '
-            )} action with one finger and taps.`}
-          />
+            <HeadingStep text="Test" />
+            <p>
+              Ensure that the user is able to get to all the functionality using
+              only clicks or taps.
+            </p>
+          </React.Fragment>
         )}
       </React.Fragment>
     </AnnotationStepPage>

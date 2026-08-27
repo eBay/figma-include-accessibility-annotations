@@ -301,7 +301,8 @@ async function createOrUpdateDesignerChecksFrame({
   stepsNative,
   stepsCompleted
 }) {
-  if (page) {
+  // Dev Mode documents are read-only, no annotation layers can be created
+  if (page && figma.editorType !== 'dev') {
     const mainA11yLayer = await getOrCreateMainA11yFrame({ page, pageType });
 
     await getOrCreateMainAnnotationsFrame({
@@ -320,6 +321,9 @@ async function createOrUpdateDesignerChecksFrame({
 }
 
 async function updateToAnnotationKeyV2({ layers, pages }) {
+  // Dev Mode documents are read-only, old annotation keys can't be migrated
+  if (figma.editorType === 'dev') return;
+
   const { a11yAnnotationLayerKey, a11yAnnotationLayerKeyV2 } = config;
 
   // all steps

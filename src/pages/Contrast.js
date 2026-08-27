@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { contrast, utils } from '@/constants';
+import { contrast, getPluginMessage, utils } from '@/constants';
 
 // components
 import {
@@ -7,6 +7,7 @@ import {
   AnnotationStepPage,
   BannerSuccess,
   ContrastScreenshot,
+  DevStepIncomplete,
   HeadingStep,
   LoadingSpinner
 } from '@/components';
@@ -20,7 +21,7 @@ import Context from '@/context';
 function Contrast() {
   // main app state
   const cnxt = React.useContext(Context);
-  const { contrastResults, page, pageType, stepsCompleted } = cnxt;
+  const { contrastResults, isDevMode, page, pageType, stepsCompleted } = cnxt;
   const { sendToFigma, updateState, zoomTo } = cnxt;
 
   // local state
@@ -68,7 +69,10 @@ function Contrast() {
   };
 
   const onMessageListen = async (event) => {
-    const { data, type } = event.data.pluginMessage;
+    const pluginMessage = getPluginMessage(event, { isDevMode });
+    if (!pluginMessage) return;
+
+    const { data, type } = pluginMessage;
 
     // only listen for this response type on this step
     if (type === 'color-contrast-result') {
@@ -195,6 +199,14 @@ function Contrast() {
   const getPrimaryAction = () => {
     if (isLoading) return null;
 
+    if (isDevMode) {
+      return {
+        buttonText: 'Next',
+        completesStep: true,
+        onClick: () => null
+      };
+    }
+
     if (contrastResults !== null && failed === null) {
       return {
         completesStep: true,
@@ -211,6 +223,14 @@ function Contrast() {
   };
 
   const getSecondaryAction = () => {
+    if (isDevMode) {
+      return {
+        buttonText: 'Prev',
+        onClick: () => null,
+        isPrev: true
+      };
+    }
+
     if (!isLoading && contrastResults !== null) {
       if (failed !== null) {
         return {
@@ -232,7 +252,8 @@ function Contrast() {
 
   return (
     <AnnotationStepPage
-      title="Text color contrast"
+      title={isDevMode ? 'Contrast' : 'Text color contrast'}
+      completed={isCompleted}
       routeName={routeName}
       bannerTipProps={{ pageType, routeName }}
       footerProps={{
@@ -241,142 +262,172 @@ function Contrast() {
       }}
     >
       <React.Fragment>
-        <HeadingStep
-          number={1}
-          text="Check if there are any color contrast issues with text"
-        />
-
-        {isLoading && (
+        {isDevMode === false && (
           <React.Fragment>
-            <div className="spacer4" />
-
-            <div className="w-100 flex-center">
-              <LoadingSpinner size={36} />
-              <div className="muted font-12 pt1">
-                Scanning color contrast...
-              </div>
-            </div>
-          </React.Fragment>
-        )}
-
-        {failed !== null && (
-          <React.Fragment>
-            <Alert
-              icon={<SvgWarning />}
-              style={{ padding: 0 }}
-              text={`${failed.length} contrast issue${
-                failed.length === 1 ? '' : 's'
-              } found`}
-              type="warning"
-            />
-
-            <div className="spacer3" />
-
             <HeadingStep
-              number={2}
-              text="Fix large/bold text contrast issues (3:1 requirement)"
+              number={1}
+              text="Check if there are any color contrast issues with text"
             />
 
-            {failedBold === null && (
-              <BannerSuccess text="All large/bold text passes AA contrast ratio requirement." />
-            )}
-
-            {failedBold !== null &&
-              failedBold.map(({ name, value, nodeId }) => (
-                <div
-                  key={nodeId}
-                  className="contrast-row mb2"
-                  onClick={() => onClick(nodeId)}
-                  onKeyDown={({ key }) => {
-                    if (utils.isEnterKey(key)) onClick(nodeId);
-                  }}
-                  role="link"
-                  tabIndex="0"
-                >
-                  <div className="flex-row-center">
-                    <div className="svg-theme mr2">
-                      <SvgText />
-                    </div>
-
-                    <div className="contrast-name">{value || name}</div>
-                  </div>
-
-                  <div className="contrast-goto">Go to</div>
-                </div>
-              ))}
-
-            <div className="spacer2" />
-
-            <HeadingStep
-              number={3}
-              text="Fix small/regular text contrast issues (4.5:1 requirement)"
-            />
-
-            {failedReg === null && (
-              <BannerSuccess text="All small/regular text passes AA contrast ratio requirement." />
-            )}
-
-            {failedReg !== null &&
-              failedReg.map(({ name, value, nodeId }) => (
-                <div
-                  key={nodeId}
-                  className="contrast-row mb2"
-                  onClick={() => onClick(nodeId)}
-                  onKeyDown={({ key }) => {
-                    if (utils.isEnterKey(key)) onClick(nodeId);
-                  }}
-                  role="link"
-                  tabIndex="0"
-                >
-                  <div className="flex-row-center">
-                    <div className="svg-theme mr2">
-                      <SvgText />
-                    </div>
-
-                    <div className="contrast-name">{value || name}</div>
-                  </div>
-
-                  <div className="contrast-goto">Go to</div>
-                </div>
-              ))}
-
-            <div className="spacer2" />
-
-            <div
-              className="flex-row-center border-radius-2 cursor-pointer"
-              onClick={togglePreview}
-              onKeyDown={({ key }) => {
-                if (utils.isEnterKey(key)) togglePreview();
-              }}
-              role="button"
-              tabIndex="0"
-            >
-              <div className={`svg-theme mr1 animated ${arrowClass}`}>
-                <SvgCarrot />
-              </div>
-
-              <h2>{`${showText} preview`}</h2>
-            </div>
-
-            {showPreview && (
+            {isLoading && (
               <React.Fragment>
-                <div className="spacer2" />
+                <div className="spacer4" />
 
-                <ContrastScreenshot report={contrastResults} />
+                <div className="w-100 flex-center">
+                  <LoadingSpinner size={36} />
+                  <div className="muted font-12 pt1">
+                    Scanning color contrast...
+                  </div>
+                </div>
               </React.Fragment>
             )}
 
-            <div className="spacer4" />
+            {failed !== null && (
+              <React.Fragment>
+                <Alert
+                  icon={<SvgWarning />}
+                  style={{ padding: 0 }}
+                  text={`${failed.length} contrast issue${
+                    failed.length === 1 ? '' : 's'
+                  } found`}
+                  type="warning"
+                />
+
+                <div className="spacer3" />
+
+                <HeadingStep
+                  number={2}
+                  text="Fix large/bold text contrast issues (3:1 requirement)"
+                />
+
+                {failedBold === null && (
+                  <BannerSuccess text="All large/bold text passes AA contrast ratio requirement." />
+                )}
+
+                {failedBold !== null &&
+                  failedBold.map(({ name, value, nodeId }) => (
+                    <div
+                      key={nodeId}
+                      className="contrast-row mb2"
+                      onClick={() => onClick(nodeId)}
+                      onKeyDown={({ key }) => {
+                        if (utils.isEnterKey(key)) onClick(nodeId);
+                      }}
+                      role="link"
+                      tabIndex="0"
+                    >
+                      <div className="flex-row-center">
+                        <div className="svg-theme mr2">
+                          <SvgText />
+                        </div>
+
+                        <div className="contrast-name">{value || name}</div>
+                      </div>
+
+                      <div className="contrast-goto">Go to</div>
+                    </div>
+                  ))}
+
+                <div className="spacer2" />
+
+                <HeadingStep
+                  number={3}
+                  text="Fix small/regular text contrast issues (4.5:1 requirement)"
+                />
+
+                {failedReg === null && (
+                  <BannerSuccess text="All small/regular text passes AA contrast ratio requirement." />
+                )}
+
+                {failedReg !== null &&
+                  failedReg.map(({ name, value, nodeId }) => (
+                    <div
+                      key={nodeId}
+                      className="contrast-row mb2"
+                      onClick={() => onClick(nodeId)}
+                      onKeyDown={({ key }) => {
+                        if (utils.isEnterKey(key)) onClick(nodeId);
+                      }}
+                      role="link"
+                      tabIndex="0"
+                    >
+                      <div className="flex-row-center">
+                        <div className="svg-theme mr2">
+                          <SvgText />
+                        </div>
+
+                        <div className="contrast-name">{value || name}</div>
+                      </div>
+
+                      <div className="contrast-goto">Go to</div>
+                    </div>
+                  ))}
+
+                <div className="spacer2" />
+
+                <div
+                  className="flex-row-center border-radius-2 cursor-pointer"
+                  onClick={togglePreview}
+                  onKeyDown={({ key }) => {
+                    if (utils.isEnterKey(key)) togglePreview();
+                  }}
+                  role="button"
+                  tabIndex="0"
+                >
+                  <div className={`svg-theme mr1 animated ${arrowClass}`}>
+                    <SvgCarrot />
+                  </div>
+
+                  <h2>{`${showText} preview`}</h2>
+                </div>
+
+                {showPreview && (
+                  <React.Fragment>
+                    <div className="spacer2" />
+
+                    <ContrastScreenshot report={contrastResults} />
+                  </React.Fragment>
+                )}
+
+                <div className="spacer4" />
+              </React.Fragment>
+            )}
+
+            {didPass && (
+              <BannerSuccess
+                text="All text passes AA contrast ratio requirement. Be sure to validate
+              non-text contrast for interactive elements and meaningful
+              graphics."
+              />
+            )}
           </React.Fragment>
         )}
 
-        {didPass && (
-          <BannerSuccess
-            text="All text passes AA contrast ratio requirement. Be sure to validate
-              non-text contrast for interactive elements and meaningful
-              graphics."
-          />
-        )}
+        {isDevMode === true &&
+          (isCompleted ? (
+            <React.Fragment>
+              <HeadingStep text="Implement" />
+              <p>
+                Build using provided colors. Check with the designer if you have
+                questions, for example whether colors for any states not shown
+                (e.g. hover) were tested for contrast.
+              </p>
+
+              <div className="space-md" />
+              <div className="divider" />
+              <div className="space-md" />
+
+              <HeadingStep text="Test" />
+              <ul className="disc">
+                <li>Run an automated accessibility test.</li>
+              </ul>
+            </React.Fragment>
+          ) : (
+            <DevStepIncomplete
+              label="color contrast"
+              text="The design has not been scanned for contrast issues. Check with the designer about completing this step."
+            />
+          ))}
       </React.Fragment>
     </AnnotationStepPage>
   );

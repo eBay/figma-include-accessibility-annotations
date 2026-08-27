@@ -4,8 +4,14 @@
   color: var(--foreground-on-warning);
   font-size: 11px;
   line-height: 15px;
-  padding: var(--spacing-xs) var(--spacing-md) var(--spacing-xs) var(--spacing-xs);
+  padding: var(--spacing-xs) var(--spacing-lg) var(--spacing-xs)
+    var(--spacing-xs);
   position: relative;
+
+  &.tip-opened {
+    padding: var(--spacing-xs) var(--spacing-lg) var(--spacing-xs)
+      var(--spacing-xs);
+  }
 }
 
 .tip-label {
@@ -15,34 +21,47 @@
   text-transform: uppercase;
 }
 
-.tip-text-collapsed {
-  max-height: 16px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.tip-toggle {
-  cursor: pointer;
-  position: absolute!important;
-  right: 8px;
-  top: 8px;
-  
-  & .rotate-left-rev {
-    transform: rotate(-180deg)
-  }
-
-  & .rotate-right-rev {
-    transform: rotate(0deg)
-  }
-}
-
 .tip-link {
   border-radius: 2px;
   color: var(--foreground-on-warning);
   display: inline-block;
   font-size: 12px;
-  margin-left: 26px;
+  margin-left: 8px;
   margin-top: 8px;
   text-decoration: underline;
+}
+
+.tip-text-collapsed {
+  -webkit-box-orient: vertical;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  // the link is only reachable once the tip is expanded, and its inline-block
+  // margin would grow the clamped line beyond the tip
+  .tip-link {
+    display: none;
+  }
+}
+
+.tip-toggle {
+  cursor: pointer;
+  position: absolute !important;
+  right: 8px;
+  top: 8px;
+
+  & .svg-theme path {
+    fill: var(--foreground-on-warning);
+  }
+
+  & .rotate-left-rev {
+    transform: rotate(-180deg);
+  }
+
+  & .rotate-right-rev {
+    transform: rotate(0deg);
+  }
 }
