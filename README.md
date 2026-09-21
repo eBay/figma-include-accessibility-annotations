@@ -19,11 +19,11 @@ The plugin was developed by members of the accessibility and design teams at eBa
 
 ## What's new in v17
 
-Version 17 adds a read-only inspect experience in Figma Dev Mode so developers can review existing annotations without changing the design file.
+Version 17 adds a Dev Mode inspect experience so developers can review existing annotations.
 
 Features:
 
-- added a read-only Dev Mode inspect experience, with a dashboard of annotated pages and previous/next step navigation
+- added a Dev Mode inspect experience, with a dashboard of annotated pages and previous/next step navigation
 - added implement and test guidance from existing annotations (web and native); Color blindness is skipped in inspect
 - added developer-focused step tips while keeping Design Mode playbook links
 - scans other Figma pages in Dev Mode so annotations are not limited to the current page
@@ -43,7 +43,7 @@ Open source code:
 
 - updated manifest to use `editorType: ["figma", "dev"]` with `capabilities: ["inspect"]`
 - centralized plugin constants (sizes, WCAG values, loading timeouts)
-- added an ErrorBoundary fallback
+- added an `<ErrorBoundary />` fallback
 - ignore non-plugin iframe window messages so listeners do not crash
 - added prettier format scripts and a combined `lint:all` command
 
