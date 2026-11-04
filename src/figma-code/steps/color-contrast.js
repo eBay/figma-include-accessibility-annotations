@@ -30,7 +30,6 @@ export const scan = async (msg) => {
       }
 
       if (node.type === 'TEXT' && !!node.visible) {
-        // node = node as TextNode;
         textNodes.push({
           textNode: node,
           effectiveOpacity: newOpacity * node.opacity
@@ -74,7 +73,7 @@ export const scan = async (msg) => {
         }
       };
 
-      const isBold = ({ style }) => !!style.match(/medium|bold|black/i);
+      const isBold = ({ style } = {}) => !!style?.match(/medium|bold|black/i);
 
       const { fills, fontName, fontSize } = textNode;
       const { mixed } = figma;
@@ -87,10 +86,12 @@ export const scan = async (msg) => {
             (paint) => colorsForPaint(paint)
           );
 
+          const rangeFontName = textNode.getRangeFontName(i, i + 1);
+
           colors.forEach((color) => {
             samples.add(
               JSON.stringify({
-                isBold: isBold(textNode.getRangeFontName(i, i + 1)),
+                isBold: rangeFontName !== mixed ? isBold(rangeFontName) : false,
                 textSize: textNode.getRangeFontSize(i, i + 1),
                 color
               })
