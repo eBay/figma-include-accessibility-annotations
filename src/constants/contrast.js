@@ -243,7 +243,7 @@ const computeTypeContrast = (textNodeInfo, bgImageData) => {
       : WCAG_AAA_NORMAL;
 
     samplePoints.map(([x_, y_]) => {
-      let bgColor = getImageDataPixel(bgImageData, x_, y_);
+      let bgColor = getImageDataPixel(bgImageData, x_, y_, false);
 
       if (!bgColor) {
         // likely this sample point is out of bounds
@@ -260,6 +260,7 @@ const computeTypeContrast = (textNodeInfo, bgImageData) => {
         const lum2 = srgbLuminance(bgColor);
         const contrastRatio =
           (Math.max(lum1, lum2) + 0.05) / (Math.min(lum1, lum2) + 0.05);
+
         stats.minCR = Math.min(stats.minCR, contrastRatio);
         stats.maxCR = Math.max(stats.maxCR, contrastRatio);
 
