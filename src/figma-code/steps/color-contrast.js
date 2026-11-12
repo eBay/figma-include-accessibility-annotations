@@ -1,5 +1,37 @@
 import { contrast } from '@/constants';
 
+const isNodeWithinClippingBounds = (node, rootFrame) => {
+  const nodeBounds = node.absoluteBoundingBox;
+  if (!nodeBounds) return true;
+
+  // Skip text completely outside the exported PNG boundary
+  if (rootFrame.absoluteBoundingBox) {
+    const root = rootFrame.absoluteBoundingBox;
+    const outsideRoot =
+      nodeBounds.x + nodeBounds.width <= root.x ||
+      nodeBounds.x >= root.x + root.width ||
+      nodeBounds.y + nodeBounds.height <= root.y ||
+      nodeBounds.y >= root.y + root.height;
+    if (outsideRoot) return false;
+  }
+
+  // Skip text scrolled out of view in a prototype scroll frame
+  let current = node.parent;
+  while (current && current.type !== 'PAGE') {
+    if (current.overflowDirection !== 'NONE' && current.absoluteBoundingBox) {
+      const clip = current.absoluteBoundingBox;
+      const isOutside =
+        nodeBounds.x + nodeBounds.width <= clip.x ||
+        nodeBounds.x >= clip.x + clip.width ||
+        nodeBounds.y + nodeBounds.height <= clip.y ||
+        nodeBounds.y >= clip.y + clip.height;
+      if (isOutside) return false;
+    }
+    current = current.parent;
+  }
+  return true;
+};
+
 // https://github.com/romannurik/Figma-Contrast
 export const scan = async (msg) => {
   const { page } = msg;
@@ -20,6 +52,7 @@ export const scan = async (msg) => {
   const imageWithTextLayers = await duplicate.exportAsync(EXPORT_SETTINGS);
 
   const textNodes = [];
+  let skippedOverflowCount = 0;
 
   contrast.walk(
     duplicate,
@@ -30,10 +63,14 @@ export const scan = async (msg) => {
       }
 
       if (node.type === 'TEXT' && !!node.visible) {
-        textNodes.push({
-          textNode: node,
-          effectiveOpacity: newOpacity * node.opacity
-        });
+        if (isNodeWithinClippingBounds(node, duplicate)) {
+          textNodes.push({
+            textNode: node,
+            effectiveOpacity: newOpacity * node.opacity
+          });
+        } else {
+          skippedOverflowCount += 1;
+        }
       }
 
       if (!('visible' in node) || !node.visible) {
@@ -139,7 +176,8 @@ export const scan = async (msg) => {
       contrast.pageContainingNode(frameNode)?.backgrounds?.[0]?.color,
     nodeId: frameNode.id,
     width: frameNode.width,
-    height: frameNode.height
+    height: frameNode.height,
+    skippedOverflowCount
   };
 
   figma.ui.postMessage({
