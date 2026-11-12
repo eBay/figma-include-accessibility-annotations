@@ -17,6 +17,13 @@ The eBay Include accessibility annotation Figma plugin is a tool to make annotat
 
 The plugin was developed by members of the accessibility and design teams at eBay and is released for public use on Figma. You can view and install the latest version of the plugin [here](https://www.figma.com/community/plugin/1208180794570801545/Include%3A-an-accessibility-annotation-tool).
 
+## What's new in v17.0.1
+
+Bug fixes:
+
+- fix color contrast check stalling on certain frames
+- fix color contrast check mis-evaluating contrast of text outside the frame boundary
+
 ## What's new in v17
 
 Version 17 adds a Dev Mode inspect experience so developers can review existing annotations.
