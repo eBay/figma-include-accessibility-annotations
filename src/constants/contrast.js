@@ -214,13 +214,27 @@ const computeTypeContrast = (textNodeInfo, bgImageData) => {
     };
   }
 
+  // Clip sample corners to the visible intersection of text bounds and image bounds.
+  // If there is no intersection the text is fully out of frame and can't be measured.
+  const visX1 = Math.max(x, 0);
+  const visY1 = Math.max(y, 0);
+  const visX2 = Math.min(x + w - 1, bgImageData.width - 1);
+  const visY2 = Math.min(y + h - 1, bgImageData.height - 1);
+
+  if (visX1 > visX2 || visY1 > visY2) {
+    return {
+      aa: { status: 'unknown', contrastRatio: 0 },
+      aaa: { status: 'unknown', contrastRatio: 0 }
+    };
+  }
+
   const samplePoints = [
     // TODO: adaptive sampling?
-    [x, y],
+    [visX1, visY1],
     // as of last testing, runtime diff. sampling 4 vs. 1 points only took ~5% longer
-    [x + w - 1, y],
-    [x, y + h - 1],
-    [x + w - 1, y + h - 1]
+    [visX2, visY1],
+    [visX1, visY2],
+    [visX2, visY2]
   ];
 
   const stats = {
@@ -243,7 +257,7 @@ const computeTypeContrast = (textNodeInfo, bgImageData) => {
       : WCAG_AAA_NORMAL;
 
     samplePoints.map(([x_, y_]) => {
-      let bgColor = getImageDataPixel(bgImageData, x_, y_);
+      let bgColor = getImageDataPixel(bgImageData, x_, y_, false);
 
       if (!bgColor) {
         // likely this sample point is out of bounds
@@ -260,6 +274,7 @@ const computeTypeContrast = (textNodeInfo, bgImageData) => {
         const lum2 = srgbLuminance(bgColor);
         const contrastRatio =
           (Math.max(lum1, lum2) + 0.05) / (Math.min(lum1, lum2) + 0.05);
+
         stats.minCR = Math.min(stats.minCR, contrastRatio);
         stats.maxCR = Math.max(stats.maxCR, contrastRatio);
 

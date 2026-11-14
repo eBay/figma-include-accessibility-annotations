@@ -31,13 +31,22 @@ function Contrast() {
   const [failed, setFailed] = React.useState(null);
   const [failedBold, setFailedBold] = React.useState(null);
   const [failedReg, setFailedReg] = React.useState(null);
+  // text nodes outside the frame's clipping boundary — excluded from scan
+  const [skippedOverflow, setSkippedOverflow] = React.useState(0);
   const [showPreview, setShowPreview] = React.useState(false);
+  const [scanError, setScanError] = React.useState(null);
 
   // display
   const didPass = failed === null && contrastResults !== null;
   const showRescan = isCompleted || contrastResults !== null;
   const arrowClass = showPreview ? '' : 'rotate-270';
   const showText = showPreview ? 'Hide' : 'Show';
+  const skippedOverflowNote =
+    skippedOverflow > 0 ? (
+      <div className="font-12">
+        {`${skippedOverflow} text node${skippedOverflow === 1 ? '' : 's'} ${skippedOverflow === 1 ? 'was' : 'were'} skipped as ${skippedOverflow === 1 ? 'it was' : 'they were'} outside the constraints of the frame.`}
+      </div>
+    ) : null;
 
   const onClick = (nodeId) => zoomTo([nodeId], true);
 
@@ -45,6 +54,7 @@ function Contrast() {
     // reset state if needed
     updateState('contrastResults', null);
     setFailed(null);
+    setScanError(null);
 
     // show loading state
     setLoading(true);
@@ -74,74 +84,88 @@ function Contrast() {
 
     const { data, type } = pluginMessage;
 
+    if (type === 'color-contrast-scan-error') {
+      setScanError('The contrast scan could not finish. Try scanning again.');
+      setLoading(false);
+      return;
+    }
+
     // only listen for this response type on this step
     if (type === 'color-contrast-result') {
-      const { result } = data;
-      const { imageWithoutTextLayers, imageWithTextLayers } = result;
+      try {
+        const { result } = data;
+        const { imageWithoutTextLayers, imageWithTextLayers } = result;
 
-      const bgImageData = await contrast.decodeToImageData(
-        imageWithoutTextLayers
-      );
-      const imageUri = contrast.urlForImageBytes(imageWithTextLayers);
-
-      const hotspots = [];
-      const failedArray = [];
-      const failedBoldArray = [];
-      const failedRegArray = [];
-
-      result.textNodeInfos.map((textInfo) => {
-        const contrastReport = contrast.computeTypeContrast(
-          textInfo,
-          bgImageData
+        const bgImageData = await contrast.decodeToImageData(
+          imageWithoutTextLayers
         );
+        const imageUri = contrast.urlForImageBytes(imageWithTextLayers);
 
-        // only if fail
-        if (contrastReport.aa.status === 'fail') {
-          const newObj = {
-            name: textInfo.name,
-            nodeId: textInfo.nodeId,
-            value: textInfo.value,
-            ...contrastReport.aa
-          };
+        const hotspots = [];
+        const failedArray = [];
+        const failedBoldArray = [];
+        const failedRegArray = [];
 
-          if (textInfo.textStyleSamples.length > 0) {
-            const { isBold } = textInfo.textStyleSamples[0];
+        result.textNodeInfos.map((textInfo) => {
+          const contrastReport = contrast.computeTypeContrast(
+            textInfo,
+            bgImageData
+          );
 
-            if (isBold) {
-              failedBoldArray.push(newObj);
-            } else {
-              failedRegArray.push(newObj);
+          // only if fail
+          if (contrastReport.aa.status === 'fail') {
+            const newObj = {
+              name: textInfo.name,
+              nodeId: textInfo.nodeId,
+              value: textInfo.value,
+              ...contrastReport.aa
+            };
+
+            if (textInfo.textStyleSamples.length > 0) {
+              const { isBold } = textInfo.textStyleSamples[0];
+
+              if (isBold) {
+                failedBoldArray.push(newObj);
+              } else {
+                failedRegArray.push(newObj);
+              }
             }
+
+            failedArray.push(newObj);
           }
 
-          failedArray.push(newObj);
-        }
+          hotspots.push({
+            ...textInfo,
+            ...contrastReport
+          });
 
-        hotspots.push({
-          ...textInfo,
-          ...contrastReport
+          return null;
         });
 
-        return null;
-      });
+        const withHotspots = {
+          nodeId: result.nodeId,
+          name: result.name,
+          imageUri,
+          hotspots,
+          width: result.width,
+          height: result.height,
+          pageBgColor: result.pageBgColor,
+          skippedOverflowCount: result.skippedOverflowCount ?? 0
+        };
 
-      const withHotspots = {
-        nodeId: result.nodeId,
-        name: result.name,
-        imageUri,
-        hotspots,
-        width: result.width,
-        height: result.height,
-        pageBgColor: result.pageBgColor
-      };
+        updateState('contrastResults', withHotspots);
 
-      updateState('contrastResults', withHotspots);
+        setSkippedOverflow(result.skippedOverflowCount ?? 0);
+        setFailed(failedArray.length === 0 ? null : failedArray);
+        setFailedBold(failedBoldArray.length === 0 ? null : failedBoldArray);
+        setFailedReg(failedRegArray.length === 0 ? null : failedRegArray);
 
-      setFailed(failedArray.length === 0 ? null : failedArray);
-      setFailedBold(failedBoldArray.length === 0 ? null : failedBoldArray);
-      setFailedReg(failedRegArray.length === 0 ? null : failedRegArray);
-
-      setLoading(false);
+        setScanError(null);
+        setLoading(false);
+      } catch {
+        setScanError('The contrast scan could not finish. Try scanning again.');
+        setLoading(false);
+      }
     }
   };
 
@@ -188,6 +212,7 @@ function Contrast() {
       if (failedArray.length > 0) setFailed(failedArray);
       if (failedBoldArray.length > 0) setFailedBold(failedBoldArray);
       if (failedRegArray.length > 0) setFailedReg(failedRegArray);
+      setSkippedOverflow(contrastResults.skippedOverflowCount ?? 0);
     }
 
     return () => {
@@ -268,6 +293,15 @@ function Contrast() {
               number={1}
               text="Check if there are any color contrast issues with text"
             />
+
+            {scanError && !isLoading && (
+              <Alert
+                icon={<SvgWarning />}
+                style={{ padding: 0 }}
+                text={scanError}
+                type="warning"
+              />
+            )}
 
             {isLoading && (
               <React.Fragment>
@@ -365,6 +399,13 @@ function Contrast() {
 
                 <div className="spacer2" />
 
+                {skippedOverflowNote && (
+                  <React.Fragment>
+                    {skippedOverflowNote}
+                    <div className="space-md" />
+                  </React.Fragment>
+                )}
+
                 <div
                   className="flex-row-center border-radius-2 cursor-pointer"
                   onClick={togglePreview}
@@ -394,11 +435,22 @@ function Contrast() {
             )}
 
             {didPass && (
-              <BannerSuccess
-                text="All text passes AA contrast ratio requirement. Be sure to validate
-              non-text contrast for interactive elements and meaningful
-              graphics."
-              />
+              <React.Fragment>
+                <BannerSuccess
+                  text={
+                    skippedOverflow > 0
+                      ? 'All text in frame passes AA contrast ratio requirement. Be sure to validate non-text contrast for interactive elements and meaningful graphics.'
+                      : 'All text passes AA contrast ratio requirement. Be sure to validate non-text contrast for interactive elements and meaningful graphics.'
+                  }
+                />
+
+                {skippedOverflowNote && (
+                  <React.Fragment>
+                    <div className="space-sm" />
+                    {skippedOverflowNote}
+                  </React.Fragment>
+                )}
+              </React.Fragment>
             )}
           </React.Fragment>
         )}
